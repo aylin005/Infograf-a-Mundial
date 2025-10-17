@@ -42,7 +42,15 @@ $router->add('/modular/filters', function() use ($renderView) {
 
 // Backwards-compatible routes for pages previously named .html
 $router->add('/signUp', function() use ($renderView) { $renderView('signUp.php'); });
-$router->add('/login', function() use ($renderView) { $renderView('logIn.php'); });
+$router->add('/login', function(...$args) use ($renderView, $database) {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $gateway = new UserModel($database);
+        $controller = new UserController($gateway);
+        $controller->processRequest('POST');
+    } else {
+        $renderView('logIn.php');
+    }
+});
 $router->add('/profile', function() use ($renderView) { $renderView('profile.php'); });
 $router->add('/postDisplay', function() use ($renderView) { $renderView('postDisplay.php'); });
 $router->add('/newPost', function() use ($renderView) { $renderView('newPost.php'); });

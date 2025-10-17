@@ -22,7 +22,7 @@
             <img id="formOverLogo" src="/media/logo.png" alt="Logo Starmates" class="fadeUp img-fluid">
             <!----------------------------------------------------------------------------------------------->
             <div id="signUpContainer" class= "fadeUp shadow">
-                <form method="post" id="signUpForm" action="/" accept-charset="UTF-8" novalidate enctype="multipart/form-data">
+                <form method="post" id="signUpForm" accept-charset="UTF-8" novalidate enctype="multipart/form-data">
                     <h1 class="formTitle">Registro</h1>
                     <h2 id="importantText">Crea una cuenta para formar parte de la mejor comunidad futbolistica mundial ⚽</h2>
                     <hr>
@@ -136,9 +136,9 @@
                                 <label for= "gender">Género</label>
                                 <input type="hidden" id="gender" name="gender">  
                                 <div class="d-flex justify-content-center almostBlackBackground">
-                                    <button type="button" id="gender1" class="genderSelectBtn">🚹</button>
-                                    <button type="button" id="gender2" class="genderSelectBtn">🚺</button>
-                                    <button type="button" id="gender3" class="genderSelectBtn">❎</button>
+                                    <button type="button" value="Masculino" id="gender1" class="genderSelectBtn">🚹</button>
+                                    <button type="button" value="Femenino" id="gender2" class="genderSelectBtn">🚺</button>
+                                    <button type="button" value="Otro" id="gender3" class="genderSelectBtn">❎</button>
                                 </div>
                                 <p id="genderDisplay" class="text-center greyMediumBackground">Seleccione un género</p>
                             </div>

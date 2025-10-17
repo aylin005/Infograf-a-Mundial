@@ -34,12 +34,27 @@ document.addEventListener("DOMContentLoaded", function()
         DisplayCustomAlert("[⚠️] ATENCIÓN: Por favor, ingrese caracteres válidos en todos los campos.");
         return;
       }
-      //NOTA: Simulación de usuario válido
-      if (user !== "admin" || pass !== "123") 
-      {
-        event.preventDefault();
-        DisplayCustomAlert("[❌] E R R O R: Usuario no encontrado");
-        return;
-      }
+      // Real login: POST to /login
+      event.preventDefault();
+      fetch('/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username: user, password: pass })
+      })
+      .then(response => response.json().then(data => ({ status: response.status, body: data })))
+      .then(({ status, body }) => {
+        if (status === 200 && body.exito) {
+          // Store user info in sessionStorage
+          sessionStorage.setItem('user', JSON.stringify(body));
+          window.location.href = '/profile'; // Redirect to profile or dashboard
+        } else {
+          DisplayCustomAlert(`[❌] E R R O R: ${body.mensaje || 'Usuario o contraseña incorrectos'}`);
+        }
+      })
+      .catch(() => {
+        DisplayCustomAlert('[❌] Error de conexión con el servidor');
+      });
         }, false)
       });

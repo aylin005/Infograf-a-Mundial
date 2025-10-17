@@ -31,6 +31,26 @@ class UserModel
 
     public function insert (array $data, $id = null ): array //id accepts null
     {
+        // Hashear la contraseña con SHA-256 si viene en texto plano (no 64 caracteres hex)
+        if (isset($data["hash_password"]) && !empty($data["hash_password"])) {
+            // Si no es un hash SHA-256 válido (64 hex)
+            if (!preg_match('/^[a-f0-9]{64}$/i', $data["hash_password"])) {
+                $data["hash_password"] = hash('sha256', $data["hash_password"]);
+            }
+        }
+
+        // Validar género: solo permitir "Masculino", "Femenino" u "Otro"
+        if (isset($data["gender"]) && !empty($data["gender"])) {
+            $validGenders = ["Masculino", "Femenino", "Otro"];
+            if (!in_array($data["gender"], $validGenders)) {
+                return [
+                    'exito' => false,
+                    'id' => 0,
+                    'mensaje' => 'Error: El género debe ser "Masculino", "Femenino" u "Otro"'
+                ];
+            }
+        }
+
         $sql = "CALL sp_user_insert(:id, :username, :email, :hash_password, :full_name,
                 :birth_date, :image, :gender, :birth_place, :nationality)"; // : named placeholders
         
@@ -119,6 +139,35 @@ class UserModel
             ];
         }
 
+        $errorInfo = $stmt->errorInfo();
+        throw new Exception("Database error: " . ($errorInfo[2] ?? 'Unknown error'));
+    }
+    /**
+     * Login user by username and password
+     * @param string $username
+     * @param string $password (plain text)
+     * @return array (exito, mensaje, user data if success)
+     */
+    public function login(string $username, string $password): array
+    {
+        // Hash password with SHA-256 (to match DB)
+        $hash = hash('sha256', $password);
+        $sql = "CALL sp_user_login(:username, :hash_password)";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindValue(":username", $username, PDO::PARAM_STR);
+        $stmt->bindValue(":hash_password", $hash, PDO::PARAM_STR);
+        if ($stmt->execute()) {
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($result !== false) {
+                $result['exito'] = isset($result['exito']) ? (bool)$result['exito'] : false;
+                $result['id'] = isset($result['id']) ? (int)$result['id'] : 0;
+                return $result;
+            }
+            return [
+                'exito' => false,
+                'mensaje' => 'No data returned',
+            ];
+        }
         $errorInfo = $stmt->errorInfo();
         throw new Exception("Database error: " . ($errorInfo[2] ?? 'Unknown error'));
     }

@@ -128,8 +128,98 @@ document.addEventListener("DOMContentLoaded", function()
 
         if(areCampsFilled && isPasswordCorrect && isBirthdayCorrect && isUserCorrect)
         {
-            console.log("Ya se andan mandando mi rey");
-            form.submit();
+            console.log("Enviando datos a la API...");
+            registerUser();
         }
     });
 });
+
+/**
+ * Función para registrar un nuevo usuario mediante la API
+ */
+async function registerUser() {
+    try {
+        // Recolectar datos del formulario
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value;
+        const email = document.getElementById('mail').value.trim();
+        const fullName = document.getElementById('name').value.trim();
+        const birthDate = document.getElementById('birthday').value;
+        const gender = document.getElementById('gender').value;
+        const birthPlace = document.getElementById('countrySelect').value;
+        const nationality = document.getElementById('nationalitySelect').value;
+        
+        // Validar que el género sea uno de los valores permitidos
+        const validGenders = ["Masculino", "Femenino", "Otro"];
+        if (!validGenders.includes(gender)) {
+            DisplayCustomAlert('❌ Error: Género inválido. Debe ser "Masculino", "Femenino" u "Otro".');
+            return;
+        }
+        
+        console.log("Género seleccionado:", gender);
+        
+        // Obtener la imagen (si se subió)
+        const photoInput = document.getElementById('photo');
+        let imageBase64 = null;
+        
+        if (photoInput.files && photoInput.files[0]) {
+            imageBase64 = await convertImageToBase64(photoInput.files[0]);
+        }
+
+        // Preparar datos en el formato que espera el modelo
+        const userData = {
+            username: username,
+            email: email,
+            hash_password: password, // El backend debería hashear esto
+            full_name: fullName,
+            birth_date: birthDate,
+            image: imageBase64,
+            gender: gender,
+            birth_place: birthPlace,
+            nationality: nationality
+        };
+
+        console.log("Datos a enviar:", userData);
+
+        // Enviar petición POST a la API
+        const response = await fetch('/users', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(userData)
+        });
+
+        const result = await response.json();
+        console.log("Respuesta de la API:", result);
+
+        if (response.ok && result.exito) {
+            // Registro exitoso
+            DisplayCustomAlert(`✅ ${result.mensaje || 'Registro exitoso!'}`);
+            
+            // Redirigir al login después de 2 segundos
+            setTimeout(() => {
+                window.location.href = '/login';
+            }, 2000);
+        } else {
+            // Error en el registro
+            DisplayCustomAlert(`❌ ${result.mensaje || 'Error al registrar usuario'}`);
+        }
+
+    } catch (error) {
+        console.error('Error al registrar usuario:', error);
+        DisplayCustomAlert('❌ Error de conexión. Intente nuevamente.');
+    }
+}
+
+/**
+ * Convierte una imagen a Base64
+ */
+function convertImageToBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+}
