@@ -25,4 +25,5 @@ $router->add('/users/:id', function(string $method, string $id) use ($database) 
     $controller->processRequest($method, $id);
 });
 
+
 $router->dispatch($_SERVER['REQUEST_URI']);
