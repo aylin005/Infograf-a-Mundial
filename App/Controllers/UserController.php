@@ -1,14 +1,14 @@
 <?php
 namespace App\Controllers;
-use App\Models\ProductGateway;
+use App\Models\UserModel;
 
-class ProductController
+class UserController
 {
-    private ProductGateway $gateway;
+    private UserModel $model;
 
-    public function __construct(ProductGateway $gateway)
+    public function __construct(UserModel $model)
     {
-        $this->gateway = $gateway;
+        $this->model = $model;
     }
 
     public function processRequest(string $method, ?string $id = null): void
@@ -22,44 +22,50 @@ class ProductController
 
     private function processResourceRequest(string $method, string $id): void
     {
-        $product = $this->gateway->get($id);
+        $user = $this->model->getOne($id);
 
-        if (!$product) {
+        if (!$user) {
             http_response_code(404);
-            echo json_encode(["message" => "Product not found"]);
+            echo json_encode(["message" => "User not found"]);
             return;
         }
 
         switch ($method) {
             case "GET":
-                echo json_encode($product);
+                echo json_encode($user);
                 break;
 
             case "PATCH":
                 $data = (array) json_decode(file_get_contents("php://input"), true);
-                $errors = $this->getValidationErrors($data, false);
+                // $errors = $this->getValidationErrors($data, false);
 
-                if (!empty($errors)) {
-                    http_response_code(422);
-                    echo json_encode(["errors" => $errors]);
-                    break;
+                // if (!empty($errors)) {
+                //     http_response_code(422);
+                //     echo json_encode(["errors" => $errors]);
+                //     break;
+                // }
+
+                $result = $this->model->insert($data, $id);
+
+                if (isset($result['exito']) && $result['exito']) {
+                    http_response_code(200);
+                } else {
+                    http_response_code(400);
                 }
 
-                $rows = $this->gateway->update($product, $data);
-
-                echo json_encode([
-                    "message" => "Product $id updated",
-                    "rows" => $rows
-                ]);
+                echo json_encode($result);
                 break;
 
             case "DELETE":
-                $rows = $this->gateway->delete($id);
+                $result = $this->model->delete($id);
 
-                echo json_encode([
-                    "message" => "Product $id deleted",
-                    "rows" => $rows
-                ]);
+                if (isset($result['exito']) && $result['exito']) {
+                    http_response_code(200);
+                } else {
+                    http_response_code(400);
+                }
+
+                echo json_encode($result);
                 break;
 
             default:
@@ -73,26 +79,28 @@ class ProductController
     {
         switch ($method) {
             case "GET":
-                echo json_encode($this->gateway->getAll());
+                echo json_encode($this->model->getAll());
                 break;
 
             case "POST":
                 $data = (array) json_decode(file_get_contents("php://input"), true);
-                $errors = $this->getValidationErrors($data);
+                //$errors = $this->getValidationErrors($data);
 
-                if (!empty($errors)) {
-                    http_response_code(422);
-                    echo json_encode(["errors" => $errors]);
-                    break;
+                // if (!empty($errors)) {
+                //     http_response_code(422);
+                //     echo json_encode(["errors" => $errors]);
+                //     break;
+                // }
+
+                $result = $this->model->insert($data);
+
+                if (isset($result['exito']) && $result['exito']) {
+                    http_response_code(201);
+                } else {
+                    http_response_code(400);
                 }
 
-                $id = $this->gateway->create($data);
-
-                http_response_code(201);
-                echo json_encode([
-                    "message" => "Product created",
-                    "id" => $id
-                ]);
+                echo json_encode($result);
                 break;
 
             default:

@@ -4,7 +4,7 @@ return [
     'db' => [
         'connection1' => [
             'host' => 'localhost',
-            'dbname' => 'phpprueba',
+            'dbname' => 'bdm_capa',
             'username' => 'root',
             'password' => 'rootBD',
             'port' => '3306',
