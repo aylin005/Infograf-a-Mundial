@@ -9,8 +9,7 @@ use App\Core\ErrorHandler;
 set_error_handler([ErrorHandler::class, 'handleError']);
 set_exception_handler([ErrorHandler::class, 'handleException']); 
 
-//indica que la respuesta sera en formato json
-header("Content-Type: application/json; charset=UTF-8");
+// NOTE: don't force JSON for all routes — only API handlers will set JSON header.
 
 /////////////////////////////////////////////////////////////////////////
 //routing

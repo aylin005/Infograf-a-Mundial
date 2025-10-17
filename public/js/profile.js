@@ -2,9 +2,9 @@ const userData =
 {
   name: "@itsie",
   email: "itsie-mora@gmail.com",
-  photo: "../../Design/media/pruebas/270 sin título_20240830204638.png",
-  background: "../../Design/media/pruebas/b.png",
-  nationality: "../../Design/media/Flags/Mexico-Emoji.png",
+    photo: "/media/pruebas/270 sin título_20240830204638.png",
+    background: "/media/pruebas/b.png",
+    nationality: "/media/Flags/Mexico-Emoji.png",
   gender: "Femenino"
 };
 

@@ -8,7 +8,7 @@
     </div>
 
     <div class="col-8 col-sm-7 col-md-8">
-      <form method="get" id="searchForm" action="results.html" class="d-flex justify-content-center align-items-center">
+      <form method="get" id="searchForm" action="<?= asset('results.php') ?>" class="d-flex justify-content-center align-items-center">
         <button type="submit" id="searchIcon" class="normalButton"><i class="bi bi-search"></i></button>
         <input id="searchThis" name="searchThis" type="search" class="navSearch border" placeholder="Busca algo...">
         <button type="button" id="advSearchIcon" class="normalButton"><i class="bi bi-list-stars"></i></button>
@@ -20,9 +20,9 @@
 
     <!-- Íconos de usuario -->
     <div id="itemsContainer" class="col-3 col-sm-3 col-md-2 d-flex align-items-center justify-content-center">
-      <a href="profile.html"><img id="photoUser" class="navPhoto img-fluid" src="../../Design/media/userPhoto.png" alt="Foto de usuario"></a>
-      <a href="newPost.html"><i class="bi bi-plus-square navIcon "></i></a>
-      <a href="logIn.html"><i class="bi bi-box-arrow-right navIcon"></i></a>
+  <a href="<?= asset('profile.php') ?>"><img id="photoUser" class="navPhoto img-fluid" src="<?= asset('media/userPhoto.png') ?>" alt="Foto de usuario"></a>
+  <a href="<?= asset('newPost.php') ?>"><i class="bi bi-plus-square navIcon "></i></a>
+  <a href="<?= asset('logIn.php') ?>"><i class="bi bi-box-arrow-right navIcon"></i></a>
     </div>
   </nav>
 </div>

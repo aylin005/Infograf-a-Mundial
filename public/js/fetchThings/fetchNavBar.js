@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  fetch("../../Structure/HTML/modular/navBar.html")
+  fetch("/modular/navBar")
     .then(response => response.text())
     .then(html => {
       document.getElementById("navBar-container").innerHTML = html;
@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (advSearch) {
           advSearch.addEventListener("click", () => {
-            fetch("../HTML/modular/filters.html")
+              fetch("/modular/filters")
               .then(response => response.text())
               .then(html => {
                 const container = document.getElementById("filterContainer");

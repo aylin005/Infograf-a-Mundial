@@ -1,7 +1,7 @@
 const previewCard =
 [
     {
-        userPhoto: "../../Design/media/userPhoto.png",
+    userPhoto: "/media/userPhoto.png",
         user: "amloLover500",
         date: "28/08/2025",
         title: "Esta deberia de ser la mascota del mundial",
@@ -12,7 +12,7 @@ const previewCard =
     },
 
     {
-        userPhoto: "../../Design/media/pruebas/270 sin título_20240830204638.png",
+    userPhoto: "/media/pruebas/270 sin título_20240830204638.png",
         user: "itsie",
         date: "01/09/2025",
         title: "Que opinan del logo del FIFA 2026?",
@@ -23,7 +23,7 @@ const previewCard =
     },
 
     {
-        userPhoto: "../../Design/media/pruebas/momazo.jpg",
+    userPhoto: "/media/pruebas/momazo.jpg",
         user: "x",
         date: "03/09/2025",
         title: "Quien va a cantar en el proximo mundial?",
@@ -34,11 +34,11 @@ const previewCard =
     },
 
     {
-        userPhoto: "../../Design/media/userPhoto.png",
+    userPhoto: "/media/userPhoto.png",
         user: "queVin",
         date: "06/08/2025",
         title: "Tremenda jugada de la URSS",
-        media: "../../Design/media/Mundiales/1982/Publications/Eder Brazil vs USSR 2-1 First Round World Cup 1982.mp4",
+    media: "/media/Mundiales/1982/Publications/Eder Brazil vs USSR 2-1 First Round World Cup 1982.mp4",
         isVideo: true,
         upvotes: "9M",
         comments: "123",

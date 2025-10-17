@@ -2,7 +2,7 @@
 const card =
 [
     {
-        background: "../../Design/media/Mundiales/1986/Publications/1.mp4",
+  background: "/media/Mundiales/1986/Publications/1.mp4",
         isVideo: true,
         username: "@itsie",
         comments: "9k",
@@ -15,7 +15,7 @@ const card =
     },
 
     {
-        background: "../../Design/media/Mundiales/1950/PageContent/2.jpg",
+  background: "/media/Mundiales/1950/PageContent/2.jpg",
         isVideo: false,
         username: "@cocos",
         comments: "4M",

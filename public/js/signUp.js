@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function()
 
     //NOTA: Esta es la imagen default que se le asigna a todos los usuarios antes de que decida modificarla
     // no sé si se maneja así, pero igual ahí te dejo la variableee
-    const defaultBgImage= "../../Design/media/pruebas/logo_fifa_2026_0.png"; 
+    const defaultBgImage= "/media/pruebas/logo_fifa_2026_0.png"; 
 
     let areCampsFilled = false;
     let isUserCorrect = false;

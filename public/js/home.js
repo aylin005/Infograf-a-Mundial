@@ -2,19 +2,19 @@
 const mundials=
 [   
     {
-        image:"../../Design/media/Mundiales/1930/PageContent/1.jpg",
+    image:"/media/Mundiales/1930/PageContent/1.jpg",
         year: "1930",
         slogan: "El inicio de la tradición futbolística"
     },
 
     {
-        image:"../../Design/media/Mundiales/1934/PageContent/1.jpg",
+    image:"/media/Mundiales/1934/PageContent/1.jpg",
         year: "1934",
         slogan: "El trofeo bajo la sombra de un ideal"
     },
 
     {
-        image:"../../Design/media/Mundiales/1938/PageContent/1.jpg",
+    image:"/media/Mundiales/1938/PageContent/1.jpg",
         year: "1938",
         slogan: "El juego previo a la guerra"
     }
@@ -52,23 +52,13 @@ function showCarousel(pMundiales)
     inner.appendChild(item);
 
     //NOTA: se crea el botón inferior -> el que sirve para moverse rápidamente entre mundiales
-    const indicator = document.createElement("button");
-    indicator.type = "button";
-    indicator.setAttribute("data-bs-target", "#mundialSlider");
-    indicator.setAttribute("data-bs-slide-to", i);
-    indicator.setAttribute("data-bs-toggle", "tooltip");
-    indicator.setAttribute("data-bs-placement", "bottom");
-    indicator.setAttribute("data-bs-custom-class", "custom-tooltip");
-    indicator.setAttribute("title", mundial.year);
-
-    if(i === 0)
-        indicator.className = "active";
-
-    if (i === 0)
-        indicator.setAttribute("aria-current", "true");
-    
-    indicator.setAttribute("aria-label", `Slide ${i + 1}`);
-    indicators.appendChild(indicator);
+    // Create indicator via HTML to ensure attributes are parsed as in static markup
+    const indicatorHtml = `
+      <button type="button" data-bs-target="#mundialSlider" data-bs-slide-to="${i}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-custom-class="custom-tooltip" title="${mundial.year}" aria-label="Slide ${i + 1}" ${i === 0 ? 'class="active" aria-current="true"' : ''}></button>
+    `;
+    const tmp = document.createElement('div');
+    tmp.innerHTML = indicatorHtml.trim();
+    indicators.appendChild(tmp.firstChild);
   });
 
   // NOTA: Se activan los tooltips

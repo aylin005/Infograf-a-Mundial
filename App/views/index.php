@@ -1,21 +1,22 @@
+<?php if (!function_exists('asset')) { function asset($p){ return '/'.ltrim($p,'/'); } } ?>
 <!DOCTYPE html>
 <html lang = "es">
     <head>
         <meta charset="UTF-8">
         <meta name = "viewport" content="width=device-width, initial-scale = 1.0">
         <title> Starmates | Home </title>
-        <link rel = "icon" href="/media/miniLogoW.png"> <!--logo-->
-        <link rel="stylesheet" href="/css/main.css">
-        <link rel="stylesheet" href="/css/home.css">
-        <link rel="stylesheet" href="/css/modular/navBar.css">
-        <link rel="stylesheet" href="/css/modular/cardPost.css">
-        <link rel="stylesheet" href="/css/modular/previewPost.css">
-        <link rel="stylesheet" href="/css/modular/filters.css">
-        <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
-        <link rel="stylesheet" href="/icons/icons-1.13.1/font/bootstrap-icons.css">
-        <link rel="stylesheet" href="/fonts/Offside/Offside.css">
-        <link rel="stylesheet" href="/fonts/Syncopate/Syncopate.css">
-        <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <link rel = "icon" href="<?= asset('media/miniLogoW.png') ?>"> <!--logo-->
+        <link rel="stylesheet" href="<?= asset('css/main.css') ?>">
+        <link rel="stylesheet" href="<?= asset('css/home.css') ?>">
+        <link rel="stylesheet" href="<?= asset('css/modular/navBar.css') ?>">
+        <link rel="stylesheet" href="<?= asset('css/modular/cardPost.css') ?>">
+        <link rel="stylesheet" href="<?= asset('css/modular/previewPost.css') ?>">
+        <link rel="stylesheet" href="<?= asset('css/modular/filters.css') ?>">
+        <link rel="stylesheet" href="<?= asset('bootstrap/css/bootstrap.min.css') ?>">
+        <link rel="stylesheet" href="<?= asset('icons/icons-1.13.1/font/bootstrap-icons.css') ?>">
+        <link rel="stylesheet" href="<?= asset('fonts/Offside/Offside.css') ?>">
+        <link rel="stylesheet" href="<?= asset('fonts/Syncopate/Syncopate.css') ?>">
+        <script src="<?= asset('bootstrap/js/bootstrap.bundle.min.js') ?>"></script>
     </head>
     <body class="defaultBackground noScrollX">
         <header id="navBar-container"></header>
@@ -53,9 +54,9 @@
             <!--////////////////////////////////////////////////////////////////////////////////////-->
         </main>
         <div id="filterContainer"></div>
-        <script src="/js/fetchThings/fetchNavBar.js"></script>
-        <script src="/js/fetchThings/fetchCardsPosts.js"></script>
-        <script src="/js/fetchThings/fetchPreviewPosts.js"></script>
-        <script src="/js/home.js"></script>
+        <script src="<?= asset('js/fetchThings/fetchNavBar.js') ?>"></script>
+        <script src="<?= asset('js/fetchThings/fetchCardsPosts.js') ?>"></script>
+        <script src="<?= asset('js/fetchThings/fetchPreviewPosts.js') ?>"></script>
+        <script src="<?= asset('js/home.js') ?>"></script>
     </body>
 </html>
