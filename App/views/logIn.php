@@ -28,7 +28,7 @@
                     <div id="formContainer" class="fadeUp shadow">
                         <h1 class="formTitle">Iniciar sesión</h1>
                         <hr>
-                        <form action="index.html" method="post" id="logInForm" class="needs-validation" novalidate accept-charset="UTF-8">
+                        <form action="/" method="post" id="logInForm" class="needs-validation" novalidate accept-charset="UTF-8">
                             <div class="formCamps">
                                 <label for="username">Nombre de usuario</label>
                                 <div class="has-validation">
@@ -54,7 +54,7 @@
                             <button type="submit" class="btn d-block mx-auto mb-5 shadow">Continuar</button>
                         </form> 
                         <p class="text-center instruction smallerText">¿Aún no tienes una cuenta?</p>
-                        <button onclick="location.href='signUp.html'" id="gotoSignUpButton" type="button" class="btn d-block mx-auto mb-2 shadow">Registrarme</button>
+                        <button onclick="location.href='/signUp'" id="gotoSignUpButton" type="button" class="btn d-block mx-auto mb-2 shadow">Registrarme</button>
                     </div>
                 </div>
             </div>

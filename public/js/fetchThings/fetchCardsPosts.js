@@ -53,12 +53,12 @@ function createPostCard(pCard)
         <div class="container-fluid">
           <div class="row">
             <div class="col-7 over">
-              <a href="profile.html"><p class="userCard">${pCard.username}</p></a>
+              <a href="/profile"><p class="userCard">${pCard.username}</p></a>
             </div>
             <div class="col-5 over">
               <div class="d-flex calificationCard align-items-center justify-content-center">
                 <div class="d-flex align-items-center">
-                  <a href="postDisplay.html"><i class="bi bi-chat-left-dots messageIcon"></i></a>
+                  <a href="/postDisplay"><i class="bi bi-chat-left-dots messageIcon"></i></a>
                   <p class="cantUpvotes noMargin">${pCard.comments}</p>
                 </div>
                 <div class="d-flex align-items-center">
@@ -74,7 +74,7 @@ function createPostCard(pCard)
         <div class="container-fluid">
           <div class="row">
             <div class="col-12 over">
-              <a href="postDisplay.html" class="over"><h5 class="cardTitle over">${pCard.title}</h5></a>
+              <a href="/postDisplay" class="over"><h5 class="cardTitle over">${pCard.title}</h5></a>
             </div>
           </div>
         </div>
@@ -84,8 +84,8 @@ function createPostCard(pCard)
           <div class="row">
             <div class="col-12 over">
               <div class="d-flex over">
-                ${pCard.mundialYear ? `<button id="postYear" type="button" onclick="location.href='results.html'" class="ticketsCard">${pCard.mundialYear}</button>` : ""}
-                ${pCard.mundialSelection ? `<button id="postSelectio" type="button" onclick="location.href='results.html'" class="ticketsCard">${pCard.mundialSelection}</button>` : ""}
+                ${pCard.mundialYear ? `<button id="postYear" type="button" onclick="location.href='/results'" class="ticketsCard">${pCard.mundialYear}</button>` : ""}
+                ${pCard.mundialSelection ? `<button id="postSelectio" type="button" onclick="location.href='/results'" class="ticketsCard">${pCard.mundialSelection}</button>` : ""}
               </div>
             </div>
           </div>
@@ -96,7 +96,7 @@ function createPostCard(pCard)
           <div class="row">
             <div class="col-12 over">
               <div class="d-flex align-items-center tagContainer">
-                ${pCard.tags.map(tag => `<button type="button" onclick="location.href='results.html'" class="tags">#${tag}</button>`).join("")}
+                ${pCard.tags.map(tag => `<button type="button" onclick="location.href='/results'" class="tags">#${tag}</button>`).join("")}
               </div>
             </div>
           </div>

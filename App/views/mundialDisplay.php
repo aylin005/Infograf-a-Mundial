@@ -24,17 +24,17 @@
             <main class="col-12 col-md-9">
                 <div class="row setHeight75px">
                     <div class="col-2 d-flex align-items-center">
-                        <button id="beforeMundial" onclick="location.href='index.html'" type="button" class="moveButton beforeButton shadow">
+                        <button id="beforeMundial" onclick="location.href='/'" type="button" class="moveButton beforeButton shadow">
                             <i class="bi bi-arrow-left-square"></i> 1930
                         </button>
                     </div>
                     <div class="col-8 d-flex align-items-center">
-                        <button id="seeMundials" onclick="location.href='index.html'" type="button" class="moveButton middleButton shadow">
+                        <button id="seeMundials" onclick="location.href='/'" type="button" class="moveButton middleButton shadow">
                             Cronología de los mundiales
                         </button>
                     </div>
                     <div class="col-2 d-flex align-items-center">
-                        <button id="afterMundial" onclick="location.href='index.html'" type="button" class="moveButton afterButton shadow">
+                        <button id="afterMundial" onclick="location.href='/'" type="button" class="moveButton afterButton shadow">
                             1938 <i class="bi bi-arrow-right-square"></i>
                         </button>
                     </div>
@@ -65,7 +65,7 @@
                                         <h4 class="infoTitle">Selección ganadora</h4>
                                     </div>
                                     <div class="d-flex align-items-center addLeftMargin">
-                                        <img id="mundialWinnerFlag" class="mundialWinnerFlag" src="../../Design/media/Flags/Italia-Emoji.png">
+                                        <img id="mundialWinnerFlag" class="mundialWinnerFlag" src="/media/Flags/Italia-Emoji.png">
                                         <p id="mundialWinnerName" class="mundialWinnerName" >Italia</p>
                                     </div>
                                 </div>
@@ -84,7 +84,7 @@
                             <div class="col-4">
                                 <div class="card bg-dark m-2" data-bs-theme="dark">
                                     <div class="card-header noMargin noPadding">
-                                        <img id="mundialPrincipalImage" class="mundialPrincipalImage m-3 shadow img-fluid" src="../../Design/media/Mundiales/1934/PageContent/4.jpg">
+                                        <img id="mundialPrincipalImage" class="mundialPrincipalImage m-3 shadow img-fluid" src="/media/Mundiales/1934/PageContent/4.jpg">
                                     </div>
                                     <div class="card-body">
                                         <figure>

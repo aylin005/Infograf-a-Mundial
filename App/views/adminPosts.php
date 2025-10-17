@@ -21,13 +21,13 @@
         <div class="container-fluid noPadding">
             <div class="row w-100">
                 <aside class="col-2 bg-dark border-end noPadding">
-                    <a href="adminPosts.html"><p class="asideOptions">Gestión de publicaciones y comentarios</p></a>
+                    <a href="/adminPosts"><p class="asideOptions">Gestión de publicaciones y comentarios</p></a>
                     <hr>
-                    <a href="addCategory.html"><p class="asideOptions">Crear categorías</p></a>
+                    <a href="/addCategory"><p class="asideOptions">Crear categorías</p></a>
                     <hr>
-                    <a href="adminMundials.html"><p class="asideOptions">Administrar mundiales</p></a>
+                    <a href="/adminMundials"><p class="asideOptions">Administrar mundiales</p></a>
                     <hr>
-                    <button onclick="location.href='index.html'" class="exitButton">Salir del modo admin</button>
+                    <button onclick="location.href='/'" class="exitButton">Salir del modo admin</button>
                 </aside>
                 <main class="col-10">
                     <h1 class="pageTitle">Gestión de publicaciones y comentarios</h1>
@@ -57,8 +57,8 @@
                             </div>
                         </div>
                         <hr class="whiteGreyText">
-                        <button onClick="location.href='results.html'" id="mundialPost" class="posTickets" >1986</button>
-                        <button onClick="location.href='results.html'" id="selectionPost" class="posTickets" >Selección Argentina</button>
+                        <button onClick="location.href='/results'" id="mundialPost" class="posTickets" >1986</button>
+                        <button onClick="location.href='/results'" id="selectionPost" class="posTickets" >Selección Argentina</button>
                         <h1 id="postTitle" class="postTitle">La mejor jugada de Maradona</h1>
                         <p id="postDescription" class="postDescription">Yo creo que la mejor jugada fue en el 86, aquí adjunto mis pruebas</p>
                         <hr class="whiteGreyText noMargin">
@@ -89,8 +89,8 @@
                             </div>
                         </div>
                         <div id="categoryContainer" class="categoryContainer">
-                            <button onClick="location.href='results.html'" id="postTag" class="postTagButton" >#Goleadas</button>
-                            <button onClick="location.href='results.html'" id="postTag" class="postTagButton" >#CampeonDelMundo</button>
+                            <button onClick="location.href='/results'" id="postTag" class="postTagButton" >#Goleadas</button>
+                            <button onClick="location.href='/results'" id="postTag" class="postTagButton" >#CampeonDelMundo</button>
                         </div>
                     </div>
                     
@@ -98,7 +98,7 @@
                         <div class="container-fluid noPadding">
                             <div class="row w-100">
                                 <div class="col-1">
-                                    <img id="postUserPhoto" class="postUserPhoto img-fluid" src="../../../Design/Design/media/userPhoto.png">
+                                    <img id="postUserPhoto" class="postUserPhoto img-fluid" src="/media/userPhoto.png">
                                 </div>
                                 <div class="col-7">
                                     <p id="postUsername" class="postUsername"> @queso-999</p>

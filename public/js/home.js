@@ -45,7 +45,7 @@ function showCarousel(pMundiales)
                 <a><img src="${mundial.image}" class="d-block carouselImg img-fluid" alt="Mundial ${mundial.year}"></a>
             </div>
             <div class="carousel-caption d-md-block mb-4">
-                <a href="mundialDisplay.html"><h1 class="pageTitle rem2size textShadow">Mundial ${mundial.year}</h1></a>
+                <a href="/mundialDisplay"><h1 class="pageTitle rem2size textShadow">Mundial ${mundial.year}</h1></a>
                 <h2 class="mundialSlogan textShadow">${mundial.slogan}</h2>
             </div>
         `;

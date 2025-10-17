@@ -6,7 +6,7 @@
         </div>
         <h1 class="modalTitle">Filtros</h1>
         <hr class="whiteGreyText">
-        <form action="results.html" method="get" accept-charset="UTF-8" id="filterForm">
+        <form action="/results" method="get" accept-charset="UTF-8" id="filterForm">
         <!-- NOTA: Categorías -->
             <div id="byCategory" class="p-3">
                 <label for="tagSelected" class="sectionTitle">Buscar por categorías</label>
@@ -50,9 +50,9 @@
                 <div class="d-flex">
                     <img id="miniFlag" class="miniFlag">
                     <select id="countrySelect" class="offside-regular w-80 d-block mx-auto">
-                        <option id="flag-Can" name="flag-Can" data-image="../../Design/media/Flags/Canada-Emoji.png" class="selectOpt smallText">Canadá</option>
-                        <option id="flag-Mex" name="flag-Mex" data-image="../../Design/media/Flags/Mexico-Emoji.png" class="selectOpt smallText">México</option>
-                        <option id="flag-EU" name="flag-EU" data-image="../../Design/media/Flags/US-Emoji.png" class="selectOpt smallText">Estados Unidos</option>
+                        <option id="flag-Can" name="flag-Can" data-image="/media/Flags/Canada-Emoji.png" class="selectOpt smallText">Canadá</option>
+                        <option id="flag-Mex" name="flag-Mex" data-image="/media/Flags/Mexico-Emoji.png" class="selectOpt smallText">México</option>
+                        <option id="flag-EU" name="flag-EU" data-image="/media/Flags/US-Emoji.png" class="selectOpt smallText">Estados Unidos</option>
                     </select>
                 </div>
             </div>
@@ -67,9 +67,9 @@
                 <div class="d-flex">
                     <img id="natFlag" class="miniFlag">
                     <select id="nationalitySelect" class="offside-regular w-80 d-block mx-auto">
-                        <option id="flag-Can" name="flag-Can" data-image="../../Design/media/Flags/Canada-Emoji.png" class="selectOpt smallText">Canadiense</option>
-                        <option id="flag-Mex" name="flag-Mex" data-image="../../Design/media/Flags/Mexico-Emoji.png" class="selectOpt smallText">Mexicano</option>
-                        <option id="flag-EU" name="flag-EU" data-image="../../Design/media/Flags/US-Emoji.png" class="selectOpt smallText">Estadounidense</option>
+                        <option id="flag-Can" name="flag-Can" data-image="/media/Flags/Canada-Emoji.png" class="selectOpt smallText">Canadiense</option>
+                        <option id="flag-Mex" name="flag-Mex" data-image="/media/Flags/Mexico-Emoji.png" class="selectOpt smallText">Mexicano</option>
+                        <option id="flag-EU" name="flag-EU" data-image="/media/Flags/US-Emoji.png" class="selectOpt smallText">Estadounidense</option>
                     </select>
                 </div>
             </div>

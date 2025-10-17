@@ -22,13 +22,13 @@
         <div class="container-fluid noPadding">
             <div class="row w-100">
                 <aside class="col-2 bg-dark border-end noPadding">
-                    <a href="adminPosts.html"><p class="asideOptions">Gestión de publicaciones y comentarios</p></a>
+                    <a href="/adminPosts"><p class="asideOptions">Gestión de publicaciones y comentarios</p></a>
                     <hr>
-                    <a href="addCategory.html"><p class="asideOptions">Crear categorías</p></a>
+                    <a href="/addCategory"><p class="asideOptions">Crear categorías</p></a>
                     <hr>
-                    <a href="adminMundials.html"><p class="asideOptions">Administrar mundiales</p></a>
+                    <a href="/adminMundials"><p class="asideOptions">Administrar mundiales</p></a>
                     <hr>
-                    <button onclick="location.href='index.html'" class="exitButton">Salir del modo admin</button>
+                    <button onclick="location.href='/'" class="exitButton">Salir del modo admin</button>
                 </aside>
                 <main class="col-10">
                     <div class="container-fluid">
@@ -71,7 +71,7 @@
                         <br><br>
                         <hr class="whiteGreyText">
                         <!-- ----------------------------------------------------------------------------- -->
-                        <form action="adminMundials.html" method="post" id="addMundialForm" enctype="multipart/form-data" class="noPadding noMargin noBackground">
+                        <form action="/adminMundials" method="post" id="addMundialForm" enctype="multipart/form-data" class="noPadding noMargin noBackground">
                             <div class="mundialDisplay">
                                 <div class="container-fluid">
                                     <div class="row">
@@ -130,9 +130,9 @@
                                                 <div class="d-flex m-3">
                                                     <img id="natFlag" class="miniFlag">
                                                     <select id="nationalitySelect" class="selectCountry" required>
-                                                        <option id="flag-Can" name="flag-Can" data-image="../../Design/media/Flags/Canada-Emoji.png" class="selectOpt">Canadá</option>
-                                                        <option id="flag-Mex" name="flag-Mex" data-image="../../Design/media/Flags/Mexico-Emoji.png" class="selectOpt">México</option>
-                                                        <option id="flag-EU" name="flag-EU" data-image="../../Design/media/Flags/US-Emoji.png" class="selectOpt">Estados Unidos</option>
+                                                        <option id="flag-Can" name="flag-Can" data-image="/media/Flags/Canada-Emoji.png" class="selectOpt">Canadá</option>
+                                                        <option id="flag-Mex" name="flag-Mex" data-image="/media/Flags/Mexico-Emoji.png" class="selectOpt">México</option>
+                                                        <option id="flag-EU" name="flag-EU" data-image="/media/Flags/US-Emoji.png" class="selectOpt">Estados Unidos</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -187,7 +187,7 @@
                                         <div class="col-4">
                                             <div class="card adjustCard bg-dark" data-bs-theme="dark">
                                                 <div class="card-header noMargin noPadding">
-                                                    <img id="mundialPrincipalImage" class="mundialPrincipalImage m-3 shadow img-fluid centerTextNImages" src="../../Design/media/userPhoto.png">
+                                                    <img id="mundialPrincipalImage" class="mundialPrincipalImage m-3 shadow img-fluid centerTextNImages" src="/media/userPhoto.png">
                                                     <input type="file" id="mundialPrincipalPhoto" name="mundialPrincipalPhoto" accept="image/*" autocomplete="off" hidden required>
                                                         <label for="mundialPrincipalPhoto" class="d-flex justify-content-center align-items-center">
                                                             <i class="bi bi-upload btn"></i>

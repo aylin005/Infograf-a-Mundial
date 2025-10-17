@@ -72,13 +72,13 @@
                                             <div class="col-7 over">
                                             <!--NOTA: Si está en su perfil, aparecer los íconos de edición. Si no, solo hacer display del nombre-->
                                             <!-- <p id="userCard" class="userCard"> @itsie</p> -->
-                                                <a href="newPost.html"><i id="editPost" class="bi bi-pencil-square cardIcon"></i></a>
+                                                <a href="/newPost"><i id="editPost" class="bi bi-pencil-square cardIcon"></i></a>
                                                 <i id="deletePost" class="bi bi-trash cardIcon"></i>
                                             </div>
                                             <div class="col-5 over">
                                                 <div class="d-flex calificationCard align-items-center justify-content-center">
                                                     <div class="d-flex align-items-center">
-                                                        <a href="postDisplay.html"><i id="goToComments" class="bi bi-chat-left-dots messageIcon"></i></a>
+                                                        <a href="/postDisplay"><i id="goToComments" class="bi bi-chat-left-dots messageIcon"></i></a>
                                                         <p id="commentsCard" class="cantUpvotes noMargin">4M</p>
                                                     </div>
                                                     <div class="d-flex align-items-center">
@@ -91,26 +91,26 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-12 over">
-                                                <a href="postDisplay.html" class="over"><h5 id="titleCard" class="card-title cardTitle over">La mejor jugada de Maradona</h5></a>
+                                                <a href="/postDisplay" class="over"><h5 id="titleCard" class="card-title cardTitle over">La mejor jugada de Maradona</h5></a>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div id="ticketsContainer" class="col-12 over">
                                                 <div class="d-flex over">
-                                                    <button id="yearCard" type="button" href="results.html" class="ticketsCard">1986</button>
-                                                    <button id="selectionCard" type="button" href="results.html" class="ticketsCard">Selección argentina</button>
+                                                    <button id="yearCard" type="button" onclick="location.href='/results'" class="ticketsCard">1986</button>
+                                                    <button id="selectionCard" type="button" onclick="location.href='/results'" class="ticketsCard">Selección argentina</button>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-12 over">
                                                 <div id="tagContainer" class="d-flex align-items-center tagContainer">
-                                                    <button id="tagCard" type="button" href="results.html" class="tags">#TopJugadas</button>
-                                                    <button id="tagCard" type="button" href="results.html" class="tags">#Mejoresjugadores</button>
-                                                    <button id="tagCard" type="button" href="results.html" class="tags">#Argentina</button>
-                                                    <button id="tagCard" type="button" href="results.html" class="tags">#Campeón</button>
-                                                    <button id="tagCard" type="button" href="results.html" class="tags">#ElReyDelFutbol</button>
-                                                    <button id="tagCard" type="button" href="results.html" class="tags">#epocaDorada</button>
+                                                    <button id="tagCard" type="button" onclick="location.href='/results'" class="tags">#TopJugadas</button>
+                                                    <button id="tagCard" type="button" onclick="location.href='/results'" class="tags">#Mejoresjugadores</button>
+                                                    <button id="tagCard" type="button" onclick="location.href='/results'" class="tags">#Argentina</button>
+                                                    <button id="tagCard" type="button" onclick="location.href='/results'" class="tags">#Campeón</button>
+                                                    <button id="tagCard" type="button" onclick="location.href='/results'" class="tags">#ElReyDelFutbol</button>
+                                                    <button id="tagCard" type="button" onclick="location.href='/results'" class="tags">#epocaDorada</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -142,7 +142,7 @@
                                 <div class="w-100"> 
                                     <p class="notifyText smallText textRight noPadding">31/07/2025 14:23</p>
                                     <p class="notifyText syncopate-regular noPadding">Tu publicación "Recetas con mango" ha sido rechazada</p>
-                                    <button onclick="location.href='newPost.html'" type="button" class="reviewButton m-2">Revisar</button>
+                                    <button onclick="location.href='/newPost'" type="button" class="reviewButton m-2">Revisar</button>
                                 </div>
                             </div>
                         </div>
@@ -162,7 +162,7 @@
 
                     <div class="tab-pane fade" id="editProfile" role="tabpanel">
                         <div id="signUpContainer" class= "shadow">
-                            <form method="post" id="signUpForm" action="profile.html" accept-charset="UTF-8" novalidate enctype="multipart/form-data">
+                            <form method="post" id="signUpForm" action="/profile" accept-charset="UTF-8" novalidate enctype="multipart/form-data">
                                 <div class="row">
                                     <div class="col-md-6 col-12 border-end">
                                     <!--SUBIR FOTO-->

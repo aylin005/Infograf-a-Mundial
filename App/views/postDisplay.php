@@ -22,7 +22,7 @@
     <main id="main">
         <div class="container-fluid">
             <br>
-            <button onclick="location.href='index.html'" id="goBackButton" type="button"><i class="bi bi-arrow-left-square m-1"></i>Regresar</button>
+            <button onclick="location.href='/'" id="goBackButton" type="button"><i class="bi bi-arrow-left-square m-1"></i>Regresar</button>
             <div id="publication" class="publication">
                 <div class="container-fluid noPadding">
                     <div class="row w-100">
@@ -49,8 +49,8 @@
                     </div>
                 </div>
                 <hr class="whiteGreyText">
-                <button onClick="location.href='results.html'" id="mundialPost"class="posTickets">1986</button>
-                <button onClick="location.href='results.html'" id="selectionPost" class="posTickets">Selección Argentina</button>
+                <button onClick="location.href='/results'" id="mundialPost"class="posTickets">1986</button>
+                <button onClick="location.href='/results'" id="selectionPost" class="posTickets">Selección Argentina</button>
                 <h1 id="postTitle" class="postTitle x-largeText">La mejor jugada de Maradona</h1>
                 <p id="postDescription" class="postDescription">Yo creo que la mejor jugada fue en el 86, aquí adjunto mispruebas</p>
                 <hr class="whiteGreyText noMargin">
@@ -66,22 +66,22 @@
                 <div class="row">
                     <div class="col-10">
                         <div id="categoryContainer" class="categoryContainer">
-                            <button onClick="location.href='results.html'" id="postTag" class="postTagButton">#Goleadas</button>
-                            <button onClick="location.href='results.html'" id="postTag" class="postTagButton">#CampeonDelMundo</button>
+                            <button onClick="location.href='/results'" id="postTag" class="postTagButton">#Goleadas</button>
+                                        <button onClick="location.href='/results'" id="postTag" class="postTagButton">#CampeonDelMundo</button>
                         </div>
                     </div>
                     <div class="col-2">
                         <div class="d-flex align-items-center justify-content-center">
                             <button id="editPost" class="noBackground noBorder transparentButton margin7x"><i class="bi bi-share postOptions"></i></button>
                             <!--NOTA: las opciones de abajo solo le aparecen al creador de la publicación-->
-                            <button id="editPost" onclick="location.href='newPost.html'" class="noBackground noBorder transparentButton margin7x"><i class="bi bi-pencil-square postOptions"></i></button>
+                            <button id="editPost" onclick="location.href='/newPost'" class="noBackground noBorder transparentButton margin7x"><i class="bi bi-pencil-square postOptions"></i></button>
                             <button id="deletePost" class="noBackground noBorder transparentButton margin7x"><i class="bi bi-trash postOptions"></i></button>
                         </div>
                     </div>
                 </div>
             </div>
     
-            <form action="postDisplay.html" method="post" id="addComment" accept-charset="UTF-8" class="border-top">
+            <form action="/postDisplay" method="post" id="addComment" accept-charset="UTF-8" class="border-top">
                 <textarea id="commentSomething" name="commentSomething" class="commentSomething" placeholder="Comenta algo aquí..."></textarea>
                 <div class="d-flex justify-content-end">
                     <button type="submit"class=" btn shadow addMarginRight5x">Publicar</button>
@@ -94,7 +94,7 @@
                     <div class="container-fluid noPadding">
                         <div class="row w-100">
                             <div class="col-1">
-                                <img id="commentUserPhoto" class="postUserPhoto img-fluid" src="../../Design/media/pruebas/ll.png">
+                                <img id="commentUserPhoto" class="postUserPhoto img-fluid" src="/media/pruebas/ll.png">
                             </div>
                             <div class="col-7">
                                 <p id="postUsername" class="postUsername"> @cocos</p>
@@ -124,14 +124,14 @@
                             <div class="d-flex align-items-center justify-content-center">
                                 <button id="sharePost" class="noBackground noBorder transparentButton margin7x"><i  class="bi bi-share postOptions"></i></button>
                                 <!--NOTA: las opciones de abajo solo le aparecen al creador de la publicación-->
-                                <button id="editPost" onclick="location.href='newPost.html'" class="noBackground noBorder transparentButton margin7x"><i id="editPost" class="bi bi-pencil-square postOptions"></i></button>
+                                <button id="editPost" onclick="location.href='/newPost'" class="noBackground noBorder transparentButton margin7x"><i id="editPost" class="bi bi-pencil-square postOptions"></i></button>
                                 <button id="sharePost" class="noBackground noBorder transparentButton margin7x"><i id="deletePost" class="bi bi-trash postOptions"></i></button>
                             </div>
                         </div>
                     </div>
                 </div>
                 <!-- --------------------------------------------------------------------- -->
-                <form action="postDisplay.html" id="replyForm" method="post" class="border-top">
+                <form action="/postDisplay" id="replyForm" method="post" class="border-top">
                     <textarea id="replyText" name="replyText" class="commentSomething" placeholder="Comenta algo aquí..."></textarea>
                     <div class="d-flex justify-content-end">
                         <button type="submit"class="btn shadow addMarginRight5x">Publicar</button>
@@ -146,7 +146,7 @@
                     <div class="container-fluid noPadding">
                         <div class="row w-100">
                             <div class="col-1">
-                                <img id="replyUserPhoto" class="postUserPhoto img-fluid" src="../../Design/media/pruebas/momazo.jpg">
+                                <img id="replyUserPhoto" class="postUserPhoto img-fluid" src="/media/pruebas/momazo.jpg">
                             </div>
                             <div class="col-7">
                                 <p id="replyUsername" class="postUsername"> @ye</p>

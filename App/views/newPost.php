@@ -33,7 +33,7 @@
             <!--NOTA: Añadir nota para cuando le rechazan la publicación-->
             <div class="container-fluid">
                 <div id="newPostContainer" class="shadow">
-                    <form action="index.html" method="post" accept-charset="UTF-8" id="addPostForm" enctype="multipart/form-data">
+                    <form action="/" method="post" accept-charset="UTF-8" id="addPostForm" enctype="multipart/form-data">
                         <div class="container-fluid">
                             <input id="postTitle" name="postTitle" maxlength="40" class="postFormTitle" placeholder="Ponle un título a tu publicación" autocomplete="off">
                             <div class="row">

@@ -40,7 +40,19 @@ $router->add('/modular/filters', function() use ($renderView) {
     $renderView('modular/filters.php');
 });
 
-// Registrar la ruta /products; el closure crea el gateway y el controller y delega
+// Backwards-compatible routes for pages previously named .html
+$router->add('/signUp', function() use ($renderView) { $renderView('signUp.php'); });
+$router->add('/login', function() use ($renderView) { $renderView('logIn.php'); });
+$router->add('/profile', function() use ($renderView) { $renderView('profile.php'); });
+$router->add('/postDisplay', function() use ($renderView) { $renderView('postDisplay.php'); });
+$router->add('/newPost', function() use ($renderView) { $renderView('newPost.php'); });
+$router->add('/results', function() use ($renderView) { $renderView('results.php'); });
+$router->add('/mundialDisplay', function() use ($renderView) { $renderView('mundialDisplay.php'); });
+$router->add('/adminPosts', function() use ($renderView) { $renderView('adminPosts.php'); });
+$router->add('/adminMundials', function() use ($renderView) { $renderView('adminMundials.php'); });
+$router->add('/addCategory', function() use ($renderView) { $renderView('addCategory.php'); });
+
+// Rutas de API para controladores
 $router->add('/users', function(string $method, ?string $id = null) use ($database) {
     $gateway = new UserModel($database);
     $controller = new UserController($gateway);

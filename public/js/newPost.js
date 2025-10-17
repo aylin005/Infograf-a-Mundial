@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const confirmDiscard = confirm("[⚠️] A T E N C I Ó N: ¿Seguro que quieres descartar esta publicación? Esta acción no se puede deshacer.");
       if (confirmDiscard) {
         // Aquí puedes limpiar el formulario, redirigir, o cerrar la modal
-        location.href="index.html";
+        location.href="/";
       }
     });
     const form = document.getElementById('addPostForm');

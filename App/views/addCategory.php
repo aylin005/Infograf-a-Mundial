@@ -19,18 +19,18 @@
         <nav id="navBar-container"></nav>
         <div class="row w-100">
             <aside class="col-2 bg-dark border-end noPadding">
-                <a href="adminPosts.html"><p class="asideOptions">Gestión de publicaciones y comentarios</p></a>
+                <a href="/adminPosts"><p class="asideOptions">Gestión de publicaciones y comentarios</p></a>
                 <hr>
-                <a href="addCategory.html"><p class="asideOptions">Crear categorías</p></a>
+                <a href="/addCategory"><p class="asideOptions">Crear categorías</p></a>
                 <hr>
-                <a href="adminMundials.html"><p class="asideOptions">Administrar mundiales</p></a>
+                <a href="/adminMundials"><p class="asideOptions">Administrar mundiales</p></a>
                 <hr>
-                <button onclick="location.href='index.html'" class="exitButton">Salir del modo admin</button>
+                <button onclick="location.href='/'" class="exitButton">Salir del modo admin</button>
             </aside>
             <main class="col-10">
                 <h1 class="pageTitle">Crear categorías</h1>
                 <hr class="whiteGreyText">
-                <form id="addCategoryPost" action="addCategory.html" method="post" accept-charset="UTF-8">
+                <form id="addCategoryPost" action="/addCategory" method="post" accept-charset="UTF-8">
                     <div class="d-flex justify-content-center align-items-center">
                         <input id="typeCategory" name="typeCategory" type="text" class="w-80" placeholder="Añade una nueva categoría aquí">
                         <button type="submit" id="addCatButton" class="addCatButton"><i class="bi bi-plus-square addCatIcon x-largeText aliceblueText"></i></button>

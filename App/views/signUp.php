@@ -22,7 +22,7 @@
             <img id="formOverLogo" src="/media/logo.png" alt="Logo Starmates" class="fadeUp img-fluid">
             <!----------------------------------------------------------------------------------------------->
             <div id="signUpContainer" class= "fadeUp shadow">
-                <form method="post" id="signUpForm" action="index.html" accept-charset="UTF-8" novalidate enctype="multipart/form-data">
+                <form method="post" id="signUpForm" action="/" accept-charset="UTF-8" novalidate enctype="multipart/form-data">
                     <h1 class="formTitle">Registro</h1>
                     <h2 id="importantText">Crea una cuenta para formar parte de la mejor comunidad futbolistica mundial ⚽</h2>
                     <hr>

@@ -60,12 +60,12 @@ function createPreviewPost(pPost)
   `
     <div id="previewPublication" class="previewPublication">
     <div class="d-flex align-items-center">
-        <a href="profile.html"><img id="previewUserPhoto" src="${pPost.userPhoto}" class="userPhoto img-fluid"></a>
-        <a href="profile.html"><p id="previewUsername" class="username">${pPost.user}</p></a>
+    <a href="/profile"><img id="previewUserPhoto" src="${pPost.userPhoto}" class="userPhoto img-fluid"></a>
+    <a href="/profile"><p id="previewUsername" class="username">${pPost.user}</p></a>
         <p id="previewDate" class="username">| ${pPost.date}</p>
     </div>
     <div class="d-flex align-items-center">
-        <a href="postDisplay.html" class="noMargin noPadding"><p id="previewTitle" class="previewTitle">${pPost.title}</p></a>
+    <a href="/postDisplay" class="noMargin noPadding"><p id="previewTitle" class="previewTitle">${pPost.title}</p></a>
         ${pPost.isVideo
           ? `<video id="previewMedia" src="${pPost.media}" class="previewPhoto" muted loop></video>`
           : `<img id="previewMedia" src="${pPost.media}" class="previewPhoto img-fluid">`
@@ -78,7 +78,7 @@ function createPreviewPost(pPost)
             <p id="previewUpvotes" class="cantUpvotes noMargin">${pPost.upvotes}</p>
         </div>
         <div class="d-flex align-items-center">
-            <a href="postDisplay.html"><i id="goToComments" class="bi bi-chat-left-dots messageIcon"></i></a>
+            <a href="/postDisplay"><i id="goToComments" class="bi bi-chat-left-dots messageIcon"></i></a>
             <p id="previewComments" class="cantUpvotes noMargin">${pPost.comments}</p>
         </div>
     </div>
