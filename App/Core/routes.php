@@ -3,7 +3,10 @@ use App\Core\Router;
 require_once __DIR__ . '/helpers.php';
 use App\Core\Database;
 use App\Models\UserModel;
+use App\Models\AdminModel;
 use App\Controllers\UserController;
+use App\Controllers\AdminController;
+use App\Middlewares\AuthMiddleware;
 
 $config = require_once __DIR__ . '\..\config\config.php';
 
@@ -43,6 +46,9 @@ $router->add('/modular/filters', function() use ($renderView) {
 // Backwards-compatible routes for pages previously named .html
 $router->add('/signUp', function() use ($renderView) { $renderView('signUp.php'); });
 $router->add('/login', function(...$args) use ($renderView, $database) {
+    // Limpiar sesión si ya estaba autenticado
+    AuthMiddleware::clearSessionOnLogin();
+    
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $gateway = new UserModel($database);
         $controller = new UserController($gateway);
@@ -51,14 +57,29 @@ $router->add('/login', function(...$args) use ($renderView, $database) {
         $renderView('logIn.php');
     }
 });
-$router->add('/profile', function() use ($renderView) { $renderView('profile.php'); });
+$router->add('/profile', function() use ($renderView) { 
+    AuthMiddleware::requireAuth();
+    $renderView('profile.php'); 
+});
 $router->add('/postDisplay', function() use ($renderView) { $renderView('postDisplay.php'); });
-$router->add('/newPost', function() use ($renderView) { $renderView('newPost.php'); });
+$router->add('/newPost', function() use ($renderView) { 
+    AuthMiddleware::requireAuth();
+    $renderView('newPost.php'); 
+});
 $router->add('/results', function() use ($renderView) { $renderView('results.php'); });
 $router->add('/mundialDisplay', function() use ($renderView) { $renderView('mundialDisplay.php'); });
-$router->add('/adminPosts', function() use ($renderView) { $renderView('adminPosts.php'); });
-$router->add('/adminMundials', function() use ($renderView) { $renderView('adminMundials.php'); });
-$router->add('/addCategory', function() use ($renderView) { $renderView('addCategory.php'); });
+$router->add('/adminPosts', function() use ($renderView) { 
+    AuthMiddleware::requireAdmin();
+    $renderView('adminPosts.php'); 
+});
+$router->add('/adminMundials', function() use ($renderView) { 
+    AuthMiddleware::requireAdmin();
+    $renderView('adminMundials.php'); 
+});
+$router->add('/addCategory', function() use ($renderView) { 
+    AuthMiddleware::requireAdmin();
+    $renderView('addCategory.php'); 
+});
 
 // Rutas de API para controladores
 $router->add('/users', function(string $method, ?string $id = null) use ($database) {
@@ -74,5 +95,29 @@ $router->add('/users/:id', function(string $method, string $id) use ($database) 
     $controller->processRequest($method, $id);
 });
 
+// Ruta de logout
+$router->add('/logout', function() {
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+    session_unset();
+    session_destroy();
+    header('Location: /login');
+    exit();
+});
+
+// Ruta de login para admin
+$router->add('/admin/login', function(...$args) use ($renderView, $database) {
+    AuthMiddleware::clearSessionOnLogin();
+    
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $gateway = new AdminModel($database);
+        $controller = new AdminController($gateway);
+        $controller->login();
+    } else {
+        // Puedes crear una vista adminLogin.php o reutilizar logIn.php
+        $renderView('logIn.php');
+    }
+});
 
 $router->dispatch($_SERVER['REQUEST_URI']);
