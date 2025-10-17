@@ -1,0 +1,204 @@
+:root
+{
+    --almostBlack:rgb(19, 19, 19);
+
+}
+
+body
+{
+  background-color: var(--almostBlack);
+  margin:0%;
+}
+
+.imageBackground
+{
+  background-image: url("media/Untitled.png");
+  background-repeat: no-repeat;
+}
+.bigLogo
+{
+  margin:5%;
+  padding: 2%;
+  max-width: 45%;
+  display:block;
+}
+.alignLeft
+{
+  text-align: left;
+}
+.border
+{
+  border: 4px solid black;
+}
+
+.title
+{
+
+  font-size:300%;
+  margin: 5%;
+}
+.labelName
+{
+  font-size: larger;
+  padding: 1%;
+}
+
+.addPading
+{
+  padding: 10%;
+  padding-top: 5%;
+  padding-bottom: 5%;
+}
+.addMargin
+{
+  margin:10%;
+  margin-top: 5%;
+  margin-bottom: 5%;
+}
+
+.icon
+{
+    margin: 0.5%;
+    width: 1%;
+    height: 1%;
+    cursor:pointer;
+}
+.bigTypo
+{
+  font-size: larger;
+}
+
+form
+{
+  background-color: rgb(46, 46, 46);
+  margin:10%;
+  align-items: center;
+}
+input
+{
+  background-color: rgb(19, 19, 19) !important;
+  border: none !important;
+  border-radius: 0% !important;
+}
+.whiteText
+{
+  color:aliceblue;
+}
+.passContainer
+{
+  display: flex;
+  align-items:center;
+  gap: 2%;
+}
+.eyeIcon
+{
+  width: 7%;
+  height: 7%;
+  margin: 0 auto;
+  cursor:pointer;
+}
+.bigIcon
+{
+  cursor:pointer;
+  align-items: center;
+}
+.displayUserPhoto
+{
+  border-radius:100%;
+  width:45%;
+  display: block;
+  margin: auto;
+  padding:5%;
+}
+.uploadIcon
+{
+  width:20%;
+  cursor: pointer;
+  background-color: rgb(163, 222, 224);
+  padding: 5%;
+  display: block;
+  margin: 0 auto;
+}
+  .syncopate-regular 
+  {
+    font-family: "Syncopate", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+  }
+
+  .syncopate-bold 
+  {
+    font-family: "Syncopate", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+  }
+  .offside-regular {
+  font-family: "Offside", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+@media (max-width: 768px) 
+{
+  .bigLogo
+  {
+    padding: 5%;
+    max-width: 70%;
+    margin: 0 auto;
+  }
+  .eyeIcon
+  {
+    width: 10%;
+    height: 10%;
+  }
+  form
+  {
+    margin:5%
+  }
+
+  .title
+  {
+    font-size: larger;
+  }
+  .labelName
+  {
+    font-size: small;
+  }
+
+  .photoDisplay
+  {
+    margin:5%;
+    padding: 2%;
+    max-width: 75%;
+    display:block;
+  }
+}
+@media (max-width: 1080px) 
+{
+  .eyeIcon
+  {
+    width: 8%;
+    height: 8%;
+  }
+  form
+  {
+    margin:5%
+  }
+
+  .title
+  {
+    font-size: x-large;
+  }
+  .labelName
+  {
+    font-size: medium;
+  }
+
+  .photoDisplay
+  {
+    margin:5%;
+    padding: 2%;
+    max-width: 75%;
+    display:block;
+  }
+}

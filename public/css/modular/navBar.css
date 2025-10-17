@@ -1,0 +1,109 @@
+.navBar 
+{ 
+  background-color: var(--almostBlack) !important;
+  height: 60px !important;
+  width: 100%; 
+  padding: 0% !important;
+  margin: 0% !important; 
+} 
+.normalButton
+{
+  border: none;
+  padding:0.7%;
+}
+
+.navLogo {
+  display: block;
+  width: 125px; 
+  height: 50px;
+  background-image: url('../../../Design/media/logo.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.navPhoto
+{
+  border-radius:100%;
+  width: 50px;
+  margin: 5% 5% !important;
+  cursor: pointer;
+}
+.navIcon
+{
+  font-size: 1.7rem;
+  cursor:pointer;
+  margin: 0% 7% 0% 15%;
+  color: var(--whiteGrey);
+  opacity: 50%;
+  transition: 1s ease-in-out;
+  transition: scale(1);
+}
+.navIcon:hover
+{
+  opacity: 100%;
+  transform: scale(1.1);
+}
+.navSearch
+{ 
+  width: 50% !important;
+  padding: 6px 10px;
+  border-radius: 0% !important;
+}
+
+#itemsContainer
+{
+  gap: 15%;
+}
+
+/* NOTA: R E S P O N S I V E */
+@media (max-width: 768px) 
+{
+    .navBar 
+    {
+      height: auto !important; 
+    }
+
+    .d-none.d-md-block
+    {
+      display: none !important;
+    }
+
+    #searchForm
+    {
+      width: 90% !important;
+      margin: 10px auto !important;
+    }
+
+    .navSearch
+    {
+      width: 100% !important;
+      font-size: x-small !important;
+      padding: 8px 10px;
+    }
+
+    .normalButton 
+    {
+      padding: 4.5px;
+    }
+
+    .navLogo 
+    {
+      width: 40px;
+      height: 40px;
+      margin: 5%;
+      background-image: url('../../../Design/media/miniLogoW.png');
+    }
+    .navPhoto
+    {
+      width: 1.8rem;
+    }
+    #itemsContainer
+    {
+      gap: 0rem;
+    }
+    .navIcon 
+    {
+      padding: 0.3rem;
+      font-size: 1.3rem !important;
+    }
+}

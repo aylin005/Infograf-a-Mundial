@@ -1,0 +1,173 @@
+.mundialLogo
+{
+    width: 150px !important;
+    height: 200px !important;
+    padding: 5%;
+}
+.mundialYear
+{
+    font-family: 'syncopate', Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: lighter !important;
+    font-size: 5rem !important;
+    padding: 2% 2.5% 0% 2.5%;
+    margin-left: 0.5%;
+    text-align: left;
+    color:aliceblue !important;
+}
+.mundialCountrys
+{
+    font-family: 'Syncopate';
+    font-size: 2rem;
+    text-align: left;
+    padding: 0% 2.5%;
+    margin-left: 0.5%;
+    font-weight: lighter !important;
+    font-size: 2rem !important;
+    color:aliceblue !important;
+}
+.mundialSlogan
+{
+    margin-left: 5%;
+    font-family: 'offside';
+    font-size: larger;
+    color: aliceblue;
+}
+.mundialWinner
+{
+    margin: 2%;
+    padding: 2%;
+}
+.textDisplay
+{
+    padding: 1% 3% !important;
+}
+.description
+{
+    width: 100%;
+    padding: 1.5%;
+    font-family: 'Segoe UI',Verdana, Geneva, Tahoma, sans-serif;
+    color:var(--whiteGrey);
+    text-align: justify;
+}
+.infoTitle
+{
+    font-family: 'Syncopate';
+    font-size: 1.5rem;
+    margin:1.5% 5%;
+    color:aliceblue;
+}
+.blockquote
+{
+    font-size: 90% !important;
+    font-family: 'Offside';
+    font-style: italic;
+    line-height: 175%;
+    text-align: justify;
+    padding: 2%;
+}
+.addLeftMargin
+{
+    margin-left: 5%;
+}
+
+.mundialWinnerFlag
+{
+    height: 50px;
+}
+.mundialWinnerName
+{
+    font-family: 'offside';
+    margin: 0% 3%;
+    font-size: larger;
+    color: var(--whiteGrey);
+}
+/* .mediaContainer
+{
+    overflow-x: auto;
+    scrollbar-color: var(--whiteGrey)  var(--almostBlack);
+    scroll-margin: 5%;
+    scrollbar-width: thin;
+    padding-bottom: 1%;
+} */
+.mundialMedia
+{
+    width: 250px;
+    height: 250px;
+    padding: 0% 2%;
+    margin: 5% 0%;
+}
+.mundialPrincipalImage
+{
+    width: 300px !important;
+    height: 350px !important;
+    padding: 3% !important;
+    margin-left: 5% !important;
+}
+.trophyIcon
+{
+    font-size: xx-large;
+    color:var(--whiteGrey);
+    margin-left: 3% !important;
+    margin-top: -2%;
+}
+ul
+{
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    margin: 2%;
+    background-color: #17161faf;
+    padding: 2%;
+    line-height: 175%;
+    color:var(--whiteGrey)
+}
+.mundialDisplay
+{
+    position: relative;
+    padding: 2.5%;
+    margin: 0%;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.692), rgba(19, 19, 19, 0.384));
+    height: auto;
+}
+
+.moveButton
+{
+    display: block;
+    border: none; 
+    height: 35px;
+    width: 70%; 
+    background-color: black;
+    color:var(--whiteGrey);
+    font-family: 'Syncopate', sans-serif;
+    font-weight: bold;
+    margin: 0 auto;
+}
+.beforeButton
+{
+    transition: 1s ease-in-out;
+}
+.beforeButton:hover
+{    
+    transform: scale(1.05);
+    background-color: var(--mundialRed);
+    color:aliceblue;
+}
+.middleButton
+{
+    transition: 1s ease-in-out;
+}
+.middleButton:hover
+{    
+    transform: scale(1.05);
+    background-color: var(--mundialBlue);
+    color:aliceblue;
+}
+.afterButton
+{
+    transition: 1s ease-in-out;
+}
+.afterButton:hover
+{    
+    transform: scale(1.05);
+    background-color: var(--mundialGreen);
+    color:aliceblue;
+}
+

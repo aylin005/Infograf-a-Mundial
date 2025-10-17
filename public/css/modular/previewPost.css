@@ -1,0 +1,53 @@
+.previewPublication
+{
+    margin: 0% 5% !important;
+    background-color: var(--blackWAlpha25);
+    width: 350px !important;
+    padding: 3% !important;
+}
+.userPhoto
+{
+    width: 50px !important;
+    height: 50px !important;
+    padding: 5%;
+    margin: 0%;
+    border-radius: 50%;
+    cursor: pointer;
+}
+.username
+{
+    font-family: 'Offside', sans-serif;
+    margin: 2%;
+    font-size: x-small;
+    color:var(--whiteGrey);
+    cursor: pointer;
+}
+.previewTitle
+{
+    width: 100% !important;
+    padding: 2% !important;
+    margin: 2% !important;
+    font-family: 'offside';
+    font-size: 15px;
+    font-weight: bold;
+    color: var(--whiteGrey);
+    cursor: pointer;
+    transition: 2s ease-in-out;
+}
+.previewTitle:hover
+{
+    color: var(--mundialRed);
+}
+.previewPhoto
+{
+    width: 60px !important;
+    height: 60px !important;
+    padding: 1%;
+    cursor:pointer;
+}
+.iconDisplay
+{
+    margin: 0% 5%;
+    font-family: 'Verdana';
+    font-size: smaller;
+}

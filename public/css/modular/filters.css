@@ -1,0 +1,132 @@
+.modalContainer 
+{
+    background-color: var(--blackWAlpha90);
+    padding: 2rem;
+    width: 600px !important;
+    height: 600px !important;
+    margin: auto;
+    font-family: 'syncopate', sans-serif;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    overflow-y: scroll;
+}
+
+.modalTitle 
+{
+  text-align: center;
+  font-size: 2rem;
+  color:aliceblue;
+}
+
+.sectionTitle 
+{
+  margin-bottom: 0.5rem;
+  display: block;
+  font-size: 1rem !important;
+  color:aliceblue !important;
+}
+
+.input-group 
+{
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.date-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.date-separator {
+  margin: 0 1rem;
+}
+
+.flag-display {
+  width: 40px;
+  height: auto;
+}
+
+.category-list {
+  margin-top: 1rem;
+}
+
+.category-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f3f3f3;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.icon-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.submit-button 
+{
+  display: block;
+  margin: auto;
+  padding: 0.75rem 2rem;
+}
+.dateInput
+{
+    background-color: var(--greyDarker);
+    padding: 5%;
+    border: none;
+    color:var(--whiteGrey);
+    font-size: 0.9rem;
+    font-family: 'Offside', sans-serif;
+}
+.overlay
+{
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    background-color:rgba(22, 22, 22, 0.5);
+}
+.blurBackground
+{
+    display: absolute;
+    filter: blur(3px);
+    transition: filter 2s ease-in-out;
+}
+.previewList
+{
+    margin: 1.5% 0% 1.5% 5%;
+    font-family: 'syncopate', Verdana, Geneva, Tahoma, sans-serif;
+    font-size: large;
+    width: 90% !important;
+    background-color: var(--greyDarker);
+    height: 125px !important;
+    overflow-y: auto;
+    border: var(--blackWAlpha50) 1px solid;
+}
+.showListElement
+{
+    padding:3.5% 2.5%;
+    font-family: 'offside', Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 0.9rem !important;
+    background-color: var(--greyMedium);
+    width: 100%;
+    height: 100%;
+    margin: 0%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    color: var(--whiteGrey);
+    border: 2px solid var(--blackWAlpha75)
+}

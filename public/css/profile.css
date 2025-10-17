@@ -1,0 +1,72 @@
+.profileContainer
+{
+    position: relative;
+}
+
+.profile-header-content 
+{
+    position: relative;
+    top: -5rem; 
+    z-index: 2; 
+}
+
+.displayBackgroundPhoto
+{
+    width: 100%;
+    height: 200px !important;
+    object-fit: cover;
+}
+.displayUserPhoto
+{
+    position: absolute;
+    border-radius:100%;
+    width:220px !important;
+    height: 220px !important;
+    top: 70% !important;
+    left: 25px;
+    z-index: 99 !important;
+    border: 8px solid var(--almostBlack);
+}
+.displayUserName
+{
+    font-weight: lighter;
+    color: aliceblue;
+    font-family: 'Syncopate';
+    font-size: 1.4rem !important;
+}
+.displayUserMail
+{
+    font-weight: lighter;
+    color: var(--whiteGrey);
+    font-size: medium;
+    font-family: 'Offside';
+}
+.displayUserNationality
+{
+    width: 35px;
+}
+.displayUserGender
+{
+    color: aliceblue;
+    font-size: 25px;
+}
+.profile-photo-container 
+{
+    position: relative;
+    width: 210px !important; 
+    height: 210px !important; 
+}
+
+.user-photo 
+{
+    width: 100% !important; 
+    height: 100% !important;
+    padding: 5%;
+    border-radius: 50%;
+    object-fit: cover; 
+}
+.nav-link
+{
+    font-family: 'Syncopate',sans-serif !important;
+    font-size: small !important;
+}

@@ -1,0 +1,210 @@
+.card
+{
+    border: none !important;
+}
+.cardSize
+{
+    width: 400px !important;
+    height: 550px !important;   
+}
+.borderDegraded
+{
+    border-radius: 2% !important;
+}
+.backgroundCard
+{
+    z-index: 0 !important;
+    position:absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 1%;
+}
+.over
+{
+    z-index: 99 !important; 
+}
+
+.cantUpvotes
+{
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    padding: 10% !important;
+    font-size: x-small;
+    color: var(--whiteGrey) !important;
+}
+
+.calificationCard
+{
+    background-color: var(--blackWAlpha75);
+    padding:5% 2%;
+    height: fit-content;
+    margin:0;
+    gap: 10%;
+    z-index: 1 !important;  
+    width: 100%;  
+}
+.userCard
+{
+    padding: 5%;
+    font-size:medium;
+    cursor:pointer; 
+    transition: color 0.5s ease-in-out;
+    z-index: 2 !important;
+    text-shadow: 1px 2px 3px black;
+    font-family: "Offside", sans-serif !important;
+}
+.userCard:hover
+{
+    color:#bac4ff;
+}
+.cardIcon
+{
+    padding: 2.5%;
+    font-size:x-large;
+    cursor:pointer; 
+    transition: 0.5s ease-in-out;
+    z-index: 2 !important;
+    text-shadow: 1px 2px 3px black;
+    color:aliceblue;
+    opacity: 70%;
+    font-family: "Offside", sans-serif !important;
+}
+.cardIcon:hover
+{
+    color:#bac4ff;
+    opacity: 100%;
+}
+.goodVoteIcon
+{
+    color: var(--whiteGrey);
+    transition: 1s ease-in-out;
+    cursor: pointer;
+    font-size: 1.5rem; 
+}
+.goodVoteIcon:hover
+{
+    color:var(--mundialGreen);
+    transform: scale(1.1);   
+}
+.badVoteIcon
+{
+    color:var(--whiteGrey);
+    transition: 1s ease-in-out;
+    font-size: 1.5rem; 
+    cursor: pointer;
+}
+.badVoteIcon:hover
+{
+    color: var(--mundialRed);
+    transform: scale(1.1);   
+}
+.messageIcon
+{
+    color: var(--whiteGrey);
+    transition: 1s ease-in-out;
+    font-size: 1.25rem; 
+    cursor: pointer;
+}
+.messageIcon:hover
+{
+    color:var(--mundialBlue);
+    transform: scale(1.1) !important;   
+}
+.cardTitle
+{
+    margin-top: 83% !important;
+    text-decoration: none !important;
+    color:var(--whiteGrey) !important;
+    padding: 1.5%;
+    height: 60px;
+    opacity: 50%;
+    transition: opacity 0.5s ease-in-out;
+    text-shadow: 1px 2px 3px black;
+    font-family: 'Syncopate', sans-serif;
+    font-weight: bold;
+}
+.cardTitle:hover
+{
+    opacity: 100%;
+}
+.ticketsCard
+{
+    border: none;
+    font-family: 'Syncopate';
+    font-size: small;
+    margin: -1.5% 3%;
+    padding: 1.5%;
+    background-color: var(--blackWAlpha50);
+    transition: background-color 0.5s ease-in-out;
+}
+.ticketsCard:hover
+{
+    background-color: var(--mundialBlue);
+}
+.tagContainer
+{
+    overflow-x:auto;
+    margin-top: 3%;
+    height: 100%;
+    background-color: black;
+}
+.tags
+{
+    align-items: center !important;
+    padding: 1.5%;
+    margin:0% 1.5%;
+    height: 25px;
+    background-color: black;
+    border: none;
+    font-family: 'Verdana' sans-serif;
+    font-size: x-small;
+    transition: background-color 0.5s ease-in-out;
+}
+.tags:hover
+{
+    background-color: var(--mundialGreen);
+}
+.adjustIcon
+{
+    font-size: 2.5rem;
+    margin-right: 1.5%;
+}
+.notifyText
+{
+    font-family: 'offside', Verdana, Geneva, Tahoma, sans-serif;
+    font-size: small;
+    margin: 0%;
+    width: 100%;
+}
+.reviewButton
+{
+    font-family: 'Syncopate', sans-serif !important;
+    font-size: smaller !important;
+    border: 2px solid var(--mundialRed);
+    color: var(--mundialRed);
+    background-color: var(--transparent);
+    transition: 1s ease-in-out;
+}
+.reviewButton:hover
+{
+    background-color: var(--mundialRed);
+    color:aliceblue;
+}
+@media (max-width: 576px) 
+{
+    h1{font-size: large !important;}
+    .pageTitle{font-size: medium !important;} 
+    .cardSize{ width: 350px !important; height: 490px !important; }
+    .userCard{font-size:small !important};
+    .ticketsCard{font-size: x-small !important;}
+
+}
+
+/* Tablets */
+@media (min-width: 577px) and (max-width: 768px) 
+{
+}
+
+/* Monitores grandes */
+@media (min-width: 1201px) 
+{
+}

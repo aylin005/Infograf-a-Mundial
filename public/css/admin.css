@@ -1,0 +1,380 @@
+:root
+{
+    --blackWAlpha25:rgba(0, 0, 0, 0.25);
+    --blackWAlpha50:rgba(0, 0, 0, 0.5);
+    --mundialBlue:#2f4bed;
+    --mundialRed:#d2270c;
+    --mundialGreen: #78ca32;
+}
+h1
+{
+    font-family: 'Syncopate', Verdana, Geneva, Tahoma, sans-serif;
+    font-size:3.3rem !important;
+    font-weight:bold !important;
+    margin: 0% 0%;
+    padding: 2.5%;
+    height: 150px;
+}
+h2
+{
+    font-family: 'Syncopate', Verdana, Geneva, Tahoma, sans-serif;
+    font-size:1.5rem !important;
+    margin: 5%;
+    margin-top: 2.5% !important;
+}
+#addedCountry
+{
+    margin-bottom: 1%;
+}
+.asideOptions
+{
+    margin: 15% auto;
+    height: auto;
+    padding: 5%;
+    font-size: small;
+    color: aliceblue;
+    font-family: 'syncopate';
+    text-align: center;
+    transition: 1s ease-in-out;
+    opacity: 50%;
+}
+.asideOptions:hover
+{
+    opacity:100%;
+    transform: scale(1.1);
+}
+.exitButton
+{
+    display:block;
+    margin: 0 auto;
+    border: none;
+    background-color: var(--blackWAlpha25);
+    padding: 5%;
+    color:aliceblue;
+    font-family:'syncopate';
+    font-size:x-small;
+    transition: 1s ease-in-out;
+}
+.exitButton:hover
+{
+    background-color: var(--blackWAlpha50);
+    transform: scale(1.1);
+}
+.timeline
+{
+    position: relative;
+    padding: 2% 3%;
+    height: 100%;
+    overflow-x: auto;
+    scrollbar-color: #ffffff71  #00000048;
+    scroll-margin: 5%;
+    scrollbar-width: thin;
+}
+.timelineLine
+{
+    position:absolute;
+    top: 50%;
+    left:0%;
+    margin: 0%;
+    color: aliceblue;
+    border: 3px solid aliceblue;
+    width: 100%;
+    transform: translateY(-50%);
+}
+.buttonContainer
+{
+    position: absolute;
+    top:50%;
+    left: 0 !important;
+    transform: translateY(-50%);
+    width: 100%;
+    gap: 1%;
+}
+.timelineButton
+{
+    width: 100% !important;
+    font-family: 'syncopate', Verdana, Geneva, Tahoma, sans-serif;
+    font-size: large;
+    font-weight: bold;
+    border: none;
+    background-color: rgb(3, 3, 3);
+    color:antiquewhite;
+    padding:0.5%;
+    transition: 1s ease-in-out;
+}
+.timelineButton:hover
+{
+    transform: scale(1.001);
+    background-color: var(--mundialBlue);
+}
+.arrow
+{
+    cursor: pointer;
+    transition: 0.5s ease-in-out;
+    opacity: 50%;
+    color: var(--whiteGrey);
+    font-size: 1.5rem;
+}
+.arrow:hover
+{
+    transform: scale(1.2);
+    opacity: 100%;
+}
+.addIcon
+{
+    width: 50px;
+    height: 50px;
+    cursor:pointer;
+    transition: 1s ease-in-out;
+    margin: 0%;
+    opacity: 50%;
+    color: var(--whiteGrey);
+}
+.addIcon:hover
+{
+    transform: scale(1.1);
+    opacity: 100%;
+}
+.addButton
+{
+    background-color:transparent !important;
+    height: max-content !important;
+    display: flex !important;
+    align-items: center !important;
+    border: none;
+}
+.centerImage
+{
+    text-align: center !important;
+}
+.instruction
+{
+    font-size: 0.8rem;
+    font-family: 'syncopate';
+    opacity: 50%;
+    padding: 5%;
+    margin: 0%;
+    color: var(--whiteGrey);
+    text-align: center;
+}
+.formLogo
+{
+    width: 100%;
+    height: 100%;
+    padding: 5%;
+}
+.selectYear
+{
+    width: 75% !important;
+    font-family: 'syncopate', Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 1.5rem;
+    padding: 2.6% 4.5%;
+    margin-left: 15%;
+    background-color: var(--blackWAlpha50) !important;
+}
+.selectCountry
+{
+    width: 100% !important;
+    font-family: 'syncopate', Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 1.2rem;
+    padding: 1.8% 2.5%;
+    margin-left: -1%;
+    background-color: var(--blackWAlpha50) !important;
+    color: aliceblue;
+    border:none;
+}
+.selectOpt
+{
+    font-size: 0.7rem;
+    background-color: black !important;
+    color: var(--whiteGrey)
+}
+.sloganInput
+{
+    border: var(--blackWAlpha50) 1px solid !important;
+    padding:1% 3% !important;
+    margin: 1.5% 5%;
+    width: 90% !important;
+    background: transparent !important;
+    font-family: 'offside', Verdana, Geneva, Tahoma, sans-serif !important;
+    font-size: medium !important;
+}
+.deleteIcon
+{
+    margin: 0.4%;
+    color: var(--whiteGrey) !important;
+    font-size: x-large;
+}
+.description
+{
+    width: 100%;
+    padding: 1.5%;
+    height: 500px;
+    overflow-y: auto;
+    color:var(--whiteGrey);
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif, Courier, monospace !important;
+    background-color: var(--blackWAlpha50);
+    border:none;
+}
+.relativeContainer
+{
+    position: relative;
+}
+.quitIcon
+{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    opacity: 0.5;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    z-index: 10;
+    transition: opacity 0.2s ease;
+    color:var(--whiteGrey);
+}
+
+.quitIcon:hover 
+{
+  opacity: 1;
+}
+.previewInfoImage
+{
+  position: relative;
+  width: 300px; /* o lo que necesites */
+  height: auto;
+  margin:1.5%
+}
+.helperContainer
+{
+    padding: 3.5% 0% 0% 1.5%;
+}
+/* NOTA: Revisar */
+.btn
+{
+  transition: 2s ease-in-out !important;
+  padding: 2.5% 5% !important;
+  cursor:pointer;
+  font-size: large;
+  background-color: var(--mundialGreen) !important;
+  border: none !important;
+  opacity: 70%;
+  color: var(--almostBlack) !important;
+}
+.btn:hover
+{
+  transform: scale(1.1);
+  background-color: var(--greyDarker);
+  opacity: 100%;
+}
+.uploadPhotoBtn
+{
+    background-color: var(--blackWAlpha25);
+    width: 120px;
+    height: 55px;
+    padding: 10%;
+    display: block;
+    margin: 0 auto;
+    cursor: pointer;
+    transition: 1s ease-in-out;
+}
+.uploadPhotoBtn:hover
+{
+    background-color: var(--blackWAlpha50);
+}
+.pageTitle
+{
+    font-size: xx-large !important;
+    color: var(--whiteGrey);
+    margin: 0% !important;
+    height: fit-content;
+}
+.addCatButton
+{
+    border:none;
+    background-color: var(--greyMedium);
+    padding: 0.1% 0.75%;
+    transition: 2s ease-in-out;
+}
+.addCatButton:hover
+{
+    background-color: var(--blackWAlpha25);
+}
+.categoryDisplay
+{
+    background-color: var(--greyDarker) !important;
+    width: 75%;
+    display: block;
+    margin: auto;
+    margin-top: 2%;
+    color:var(--whiteGrey);
+    font-family: 'offside', sans-serif;
+}
+.tagTitle
+{
+    padding-top: 2%;
+}
+.tagButton
+{
+    font-size: x-large;
+    margin: 5% 10%;
+    cursor:pointer;
+    color: var(--whiteGrey);
+    transition: 1.5s ease-in-out;
+}
+.tagButton:hover
+{
+    color:var(--mundialBlue);
+}
+.deleteButton:hover
+{
+    color: var(--mundialRed);
+}
+.form-check-input 
+{
+  background-color: grey !important; /* color base */
+  border-radius: 15% !important;
+  margin-right: 1.5%;
+  border: none;
+  margin-top: 0 !important;
+}
+
+.form-check-input:checked 
+{
+  background-color: var(--whiteGrey); /* color cuando está activado */
+}
+
+.scaleIcon
+{   
+    width: 0%;
+    height: 0%;
+    font-size: 2.5rem !important;
+    padding: 0% !important;
+}
+.addTooltip
+{
+    width: 100%;
+    padding: 1.25% 3%;
+    font-size: medium !important;
+}
+.addTop5x
+{
+    margin-top: 5px;
+}
+.adjustCard
+{
+    width: 85%;
+    margin: 5%;
+}
+
+/* NOTA: revisar, pegado de logIn.css */
+input
+{
+    background-color: var(--blackWAlpha50) !important;
+    color:var(--whiteGrey) !important;
+    border: none !important;
+    border-radius: 0% !important;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif, Courier, monospace !important;
+    font-size: large !important;
+    padding: 0.5%
+}

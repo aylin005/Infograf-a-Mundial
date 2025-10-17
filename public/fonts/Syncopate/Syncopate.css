@@ -1,0 +1,13 @@
+@font-face {
+  font-family: 'Syncopate';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../Syncopate/Syncopate-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Syncopate';
+  font-style: normal;
+  font-weight: 700;
+  src: url('../Syncopate/Syncopate-Bold.ttf') format('truetype');
+}

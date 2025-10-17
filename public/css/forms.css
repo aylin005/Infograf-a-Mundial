@@ -1,0 +1,225 @@
+body
+{
+  background-image: url("../../Design/media/background.png");
+  background-repeat: repeat;
+  background-size: cover !important;
+}
+
+label
+{
+  font-family: 'Syncopate', Segoe UI, Tahoma, Geneva, Verdana, sans-serif !important;
+  margin: 5% 4.5% !important;
+  font-size: medium;
+  color: var(--greyWhite) !important;
+  cursor: pointer;
+}
+
+#postTitle
+{
+  width: 100%;
+  background-color: var(--almostBlack);
+  padding: 1%;
+  font-family: 'Syncopate', Arial, Helvetica, sans-serif;
+  font-size: 1.1rem;
+}
+
+#importantText
+{
+  font-family: "Offside", sans-serif !important;
+  font-size:larger !important;
+  text-align: center;
+  margin-top: 1%;
+  color: var(--whiteGrey);
+}
+
+.formTitle
+{
+  font-family: 'Syncopate', sans-serif;
+  font-size:xx-large !important;
+  font-weight: bold !important;
+  padding:0.1%;
+  margin: 0%;
+  text-align: center;
+  color:aliceblue;
+}
+.formCamps
+{
+  padding: 0% 10%;
+}
+.passContainer
+{
+  display: flex;
+  align-items:center;
+  gap: 2%;
+}
+
+/* --------------------------- I M A G E N E S -------------------------- */
+#formLogo
+{
+  height: 250px;
+  width: 400px;
+  padding: 5%;
+}
+#formOverLogo
+{
+  position: absolute;
+  width: 25%;
+  top: -1%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 99;
+}
+#userPhoto
+{
+  border-radius:100%;
+  width: 120px !important;
+  height: 120px !important;
+  display: block;
+  margin: auto;
+}
+
+#formContainer
+{
+  background-color: var(--greyDarker); 
+  padding: 5% 5% 1.25% 5%;
+  color:aliceblue;
+  width: 550px;
+  margin-top: -7%;
+}
+#signUpContainer
+{
+  background-color: var(--greyDarker); 
+  padding: 5% 5% 1.25% 5%;
+  color:aliceblue;
+  display: absolute !important;
+  width: 70% !important;
+  margin: 8% 15% 5% 15% !important;
+}
+#newPostContainer
+{
+  display:block;
+  margin:auto;
+  background-color: var(--greyDarker); 
+  padding:4%;
+  color:aliceblue;
+  width:90%;
+}
+
+
+.genderSelectBtn
+{
+  margin:5%;
+  padding: 0%;
+  border:0;
+  font-size: xx-large;
+  background-color:var(--almostBlack);
+  transition: 1s ease-in-out;
+  opacity:25%;
+}
+.genderSelectBtn:hover
+{
+  transform: scale(1.1);
+  opacity:100% ;
+}
+.genderSelectBtn:active, .genderSelectBtn:focus, .selectedGender
+{
+  transform: scale(1.2);
+  opacity: 100%;
+}
+
+.previewList
+{
+    margin: 1.5% 0% 1.5% 5%;
+    font-family: 'syncopate', Verdana, Geneva, Tahoma, sans-serif;
+    font-size: large;
+    width: 90% !important;
+    background-color: var(--blackWAlpha25);
+    height: 125px !important;
+    overflow-y: auto;
+    border: var(--blackWAlpha50) 1px solid;
+}
+.showListElement
+{
+    padding:1.5% 2.5%;
+    font-family: 'offside', Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 0.9rem !important;
+    background-color: var(--greyMedium);
+    width: 100%;
+    height: 100%;
+    margin: 0%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    color: var(--whiteGrey);
+    border: 2px solid var(--blackWAlpha75)
+}
+p
+{
+  padding: 1.5% 0%;
+}
+.selectYear
+{
+    width: 75% !important;
+    font-family: 'syncopate', Verdana, Geneva, Tahoma, sans-serif !important;
+    font-size: 1.5rem;
+    padding: 2.6% 4.5%;
+    margin-left: 15%;
+    background-color: var(--blackWAlpha50) !important;
+}
+
+
+
+
+/* --------------------------- I C O N O S -------------------------- */
+.eyeIcon
+{
+  font-size: x-large;
+  margin: 0 auto;
+  cursor:pointer;
+  transition: 0.5s ease-in-out;
+}
+.eyeIcon:hover
+{
+  color: var(--mundialRed);
+}
+.addCatIcon
+{
+    font-size: x-large !important;
+    background-color: var(--transparent);
+    border-color: var(--greyMedium);
+    color: var(--whiteGrey);
+    transition: 2s ease-in-out;
+}
+.addCatIcon:hover
+{
+    color: aliceblue;
+}
+
+/* ----------------------- R E S P O N S I V E -------------------------- */
+@media (max-width: 576px) 
+{
+  #formLogo{width: 60%; height: auto !important;}
+  .formTitle{font-size: x-large !important;}
+  #importantText{font-size: small !important;}
+  label{font-size: x-small !important;}
+  #formContainer{display:block; margin:auto;}
+  .principalLogo{ height: fit-content; width: 70%; padding: 5%; display: block !important; margin: auto !important;}
+  .allHeight{min-height: auto !important;}
+  #formOverLogo{width: 45%;}
+  #signUpContainer{margin-top: 20% !important; padding-top: 7%;}
+  h2{font-size: smaller !important;}
+  .genderSelectBtn{font-size: larger;}
+}
+
+/* Tablets */
+@media (min-width: 577px) and (max-width: 1024px) 
+{
+  .formTitle{font-size: x-large !important;}
+  label{font-size: 0.7rem;}
+  .genderSelectBtn{font-size: 1.5rem;}
+}
+
+/* Monitores grandes */
+@media (min-width: 1201px) 
+{
+  .formTitle{font-size: xx-large !important;} 
+}
