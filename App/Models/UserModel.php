@@ -31,16 +31,17 @@ class UserModel
 
     public function insert (array $data, $id = null ): array //id accepts null
     {
-        // Hashear la contraseña con SHA-256 si viene en texto plano (no 64 caracteres hex)
-        if (isset($data["hash_password"]) && !empty($data["hash_password"])) {
-            // Si no es un hash SHA-256 válido (64 hex)
+        // Hashear la contraseña solo si se envía y no está vacía
+        if (isset($data["hash_password"]) && $data["hash_password"] !== null && $data["hash_password"] !== '') {
             if (!preg_match('/^[a-f0-9]{64}$/i', $data["hash_password"])) {
                 $data["hash_password"] = hash('sha256', $data["hash_password"]);
             }
+        } else {
+            $data["hash_password"] = null;
         }
 
-        // Validar género: solo permitir "Masculino", "Femenino" u "Otro"
-        if (isset($data["gender"]) && !empty($data["gender"])) {
+        // Validar género solo si se envía
+        if (array_key_exists("gender", $data) && $data["gender"] !== null && $data["gender"] !== '') {
             $validGenders = ["Masculino", "Femenino", "Otro"];
             if (!in_array($data["gender"], $validGenders)) {
                 return [
