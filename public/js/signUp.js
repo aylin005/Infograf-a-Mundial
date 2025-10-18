@@ -31,6 +31,11 @@ document.addEventListener("DOMContentLoaded", function()
     const dateBirthday = document.getElementById("birthday");
     const errorMsg3 = document.getElementById("birthday-Check");
 
+    const countrySelect = document.getElementById("countrySelect");
+    const nationalitySelect = document.getElementById("nationalitySelect");
+    const miniFlag = document.getElementById("miniFlag");
+    const natFlag = document.getElementById("natFlag");
+
     //NOTA: Esta es la imagen default que se le asigna a todos los usuarios antes de que decida modificarla
     // no sé si se maneja así, pero igual ahí te dejo la variableee
     const defaultBgImage= "/media/pruebas/logo_fifa_2026_0.png"; 
@@ -40,6 +45,10 @@ document.addEventListener("DOMContentLoaded", function()
     let isPasswordCorrect = false;
     let isBirthdayCorrect = false;
     let checkBirthday;
+    let countriesData = [];
+    /////////////////////////////////////////////////////////////////////////////////////////
+    // Cargar países desde la API
+    loadCountries();
     /////////////////////////////////////////////////////////////////////////////////////////
     //NOTA: Por default se selecciona el masculino
     const defaultBtn = document.getElementById("gender1");
@@ -221,5 +230,61 @@ function convertImageToBase64(file) {
         reader.onload = () => resolve(reader.result);
         reader.onerror = reject;
         reader.readAsDataURL(file);
+    });
+}
+
+/**
+ * Carga los países desde la API y llena los selectores
+ */
+async function loadCountries() {
+    try {
+        const response = await fetch('https://countriesnow.space/api/v0.1/countries/info?returns=currency,flag,unicodeFlag,dialCode');
+        const data = await response.json();
+        
+        if (data.error === false && data.data) {
+            countriesData = data.data;
+            populateCountrySelect(countrySelect, miniFlag);
+            populateCountrySelect(nationalitySelect, natFlag);
+        } else {
+            console.error('Error al cargar países:', data);
+            countrySelect.innerHTML = '<option value="">Error al cargar países</option>';
+            nationalitySelect.innerHTML = '<option value="">Error al cargar países</option>';
+        }
+    } catch (error) {
+        console.error('Error al cargar países:', error);
+        countrySelect.innerHTML = '<option value="">Error al cargar países</option>';
+        nationalitySelect.innerHTML = '<option value="">Error al cargar países</option>';
+    }
+}
+
+/**
+ * Llena un selector con los países y actualiza la bandera al cambiar
+ */
+function populateCountrySelect(selectElement, flagElement) {
+    selectElement.innerHTML = '<option value="">Seleccione un país</option>';
+    
+    // Ocultar bandera por defecto
+    flagElement.style.display = 'none';
+    flagElement.src = '';
+    
+    countriesData.forEach(country => {
+        const option = document.createElement('option');
+        option.value = country.name;
+        option.textContent = country.name;
+        option.dataset.flag = country.flag || '';
+        selectElement.appendChild(option);
+    });
+    
+    // Listener para actualizar la bandera cuando cambia la selección
+    selectElement.addEventListener('change', function() {
+        const selectedOption = this.options[this.selectedIndex];
+        const flagUrl = selectedOption.dataset.flag;
+        if (flagUrl && flagUrl !== '') {
+            flagElement.src = flagUrl;
+            flagElement.style.display = 'block';
+        } else {
+            flagElement.src = '';
+            flagElement.style.display = 'none';
+        }
     });
 }

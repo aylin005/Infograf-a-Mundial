@@ -245,9 +245,7 @@
                                             <div class="d-flex">
                                                 <img id="miniFlag" class="miniFlag">
                                                 <select id="countrySelect" class="form-control w-100" data-bs-theme="dark" autocomplete="off" required>
-                                                    <option id="flag-Can" name="flag-Can" data-image="/media/Flags/Canada-Emoji.png" class="selectOpt">Canadá</option>
-                                                    <option id="flag-Mex" name="flag-Mex" data-image="/media/Flags/Mexico-Emoji.png" class="selectOpt">México</option>
-                                                    <option id="flag-EU" name="flag-EU" data-image="/media/Flags/US-Emoji.png" class="selectOpt">Estados Unidos</option>
+                                                    <option value="">Cargando países...</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -259,9 +257,7 @@
                                             <div class="d-flex">
                                                 <img id="natFlag" class="miniFlag">
                                                 <select id="nationalitySelect" class="form-control w-100" aria-describedby="inputGroupPrepend" data-bs-theme="dark" autocomplete="off" required>
-                                                    <option id="flag-Can" name="flag-Can" data-image="/media/Flags/Canada-Emoji.png" class="selectOpt">Canadá</option>
-                                                    <option id="flag-Mex" name="flag-Mex" data-image="/media/Flags/Mexico-Emoji.png" class="selectOpt">México</option>
-                                                    <option id="flag-EU" name="flag-EU" data-image="/media/Flags/US-Emoji.png" class="selectOpt">Estados Unidos</option>
+                                                    <option value="">Cargando países...</option>
                                                 </select>
                                             </div>
                                             <div class="invalid-feedback"></div>

@@ -1,7 +1,11 @@
 document.addEventListener("DOMContentLoaded", function() {
     let userData = null;
+    let countriesData = [];
     try { userData = JSON.parse(sessionStorage.getItem('user')); } catch (e) {}
     if (!userData) { window.location.href = '/login'; return; }
+
+    // Cargar países antes de mostrar perfil
+    loadCountries();
 
     // Mostrar datos en la vista de perfil
     if (window.profileBackground && userData.background) profileBackground.src = userData.background;
@@ -20,18 +24,7 @@ document.addEventListener("DOMContentLoaded", function() {
     if (document.getElementById('mail')) document.getElementById('mail').value = userData.email || '';
     if (document.getElementById('name')) document.getElementById('name').value = userData.full_name || '';
     if (document.getElementById('gender')) document.getElementById('gender').value = userData.gender || '';
-    if (document.getElementById('countrySelect') && userData.birth_place) {
-        let sel = document.getElementById('countrySelect');
-        for (let i = 0; i < sel.options.length; i++) {
-            if (sel.options[i].text === userData.birth_place) sel.selectedIndex = i;
-        }
-    }
-    if (document.getElementById('nationalitySelect') && userData.nationality) {
-        let sel = document.getElementById('nationalitySelect');
-        for (let i = 0; i < sel.options.length; i++) {
-            if (sel.options[i].text === userData.nationality) sel.selectedIndex = i;
-        }
-    }
+
     // Imagen de fondo y foto de perfil (edición)
     if (document.getElementById('backgroundPhoto') && userData.background) {
         document.getElementById('backgroundPhoto').src = userData.background;
@@ -49,6 +42,67 @@ document.addEventListener("DOMContentLoaded", function() {
                 fileLabel.textContent = `${fileName}`;
             } else {
                 fileLabel.textContent = "Subir foto de fondo";
+            }
+        });
+    }
+
+    // Función para cargar países desde la API
+    async function loadCountries() {
+        try {
+            const response = await fetch('https://countriesnow.space/api/v0.1/countries/info?returns=currency,flag,unicodeFlag,dialCode');
+            const data = await response.json();
+            
+            if (data.error === false && data.data) {
+                countriesData = data.data;
+                const countrySelect = document.getElementById('countrySelect');
+                const nationalitySelect = document.getElementById('nationalitySelect');
+                const miniFlag = document.getElementById('miniFlag');
+                const natFlag = document.getElementById('natFlag');
+                
+                if (countrySelect) populateCountrySelect(countrySelect, miniFlag, userData.birth_place);
+                if (nationalitySelect) populateCountrySelect(nationalitySelect, natFlag, userData.nationality);
+            }
+        } catch (error) {
+            console.error('Error al cargar países:', error);
+        }
+    }
+
+    // Función para llenar los selectores con países
+    function populateCountrySelect(selectElement, flagElement, selectedCountry) {
+        selectElement.innerHTML = '<option value="">Seleccione un país</option>';
+        
+        // Ocultar bandera por defecto
+        flagElement.style.display = 'none';
+        flagElement.src = '';
+        
+        countriesData.forEach(country => {
+            const option = document.createElement('option');
+            option.value = country.name;
+            option.textContent = country.name;
+            option.dataset.flag = country.flag || '';
+            if (country.name === selectedCountry) option.selected = true;
+            selectElement.appendChild(option);
+        });
+        
+        // Mostrar bandera del país seleccionado
+        if (selectedCountry) {
+            const selectedOption = Array.from(selectElement.options).find(opt => opt.value === selectedCountry);
+            if (selectedOption && selectedOption.dataset.flag) {
+                flagElement.src = selectedOption.dataset.flag;
+                flagElement.style.display = 'block';
+            }
+        }
+        
+        // Listener para actualizar la bandera cuando cambia la selección
+        selectElement.addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const flagUrl = selectedOption.dataset.flag;
+            if (flagUrl && flagUrl !== '') {
+                flagElement.src = flagUrl;
+                flagElement.style.display = 'block';
+            } else {
+                flagElement.src = '';
+                flagElement.style.display = 'none';
             }
         });
     }
