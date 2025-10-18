@@ -8,8 +8,18 @@ document.addEventListener("DOMContentLoaded", function() {
     loadCountries();
 
     // Mostrar datos en la vista de perfil
-    if (window.profileBackground && userData.background) profileBackground.src = userData.background;
-    if (window.profilePhoto && userData.image) profilePhoto.src = userData.image;
+    if (window.profileBackground && userData.background) {
+        // Verificar si es una URL válida o base64
+        if (userData.background.startsWith('data:') || userData.background.startsWith('http')) {
+            profileBackground.src = userData.background;
+        }
+    }
+    if (window.profilePhoto && userData.image) {
+        // Verificar si es una URL válida o base64
+        if (userData.image.startsWith('data:') || userData.image.startsWith('http')) {
+            profilePhoto.src = userData.image;
+        }
+    }
     if (window.profileName && userData.username) profileName.textContent = '@' + userData.username;
     if (window.profileMail && userData.email) profileMail.textContent = userData.email;
 
@@ -24,13 +34,55 @@ document.addEventListener("DOMContentLoaded", function() {
     if (document.getElementById('mail')) document.getElementById('mail').value = userData.email || '';
     if (document.getElementById('name')) document.getElementById('name').value = userData.full_name || '';
     if (document.getElementById('gender')) document.getElementById('gender').value = userData.gender || '';
+    
+    // Mostrar fecha de nacimiento (readonly)
+    if (document.getElementById('birthday') && userData.birth_date) {
+        document.getElementById('birthday').value = userData.birth_date;
+    }
+    
+    // Seleccionar el género correcto según el usuario
+    const genderButtons = document.querySelectorAll('.genderSelectBtn');
+    const genderDisplay = document.getElementById('genderDisplay');
+    const genderInput = document.getElementById('gender');
+    const genderLabels = { gender1: "Masculino", gender2: "Femenino", gender3: "Otro" };
+    
+    if (genderButtons.length > 0 && userData.gender) {
+        // Determinar qué botón debe estar seleccionado
+        let selectedButton = null;
+        if (userData.gender === 'Masculino') selectedButton = document.getElementById('gender1');
+        else if (userData.gender === 'Femenino') selectedButton = document.getElementById('gender2');
+        else if (userData.gender === 'Otro') selectedButton = document.getElementById('gender3');
+        
+        // Limpiar selecciones previas y seleccionar el correcto
+        genderButtons.forEach(btn => btn.classList.remove('selectedGender'));
+        if (selectedButton) {
+            selectedButton.classList.add('selectedGender');
+            if (genderDisplay) genderDisplay.textContent = userData.gender;
+            if (genderInput) genderInput.value = userData.gender;
+        }
+        
+        // Agregar listeners para cambio de género
+        genderButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                genderButtons.forEach(b => b.classList.remove('selectedGender'));
+                btn.classList.add('selectedGender');
+                const gender = genderLabels[btn.id];
+                if (genderDisplay) genderDisplay.textContent = gender;
+                if (genderInput) genderInput.value = gender;
+            });
+        });
+    }
 
     // Imagen de fondo y foto de perfil (edición)
     if (document.getElementById('backgroundPhoto') && userData.background) {
-        document.getElementById('backgroundPhoto').src = userData.background;
+        if (userData.background.startsWith('data:') || userData.background.startsWith('http')) {
+            document.getElementById('backgroundPhoto').src = userData.background;
+        }
     }
     if (document.getElementById('userPhoto') && userData.image) {
-        document.getElementById('userPhoto').src = userData.image;
+        if (userData.image.startsWith('data:') || userData.image.startsWith('http')) {
+            document.getElementById('userPhoto').src = userData.image;
+        }
     }
     // Manejo de input de imagen de fondo
     const fileInput = document.getElementById("backgroundPhoto");
@@ -113,7 +165,12 @@ document.addEventListener("DOMContentLoaded", function() {
         form.addEventListener('submit', async function(event) {
             event.preventDefault();
             let feedback = document.getElementById('custom-alert-message');
-            if (feedback) feedback.textContent = '';
+            if (feedback) {
+                feedback.textContent = '';
+                feedback.style.display = 'block';
+                feedback.style.visibility = 'visible';
+                feedback.style.opacity = '1';
+            }
 
             // Recolectar datos, enviar null si vacío
             const id = userData.id;
@@ -133,7 +190,14 @@ document.addEventListener("DOMContentLoaded", function() {
             let hash_password = null;
             if (password && passwordConf) {
                 if (password !== passwordConf) {
-                    if (feedback) feedback.textContent = '❌ Las contraseñas no coinciden.';
+                    if (feedback) {
+                        feedback.textContent = '❌ Las contraseñas no coinciden.';
+                        feedback.classList.remove('text-success');
+                        feedback.classList.add('text-danger');
+                        feedback.style.display = 'block';
+                        feedback.style.visibility = 'visible';
+                        feedback.style.opacity = '1';
+                    }
                     return;
                 }
                 // Validar requisitos aquí si quieres (longitud, etc)
@@ -163,15 +227,41 @@ document.addEventListener("DOMContentLoaded", function() {
                 });
                 const result = await res.json();
                 if (result.exito) {
-                    if (feedback) feedback.textContent = '✅ Cambios guardados correctamente.';
+                    if (feedback) {
+                        feedback.textContent = '✅ Cambios guardados correctamente.';
+                        feedback.classList.remove('text-danger');
+                        feedback.classList.add('text-success');
+                        feedback.style.display = 'block';
+                        feedback.style.visibility = 'visible';
+                        feedback.style.opacity = '1';
+                    }
                     // Actualizar sessionStorage
                     Object.assign(userData, payload);
                     sessionStorage.setItem('user', JSON.stringify(userData));
+                    
+                    // Recargar la página después de 1.5 segundos
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
                 } else {
-                    if (feedback) feedback.textContent = '❌ Error: ' + (result.mensaje || 'No se pudo guardar.');
+                    if (feedback) {
+                        feedback.textContent = '❌ Error: ' + (result.mensaje || 'No se pudo guardar.');
+                        feedback.classList.remove('text-success');
+                        feedback.classList.add('text-danger');
+                        feedback.style.display = 'block';
+                        feedback.style.visibility = 'visible';
+                        feedback.style.opacity = '1';
+                    }
                 }
             } catch (err) {
-                if (feedback) feedback.textContent = '❌ Error de conexión.';
+                if (feedback) {
+                    feedback.textContent = '❌ Error de conexión.';
+                    feedback.classList.remove('text-success');
+                    feedback.classList.add('text-danger');
+                    feedback.style.display = 'block';
+                    feedback.style.visibility = 'visible';
+                    feedback.style.opacity = '1';
+                }
             }
         });
     }

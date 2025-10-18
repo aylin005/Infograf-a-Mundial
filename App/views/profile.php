@@ -183,9 +183,8 @@
                                         <!--NOMBRE DE USUARIO-->
                                         <div class="formCamps">
                                             <label for="username">Nombre de usuario</label>
-                                            <div class="has-validation">
-                                                <input id="username" name="username" type="text" class="form-control  w-100"  aria-describedby="inputGroupPrepend" data-bs-theme="dark" autocomplete="off" required>
-                                                <div id="user-Check" class="invalid-feedback"></div>
+                                            <div>
+                                                <input id="username" name="username" type="text" class="form-control  w-100"  aria-describedby="inputGroupPrepend" data-bs-theme="dark" autocomplete="off">
                                             </div>
                                         </div>
                                         <br>
@@ -195,7 +194,7 @@
                                             <label for="password">Contraseña</label>
                                             <div class="has-validation">
                                                 <div class="passContainer"> 
-                                                    <input id="password" name="password" type="password" class="form-control w-100" aria-describedby="inputGroupPrepend" data-bs-theme="dark" autocomplete="off" required>
+                                                    <input id="password" name="password" type="password" class="form-control w-100" aria-describedby="inputGroupPrepend" data-bs-theme="dark" autocomplete="off">
                                                     <i id="passwordIcon" class="bi bi-eye eyeIcon"></i>
                                                 </div> 
                                                 <div id="pass-Check"class="invalid-feedback"></div>
@@ -208,7 +207,7 @@
                                             <label for="password">Confirma la contraseña</label>
                                             <div class="has-validation">
                                                 <div class="passContainer"> 
-                                                    <input id="passwordConf" name="passwordConf" type="password" class="form-control w-100" aria-describedby="inputGroupPrepend" data-bs-theme="dark" autocomplete="off" required>
+                                                    <input id="passwordConf" name="passwordConf" type="password" class="form-control w-100" aria-describedby="inputGroupPrepend" data-bs-theme="dark" autocomplete="off">
                                                     <i id="passwordIconConf" class="bi bi-eye eyeIcon"></i>
                                                 </div> 
                                                 <div id="passConf-Check"  class="invalid-feedback"></div>
@@ -219,10 +218,8 @@
                                          <!--EMAIL-->
                                         <div class="formCamps">
                                             <label for="mail">Correo electronico</label>
-                                            <div class="has-validation">
-                                                <input type="email" id="mail" name="mail"  class="form-control  w-100" placeholder="ejemplo@gmail.com" aria-describedby="inputGroupPrepend" data-bs-theme="dark" autocomplete="mail" required>
-                                                <div class="invalid-feedback">
-                                                </div>
+                                            <div>
+                                                <input type="email" id="mail" name="mail"  class="form-control  w-100" placeholder="ejemplo@gmail.com" aria-describedby="inputGroupPrepend" data-bs-theme="dark" autocomplete="mail">
                                             </div>
                                         </div>
                                         <br>
@@ -232,9 +229,8 @@
                                         <!--NOMBRE COMPLETO-->
                                         <div class="formCamps">
                                             <label for="name">Nombre completo</label>
-                                            <div class="has-validation">
-                                                <input id="name" name="name" type="text" class="form-control  w-100"  aria-describedby="inputGroupPrepend" data-bs-theme="dark" autocomplete="off" required>
-                                                <div class="invalid-feedback"></div>
+                                            <div>
+                                                <input id="name" name="name" type="text" class="form-control  w-100"  aria-describedby="inputGroupPrepend" data-bs-theme="dark" autocomplete="off">
                                             </div>
                                         </div>
                                         <br>
@@ -244,7 +240,7 @@
                                             <label for= "countrySelect">País de origen </label>
                                             <div class="d-flex">
                                                 <img id="miniFlag" class="miniFlag">
-                                                <select id="countrySelect" class="form-control w-100" data-bs-theme="dark" autocomplete="off" required>
+                                                <select id="countrySelect" class="form-control w-100" data-bs-theme="dark" autocomplete="off">
                                                     <option value="">Cargando países...</option>
                                                 </select>
                                             </div>
@@ -256,11 +252,10 @@
                                             <label for= "nationalitySelect">Nacionalidad </label>
                                             <div class="d-flex">
                                                 <img id="natFlag" class="miniFlag">
-                                                <select id="nationalitySelect" class="form-control w-100" aria-describedby="inputGroupPrepend" data-bs-theme="dark" autocomplete="off" required>
+                                                <select id="nationalitySelect" class="form-control w-100" aria-describedby="inputGroupPrepend" data-bs-theme="dark" autocomplete="off">
                                                     <option value="">Cargando países...</option>
                                                 </select>
                                             </div>
-                                            <div class="invalid-feedback"></div>
                                         </div>
                                         <br>
 
@@ -281,16 +276,14 @@
                                         <!--CUMPLEAÑOS-->
                                         <div class="formCamps">
                                             <label for="birthday">Fecha de nacimiento</label>
-                                            <div class="has-validation">
-                                                <input id="birthday" name="birthday" type="date" class="form-control  w-100 text-center"  aria-describedby="inputGroupPrepend" data-bs-theme="dark" autocomplete="off" required>
-                                                <div id="birthday-Check" class="invalid-feedback">
-                                                </div>
+                                            <div>
+                                                <input id="birthday" name="birthday" type="date" class="form-control  w-100 text-center"  aria-describedby="inputGroupPrepend" data-bs-theme="dark" autocomplete="off" readonly disabled>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <hr>
-                                <p id="custom-alert-message" class="text-center text-danger fadeUp"></p>
+                                <p id="custom-alert-message" class="text-center fadeUp" style="min-height: 20px;"></p>
                                 <button id="submitButton" type="submit" class="btn d-block mx-auto mb-5 shadow">Guardar</button>
                             </form>
                         </div>
