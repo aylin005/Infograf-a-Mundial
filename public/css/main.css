@@ -123,7 +123,12 @@ input:focus, select:focus,textarea:focus,.formControl:focus
 
 .almostBlackBackground
 {
-  background-color: var(--almostBlack);
+  background-color: var(--almostBlack) !important;
+}
+
+.blackWAlpha25Background
+{
+  background-color: var(--blackWAlpha25) !important;
 }
 .greyMediumBackground
 {
@@ -159,6 +164,10 @@ input:focus, select:focus,textarea:focus,.formControl:focus
 .margin7x
 {
   margin: 7%;
+}
+.margin7xLnR
+{
+  margin: 0% 7%;
 }
 .noPadding
 {
@@ -206,7 +215,6 @@ input:focus, select:focus,textarea:focus,.formControl:focus
     height: 500px !important;
 }
 
-
 .row, .ignoreThis
 {
   --bs-gutter-x:0 !important;
@@ -230,6 +238,11 @@ input:focus, select:focus,textarea:focus,.formControl:focus
     gap: 1rem;
     height: max-content !important;
     padding: 2%;
+}
+
+.quitMarginBottom
+{
+  margin-bottom: 0 !important;
 }
 
 .addMarginRight5x
@@ -299,6 +312,10 @@ input:focus, select:focus,textarea:focus,.formControl:focus
 {
     height: 50px !important;
 }
+.height570x
+{
+    height: 570px !important;
+}
 
 .deleteIcon
 {
@@ -358,10 +375,6 @@ input.form-control.is-invalid
   background-position: right calc(.375em + .1875rem) center;
   background-size: calc(.75em + .375rem) calc(.75em + .375rem);
 }
-
-
-
-
 
   /* --------------------------- A N I M A C I O N E S -------------------------- */
 .fadeUp 
