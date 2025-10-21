@@ -49,7 +49,8 @@ input, select, .formControl
   border: none;
   border-radius: 0%;
   padding: 2% 5%;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: lighter;
+  font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 input[type="date"] 
 {
@@ -61,8 +62,38 @@ input:focus, select:focus,textarea:focus,.formControl:focus
   box-shadow: 0 0 5px var(--whiteGrey) !important;
   border: 0.5px solid var(--greyMedium) !important;
 }
-
-
+th
+{
+  background-color: var(--blackWAlpha75);
+  text-align: center !important;
+  font-family: 'Syncopate', sans-serif;
+  font-weight: lighter;
+  font-size: larger;
+  color: aliceblue;
+  padding: 1%;
+}
+td
+{
+  background-color: var(--blackWAlpha25);
+  font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  color: var(--whiteGrey);
+  font-weight: lighter;
+  font-size: small;
+  padding: 0.5%;
+  border-bottom: var(--greyMedium) 2px solid !important;
+  padding-left: 2%;
+  opacity: 80%;
+}
+.worldcupHost
+{
+  background-color: var(--blackWAlpha50);
+  text-align: center;
+  font-family: 'Syncopate', sans-serif;
+  font-weight: lighter;
+  font-size:large;
+  color: var(--whiteGrey);
+  opacity: 1;
+}
 .w-60
 {
   width: 60%;
@@ -82,6 +113,13 @@ input:focus, select:focus,textarea:focus,.formControl:focus
   font-size: small !important;
 }
 
+.normalText
+{
+  font-style: normal;
+  font-weight: lighter !important;
+  font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
 .mediumText
 {
   font-size: medium !important;
@@ -94,6 +132,7 @@ input:focus, select:focus,textarea:focus,.formControl:focus
 {
   font-size: 2rem;
 }
+
 
 .whiteGreyText
 {
@@ -149,6 +188,13 @@ input:focus, select:focus,textarea:focus,.formControl:focus
     font-size: 1.5rem !important;
     color: var(--whiteGrey) !important;
     font-family: 'Syncopate', sans-serif;
+}
+.articleSubtitle
+{
+    font-size: 1.2rem;
+    color: var(--whiteGrey);
+    font-family: 'Syncopate', sans-serif;
+    text-align: center;
 }
 
 .hideThing

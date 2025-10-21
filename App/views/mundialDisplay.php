@@ -24,19 +24,13 @@
             <main class="col-12 col-md-9">
                 <div class="row setHeight75px">
                     <div class="col-2 d-flex align-items-center">
-                        <button id="beforeMundial" onclick="location.href='/'" type="button" class="moveButton beforeButton shadow">
-                            <i class="bi bi-arrow-left-square"></i> 1930
-                        </button>
+                        <button id="beforeMundial" onclick="location.href='/'" type="button" class="moveButton beforeButton shadow"><i class="bi bi-arrow-left-square"></i> 1930</button>
                     </div>
                     <div class="col-8 d-flex align-items-center">
-                        <button id="seeMundials" onclick="location.href='/'" type="button" class="moveButton middleButton shadow">
-                            Cronología de los mundiales
-                        </button>
+                        <button id="seeMundials" onclick="location.href='/'" type="button" class="moveButton middleButton shadow">Cronología de los mundiales</button>
                     </div>
                     <div class="col-2 d-flex align-items-center">
-                        <button id="afterMundial" onclick="location.href='/'" type="button" class="moveButton afterButton shadow">
-                            1938 <i class="bi bi-arrow-right-square"></i>
-                        </button>
+                        <button id="afterMundial" onclick="location.href='/'" type="button" class="moveButton afterButton shadow">1938 <i class="bi bi-arrow-right-square"></i></button>
                     </div>
                 </div>
                 <div class="mundialDisplay">
@@ -69,17 +63,6 @@
                                         <p id="mundialWinnerName" class="mundialWinnerName" >Italia</p>
                                     </div>
                                 </div>
-                                <hr class="whiteGreyText">
-                                <div class="card bg-dark m-2" data-bs-theme="dark">
-                                    <div class="card-header">
-                                        <h4 class="infoTitle"> &#9734 ¿Sabías qué?</h4>
-                                    </div>
-                                    <div class="card-body">
-                                        <figure>
-                                            <blockquote class="blockquote"><p id="mundialFunFact">Austria fue el equipo revelación del torneo. Los austríacos contaban con un gran equipo encabezado por Matthias Sindelar, apodado “el Mozart del fútbol”. </p></blockquote>
-                                        </figure>
-                                    </div>
-                                </div>
                             </div>
                             <div class="col-4">
                                 <div class="card bg-dark m-2" data-bs-theme="dark">
@@ -90,6 +73,101 @@
                                         <figure>
                                             <blockquote class="blockquote"><p id="mundialPrincipalSubtitle" class="smallerText">Italia 1934: El torneo se celebró bajo el régimen fascista de Benito Mussolini en Italia, y se utilizó como herramienta de propaganda para fortalecer la imagen del fascismo</p></blockquote>
                                         </figure>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr class="whiteGreyText">
+                                <div class="card bg-dark m-2" data-bs-theme="dark">
+                                    <div class="card-header">
+                                        <h4 class="infoTitle"> &#9734 ¿Sabías qué?</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <figure>
+                                            <blockquote class="blockquote  my-0">
+                                                <p id="mundialFunFact" class="my-2 py-0 normalText">⁕ Austria fue el equipo revelación del torneo. Los austríacos contaban con un gran equipo encabezado por Matthias Sindelar, apodado “el Mozart del fútbol”. </p>
+                                                <p id="mundialFunFact" class="my-2 py-0 normalText">⁕ El campeón de 1930, Uruguay, no participó como protesta porque varias selecciones europeas no asistieron a su mundial en 1930. </p>
+                                                <p id="mundialFunFact" class="my-2 py-0 normalText">⁕ El régimen de Benito Mussolini utilizó el torneo como propaganda, llegando a amenazar a la selección italiana para que ganara el campeonato. </p>
+                                            </blockquote>
+                                        </figure>
+                                    </div>
+                                </div>
+                            <hr class="whiteGreyText">
+                            <h4 class="infoTitle noMargin m-4 addLeftMargin">Sedes</h4>
+                            <table id="MundialCitiesInfo" class ="my-2">
+                                <tr>
+                                  <th>País anfitrión(es)</th>
+                                  <th>Ciudades sede</th>
+                                  <th>Estadios</th>
+                                </tr>
+                                <tr>
+                                <!-- NOTA: rowspan debe de ser el número de ciudades que se van a mostrar -->
+                                  <td rowspan="8" class="worldcupHost">Italia</td> 
+                                  <td>Roma</td>
+                                  <td>Stadio Nazionale PNF</td>
+                                </tr>
+                                <tr>
+                                  <td>Bolonia</td>
+                                  <td>Stadio del Littoriale</td>
+                                </tr>
+                                <tr>
+                                  <td>Milán</td>
+                                  <td>Stadio San Siro</td>
+                                </tr>
+                                <tr>
+                                  <td>Napóles</td>
+                                  <td>Stadio Giorgio Ascarelli</td>
+                                </tr>
+                                <tr>
+                                  <td>Florencia</td>
+                                  <td>Estadio Giovanni Berta</td>
+                                </tr>
+                                <tr>
+                                  <td>Génova</td>
+                                  <td>Stadio Luigi Ferraris</td>
+                                </tr>
+                                <tr>
+                                  <td>Trieste</td>
+                                  <td>Stadio del Littorio</td>
+                                </tr>
+                                <tr>
+                                  <td>Turín</td>
+                                  <td>Stadio Benito Mussolini</td>
+                                </tr>
+                            </table>
+                            <hr class="whiteGreyText">
+                            <h4 class="infoTitle noMargin m-4 addLeftMargin">Final</h4>
+                            <div class="row w-100">
+                                <div class= "col-7 border-end">
+                                    <h5 class="articleSubtitle">Resultados</h5>
+                                    <div id="showResults" class="d-flex justify-content-center">
+                                        <div id="r1" class="text-center">
+                                            <p id="finalGoal1" class="result">🥇2</p>
+                                            <p id="finalCountry1" class="countryResult">Italia</p>
+                                        </div>
+                                        <p class="result">&nbsp;-&nbsp;</p>
+                                        <div id="r2" class="text-center">
+                                            <p id="finalGoal2" class="result">🥈1</p>
+                                            <p id="finalCountry2" class="countryResult">Checoslovaquia</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class= "col-5">
+                                    <h5 class="articleSubtitle"> Tiempo extra</h5>
+                                    <p id="extraTime" class="countryResult text-center">5 minutos</p>
+                                    <hr class="whiteGreyText">
+                                    <h5 class="articleSubtitle"> Penalties</h5>
+                                    <div class="d-flex">
+                                       <div id="showResults" class="d-flex justify-content-center">
+                                            <div id="r1" class="text-center">
+                                                <p id="penality1" class="result small">1</p>
+                                                <p id="penaltiCountry1" class="countryResult smallerText">Italia</p>
+                                            </div>
+                                            <p class="result">&nbsp;-&nbsp;</p>
+                                            <div id="r2" class="text-center">
+                                                <p id="penality2" class="result small">0</p>
+                                                <p id="penaltiCountry2" class="countryResult smallerText">Checoslovaquia</p>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
