@@ -95,21 +95,33 @@ class UserController
             }
             $result = $this->model->login($username, $password);
             if ($result['exito']) {
-                // Start session and store user info
-                if (session_status() === PHP_SESSION_NONE) {
-                    session_start();
+                if (session_status() === PHP_SESSION_NONE) { session_start(); }
+                // Determine role
+                if (($result['role'] ?? '') === 'admin') {
+                    // Set admin session
+                    $_SESSION['admin'] = [
+                        'username' => $result['username'] ?? $username
+                    ];
+                } else {
+                    // Normalize user image if binary
+                    if (isset($result['image']) && !is_null($result['image'])) {
+                        // If it's not a data URL, try base64 encode as PNG by default
+                        if (strpos((string)$result['image'], 'data:') !== 0 && strpos((string)$result['image'], 'http') !== 0) {
+                            $result['image'] = 'data:image/png;base64,' . base64_encode($result['image']);
+                        }
+                    }
+                    $_SESSION['user'] = [
+                        'id' => $result['id'] ?? 0,
+                        'username' => $result['username'] ?? '',
+                        'email' => $result['email'] ?? '',
+                        'full_name' => $result['full_name'] ?? '',
+                        'birth_date' => $result['birth_date'] ?? '',
+                        'image' => $result['image'] ?? '',
+                        'gender' => $result['gender'] ?? '',
+                        'birth_place' => $result['birth_place'] ?? '',
+                        'nationality' => $result['nationality'] ?? ''
+                    ];
                 }
-                $_SESSION['user'] = [
-                    'id' => $result['id'],
-                    'username' => $result['username'] ?? '',
-                    'email' => $result['email'] ?? '',
-                    'full_name' => $result['full_name'] ?? '',
-                    'birth_date' => $result['birth_date'] ?? '',
-                    'image' => $result['image'] ?? '',
-                    'gender' => $result['gender'] ?? '',
-                    'birth_place' => $result['birth_place'] ?? '',
-                    'nationality' => $result['nationality'] ?? ''
-                ];
                 http_response_code(200);
             } else {
                 http_response_code(401);

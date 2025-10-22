@@ -57,6 +57,11 @@ $router->add('/login', function(...$args) use ($renderView, $database) {
         $renderView('logIn.php');
     }
 });
+$router->add('/admin', function() use ($renderView) {
+    AuthMiddleware::requireAdmin();
+    // Reutilizamos adminMundials como landing administrativa
+    $renderView('adminMundials.php');
+});
 $router->add('/profile', function() use ($renderView) { 
     AuthMiddleware::requireAuth();
     $renderView('profile.php'); 
@@ -80,6 +85,7 @@ $router->add('/addCategory', function() use ($renderView) {
     AuthMiddleware::requireAdmin();
     $renderView('addCategory.php'); 
 });
+
 
 // Rutas de API para controladores
 $router->add('/users', function(string $method, ?string $id = null) use ($database) {

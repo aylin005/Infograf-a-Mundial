@@ -6,8 +6,8 @@ return [
             'host' => 'localhost',
             'dbname' => 'bdm_capa',
             'username' => 'root',
-            'password' => '',
-            'port' => '3307',
+            'password' => 'rootBD',
+            'port' => '3306',
             'charset' => 'utf8mb4'
         ]
     ]

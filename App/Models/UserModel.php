@@ -144,32 +144,29 @@ class UserModel
         throw new Exception("Database error: " . ($errorInfo[2] ?? 'Unknown error'));
     }
     /**
-     * Login user by username and password
-     * @param string $username
-     * @param string $password (plain text)
-     * @return array (exito, mensaje, user data if success)
+     * Login by checking admin and user via sp_auth_login
      */
     public function login(string $username, string $password): array
     {
-        // Hash password with SHA-256 (to match DB)
+        // hash password
         $hash = hash('sha256', $password);
-        $sql = "CALL sp_user_login(:username, :hash_password)";
+
+        // call sp
+        $sql = "CALL sp_auth_login(:username, :hash_password)";
+
+        //send data
         $stmt = $this->conn->prepare($sql);
         $stmt->bindValue(":username", $username, PDO::PARAM_STR);
         $stmt->bindValue(":hash_password", $hash, PDO::PARAM_STR);
         if ($stmt->execute()) {
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            // si hay resultado, devolverlo
             if ($result !== false) {
                 $result['exito'] = isset($result['exito']) ? (bool)$result['exito'] : false;
-                $result['id'] = isset($result['id']) ? (int)$result['id'] : 0;
+                if (isset($result['id'])) { $result['id'] = (int)$result['id']; }
                 return $result;
             }
-            return [
-                'exito' => false,
-                'mensaje' => 'No data returned',
-            ];
         }
-        $errorInfo = $stmt->errorInfo();
-        throw new Exception("Database error: " . ($errorInfo[2] ?? 'Unknown error'));
+        return ['exito' => false, 'mensaje' => 'No data returned'];
     }
 }

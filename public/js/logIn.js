@@ -46,9 +46,21 @@ document.addEventListener("DOMContentLoaded", function()
       .then(response => response.json().then(data => ({ status: response.status, body: data })))
       .then(({ status, body }) => {
         if (status === 200 && body.exito) {
-          // Store user info in sessionStorage
-          sessionStorage.setItem('user', JSON.stringify(body));
-          window.location.href = '/profile'; // Redirect to profile or dashboard
+          // Admin vs User redirect
+          if (body.role === 'admin') {
+            sessionStorage.setItem('admin', JSON.stringify({ username: body.username }));
+            window.location.href = '/adminMundials';
+          } else {
+            // Normalize image in frontend just in case
+            if (body.image && typeof body.image === 'string') {
+              if (!body.image.startsWith('data:') && !body.image.startsWith('http')) {
+                // assume PNG
+                body.image = 'data:image/png;base64,' + body.image;
+              }
+            }
+            sessionStorage.setItem('user', JSON.stringify(body));
+            window.location.href = '/profile';
+          }
         } else {
           DisplayCustomAlert(`[❌] E R R O R: ${body.mensaje || 'Usuario o contraseña incorrectos'}`);
         }

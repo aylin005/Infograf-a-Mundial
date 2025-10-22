@@ -21,12 +21,11 @@ class AdminModel
      */
     public function login(string $username, string $password): array
     {
-        // Hash password with SHA-256 (to match DB)
-        $hash = hash('sha256', $password);
-        $sql = "SELECT username, hash_password FROM admin WHERE username = :username AND hash_password = :hash_password";
+        // Comparar directamente con el campo 'password' de la tabla 'admins' (texto plano)
+        $sql = "SELECT username FROM admins WHERE username = :username AND password = :password";
         $stmt = $this->conn->prepare($sql);
         $stmt->bindValue(":username", $username, PDO::PARAM_STR);
-        $stmt->bindValue(":hash_password", $hash, PDO::PARAM_STR);
+        $stmt->bindValue(":password", $password, PDO::PARAM_STR);
         
         if ($stmt->execute()) {
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
