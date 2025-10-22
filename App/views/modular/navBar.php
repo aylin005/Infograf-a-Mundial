@@ -22,8 +22,8 @@
     <div id="itemsContainer" class="col-3 col-sm-3 col-md-2 d-flex align-items-center justify-content-center">
       <a href="/profile"><img id="photoUser" class="navPhoto img-fluid" src="<?= asset('media/userPhoto.png') ?>" alt="Foto de usuario"></a>
       <a href="/newPost"><i class="bi bi-plus-square navIcon "></i></a>
-      <a href="/login"><i class="bi bi-box-arrow-left navIcon"></i></a>
-      <a href="/adminPosts"><i class="bi bi-person-circle navIcon"></i></a>
+      <a href="/login"><i class="bi bi-box-arrow-in-right navIcon"></i></a>
+      <!-- <a href="/adminPosts"><i class="bi bi-person-circle navIcon"></i></a> -->
     <!-- NOTA: Para signOut-->
       <!-- <a href="/login"><i class="bi bi-box-arrow-right navIcon"></i></a> -->
     </div>

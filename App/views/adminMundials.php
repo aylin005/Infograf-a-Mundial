@@ -5,12 +5,12 @@
         <meta name = "viewport" content="width=device-width, initial-scale = 1.0">
         <title> Administrar mundiales | A D M I N </title>
         <link rel = "icon" href="/media/miniLogoW.png"> <!--logo-->
-        <link rel="stylesheet" href="/css/main.css">
-        <link rel="stylesheet" href="/css/admin.css">
-        <link rel="stylesheet" href="/css/mundial.css">
-        <link rel="stylesheet" href="/css/forms.css">
-        <link rel="stylesheet" href="/css/modular/navBar.css">
-        <link rel="stylesheet" href="/css/modular/filters.css">
+        <link rel="stylesheet" href="/CSS/main.css">
+        <link rel="stylesheet" href="/CSS/admin.css">
+        <link rel="stylesheet" href="/CSS/mundial.css">
+        <link rel="stylesheet" href="/CSS/forms.css">
+        <link rel="stylesheet" href="/CSS/modular/navBar.css">
+        <link rel="stylesheet" href="/CSS/modular/filters.css">
         <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
         <link rel="stylesheet" href="/icons/icons-1.13.1/font/bootstrap-icons.css">
         <link rel="stylesheet" href="/fonts/Offside/Offside.css">
@@ -143,44 +143,24 @@
                                             <!-- ----------------------------------------------------------------------------- -->
     
                                             <hr class="whiteGreyText">
-                                            <div class="card bg-dark" data-bs-theme="dark">
-                                                <div class="card-header">
-                                                    <h4 class="infoTitle"> &#9734 ¿Sabías qué?</h4>
-                                                </div>
-                                                <div class="card-body">
-                                                    <figure>
-                                                        <textarea class="w-100 noBackground noBorder m-2 offside-regular" placeholder="Añade algo importante aquí"></textarea>
-                                                    </figure>
-                                                </div>
-                                            </div>
-                                            <hr class="whiteGreyText">
-                                            <!-- ----------------------------------------------------------------------------- -->
-                                            <h4 class="infoTitle noMargin m-4">Anexos</h4>
+                                            <h4 class="infoTitle"> &#9734 ¿Sabías qué?</h4>
                                             <div class="container-fluid">
                                                 <div class="row">
-                                                    <div class="col-1">
-                                                        <input type="file" id="mundialPhoto" name="mundialPhoto" accept="image/*" autocomplete="off" hidden>
-                                                        <label for="mundialPhoto" class="d-flex justify-content-center align-items-center addTop5x">
-                                                            <i class="bi bi-upload btn"></i>
-                                                        </label>
-                                                    </div>
-                                                    <div class="col-10">
-                                                        <input type="text" id="tooltip" name="tooltip" placeholder="Ingresa una descripción para el anexo" class="addTooltip"></input>
+                                                    <div class="col-11">
+                                                        <input type="text" id="funFact" name="funFact" placeholder="Ingresa un dato curioso" class="addTooltip"></input>
                                                     </div>
                                                     <div class="col-1">
-                                                        <button type="button" class="addButton">
+                                                        <button type="button" class="addButton" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-custom-class="custom-littleTooltip" title="Agregar">
                                                             <i class="bi bi-plus-square addCatIcon"></i>
                                                         </button>
                                                     </div>
                                                 </div>
                                             </div>
-    
-                                            <div class="d-flex">
-                                            </div>
-                                            <div class="imageContainer">
-                                                <div class="previewInfoImage">
-                                                    <img id="logo" src="/media/userPhoto.png" class="img-fluid mundialImage shadow-lg">
-                                                    <button class="noBackground noBorder"><i class="bi bi-x-square-fill quitIcon"></i></button>
+                                            <div id="previewCountries" class="previewList setHeight500px">
+                                                <div id="addedCountry" class="d-flex align-items-center">
+                                                    <p id="mundialCountries" class="showListElement shadow"> En la final, Argentina y Uruguay no se pusieron de acuerdo en el balón, usando uno argentino en el primer tiempo y uno uruguayo en el segundo.</p>
+                                                    <button type="button" class="addButton"><i class="bi bi-pencil-square deleteIcon"></i></button>
+                                                    <button type="button" class="addButton"><i class="bi bi-x-square deleteIcon"></i></button>
                                                 </div>
                                             </div>
                                         </div>
@@ -199,6 +179,132 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <hr class="whiteGreyText">
+                                        <div class="container-fluid">
+                                            <div class="row">
+                                                <div class="col-6 border-end">
+                                                    <h4 class="infoTitle noMargin m-4">Ciudades</h4>
+                                                    <div class="d-flex m-3">
+                                                        <select id="countrySelect" class="selectCountry" required>
+                                                            <option id="flag" name="flag" class="selectOpt">Florida</option>
+                                                            <option id="flag" name="flag" class="selectOpt">Monterrey</option>
+                                                            <option id="flag" name="flag" class="selectOpt">Moscú</option>
+                                                        </select>
+                                                        <button type="button" class="addButton">
+                                                            <i class="bi bi-plus-square addCatIcon"></i>
+                                                        </button>
+                                                    </div>
+                                                    <div id="previewCountries" class="previewList setHeight180px">
+                                                        <div id="addedCountry" class="d-flex align-items-center height50x activeCursor" >
+                                                            <p id="mundialCountries" class="showListElement shadow"> Montevideo</p>
+                                                            <button type="button" class="addButton"><i class="bi bi-x-square deleteIcon"></i></button>
+                                                        </div>
+                                                    </div>
+                                                    <br>
+                                                </div>
+                                                <div class="col-6">
+                                                   <h4 class="infoTitle noMargin m-4">Estadios</h4>
+                                                   <p class="border m-3 px-4 whiteGreyText syncopate-regular text-center">Montevideo</p>
+                                                   <div class="d-flex m-3">
+                                                        <input type="text" id="stadium" name="stadium" placeholder="Ingresa un estadio" class="addTooltip"></input>
+                                                        <button type="button" class="addButton">
+                                                            <i class="bi bi-plus-square addCatIcon"></i>
+                                                        </button>
+                                                    </div>
+                                                    <div id="previewCountries" class="previewList">
+                                                        <div id="addedCountry" class="d-flex align-items-center height50x">
+                                                            <p id="mundialCountries" class="showListElement shadow">Estadio Centenario</p>
+                                                            <button type="button" class="addButton"><i class="bi bi-x-square deleteIcon"></i></button>
+                                                        </div>
+                                                    </div>
+                                                    <br>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <hr class="whiteGreyText">
+                                        <h4 class="infoTitle noMargin m-4">Final</h4>
+                                        <div class="container-fluid">
+                                            <div class="row">
+                                                <div class="col-6 border-end">
+                                                    <h5 class="articleSubtitle">Resultados</h5>
+                                                    <div id="showResults" class="d-flex justify-content-center">
+                                                        <div id="r1" class="text-center">
+                                                            <input type="number" id="goalsTeam1" class="form-control" aria-describedby="inputGroupPrepend" data-bs-theme="dark" autocomplete="off" placeholder="Ingresa los goles" required>
+                                                            <br>
+                                                            <select id="nationalitySelect" class="selectCountry" required>
+                                                                <option id="flag-Can" name="flag-Can" data-image="/media/Flags/Canada-Emoji.png" class="selectOpt">Canadá</option>
+                                                                <option id="flag-Mex" name="flag-Mex" data-image="/media/Flags/Mexico-Emoji.png" class="selectOpt">México</option>
+                                                                <option id="flag-EU" name="flag-EU" data-image="/media/Flags/US-Emoji.png" class="selectOpt">Estados Unidos</option>
+                                                            </select>
+                                                        </div>
+                                                        <p class="result">&nbsp;-&nbsp;</p>
+                                                        <div id="r2" class="text-center">
+                                                            <input type="number" id="goalsTeam2" class="form-control" aria-describedby="inputGroupPrepend" data-bs-theme="dark" autocomplete="off" placeholder="Ingresa los goles" required>
+                                                            <br>
+                                                            <select id="nationalitySelect" class="selectCountry" required>
+                                                                <option id="flag-Can" name="flag-Can" data-image="/media/Flags/Canada-Emoji.png" class="selectOpt">Canadá</option>
+                                                                <option id="flag-Mex" name="flag-Mex" data-image="/media/Flags/Mexico-Emoji.png" class="selectOpt">México</option>
+                                                                <option id="flag-EU" name="flag-EU" data-image="/media/Flags/US-Emoji.png" class="selectOpt">Estados Unidos</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6 px-4">
+                                                    <h5 class="articleSubtitle"> Tiempo extra</h5>
+                                                    <input type="number" id="goalsTeam1" class="form-control" aria-describedby="inputGroupPrepend" data-bs-theme="dark" autocomplete="off" required>
+                                                    <hr class="whiteGreyText">
+                                                    <h5 class="articleSubtitle"> Penalties</h5>
+                                                    <div id="showResults" class="d-flex justify-content-center">
+                                                        <div id="r1" class="text-center">
+                                                            <input type="number" id="goalsTeam1" class="form-control" aria-describedby="inputGroupPrepend" data-bs-theme="dark" autocomplete="off" placeholder="Ingresa los penalties" required>
+                                                            <br>
+                                                            <select id="nationalitySelect" class="selectCountry" required>
+                                                                <option id="flag-Can" name="flag-Can" data-image="/media/Flags/Canada-Emoji.png" class="selectOpt">Canadá</option>
+                                                                <option id="flag-Mex" name="flag-Mex" data-image="/media/Flags/Mexico-Emoji.png" class="selectOpt">México</option>
+                                                                <option id="flag-EU" name="flag-EU" data-image="/media/Flags/US-Emoji.png" class="selectOpt">Estados Unidos</option>
+                                                            </select>
+                                                        </div>
+                                                        <p class="result">&nbsp;-&nbsp;</p>
+                                                        <div id="r2" class="text-center">
+                                                            <input type="number" id="goalsTeam2" class="form-control" aria-describedby="inputGroupPrepend" data-bs-theme="dark" autocomplete="off" placeholder="Ingresa los penalties" required>
+                                                            <br>
+                                                            <select id="nationalitySelect" class="selectCountry" required>
+                                                                <option id="flag-Can" name="flag-Can" data-image="/media/Flags/Canada-Emoji.png" class="selectOpt">Canadá</option>
+                                                                <option id="flag-Mex" name="flag-Mex" data-image="/media/Flags/Mexico-Emoji.png" class="selectOpt">México</option>
+                                                                <option id="flag-EU" name="flag-EU" data-image="/media/Flags/US-Emoji.png" class="selectOpt">Estados Unidos</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <hr class="whiteGreyText">
+                                        <h4 class="infoTitle noMargin m-4">Anexos</h4>
+                                            <div class="container-fluid">
+                                                <div class="row">
+                                                    <div class="col-1">
+                                                        <input type="file" id="mundialPhoto" name="mundialPhoto" accept="image/*" autocomplete="off" hidden>
+                                                        <label for="mundialPhoto" class="d-flex justify-content-center align-items-center addTop5x">
+                                                            <i class="bi bi-upload btn"></i>
+                                                        </label>
+                                                    </div>
+                                                    <div class="col-10">
+                                                        <input type="text" id="tooltip" name="tooltip" placeholder="Ingresa una descripción para el anexo" class="addTooltip"></input>
+                                                    </div>
+                                                    <div class="col-1">
+                                                        <button type="button" class="addButton">
+                                                            <i class="bi bi-plus-square addCatIcon"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="imageContainer">
+                                                <div class="previewInfoImage">
+                                                    <img id="logo" src="/media/userPhoto.png" class="img-fluid mundialImage shadow-lg">
+                                                    <button class="noBackground noBorder"><i class="bi bi-x-square-fill quitIcon"></i></button>
+                                                </div>
+                                            </div>
                                     </div>    
                                 </div>
                                 <div class="d-flex justify-content-center align-items-center helperContainer">

@@ -189,13 +189,6 @@ td
     color: var(--whiteGrey) !important;
     font-family: 'Syncopate', sans-serif;
 }
-.articleSubtitle
-{
-    font-size: 1.2rem;
-    color: var(--whiteGrey);
-    font-family: 'Syncopate', sans-serif;
-    text-align: center;
-}
 
 .hideThing
 {
@@ -420,6 +413,36 @@ input.form-control.is-invalid
   background-repeat: no-repeat !important;
   background-position: right calc(.375em + .1875rem) center;
   background-size: calc(.75em + .375rem) calc(.75em + .375rem);
+}
+.setHeight180px
+{
+    height: 180px !important;
+}
+
+.showListElement
+{
+    padding:1.5%;
+    font-family: 'offside', Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 0.9rem !important;
+    background-color: var(--greyMedium);
+    width: 100%;
+    height: fit-content;
+    margin: 0%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    color: var(--whiteGrey);
+    border: 2px solid var(--blackWAlpha75)
+}
+.activeCursor
+{
+  cursor:pointer;
+}
+.articleSubtitle
+{
+    font-size: 1.2rem;
+    color: var(--whiteGrey);
+    font-family: 'Syncopate', sans-serif;
+    text-align: center;
 }
 
   /* --------------------------- A N I M A C I O N E S -------------------------- */

@@ -162,13 +162,14 @@
                                                 <p id="penality1" class="result small">1</p>
                                                 <p id="penaltiCountry1" class="countryResult smallerText">Italia</p>
                                             </div>
-                                            <p class="result">&nbsp;-&nbsp;</p>
+                                            <p class="result small">&nbsp;-&nbsp;</p>
                                             <div id="r2" class="text-center">
                                                 <p id="penality2" class="result small">0</p>
                                                 <p id="penaltiCountry2" class="countryResult smallerText">Checoslovaquia</p>
                                             </div>
                                         </div>
                                     </div>
+                                    <br>
                                 </div>
                             </div>
                             <hr class="whiteGreyText">
