@@ -37,8 +37,8 @@
                                 </div>
                                 <div class="col-7 col-sm-3">
                                     <div class="d-flex align-items-center justify-content-center">
-                                        <div class="d-flex showCalif">
-                                            <button id="goodVoteButton" class="noBackground noBorder transparentButton"><i class="bi bi-arrow-up-square m-1 goodVoteIcon"></i></button> 
+                                        <div id="goodVoteButton" class="d-flex showCalif">
+                                            <button class="noBackground noBorder transparentButton"><i class="bi bi-arrow-up-square m-1 goodVoteIcon"></i></button> 
                                             <p id="goodVote" class="syncopate-regular m-2">4M</p>
                                         </div>
                                         <div class="d-flex showCalif">
@@ -211,8 +211,9 @@
         </div>
     </main>
     <div id="filterContainer"></div>
-    
+    <div id="votesContainer"></div>
     <script src="/js/fetchThings/fetchNavBar.js"></script>
+    <script src="/js/fetchThings/fetchVotesModal.js"></script>
     <script src="/js/Scripts/tooltip.js"></script>
 </body>
 

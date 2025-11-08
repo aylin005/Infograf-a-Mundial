@@ -9,8 +9,10 @@ document.addEventListener("DOMContentLoaded", () => {
         const advSearch = document.getElementById("advSearchIcon");
         const main = document.getElementById("main");
 
-        if (advSearch) {
-          advSearch.addEventListener("click", () => {
+        if (advSearch) 
+        {
+          advSearch.addEventListener("click", () => 
+          {
               fetch("/modular/filters")
               .then(response => response.text())
               .then(html => {
@@ -51,6 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         filterMenu.style.opacity = "0";
                         setTimeout(() => {
                           filterMenu.style.display = "none";
+                          document.body.style.overflow = "auto";
                         }, 300);
                       });
                   }

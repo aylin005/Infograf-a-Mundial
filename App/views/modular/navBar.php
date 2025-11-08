@@ -9,8 +9,8 @@
 
     <div class="col-8 col-sm-7 col-md-8">
   <form method="get" id="searchForm" action="/results" class="d-flex justify-content-center align-items-center">
-        <button type="submit" id="searchIcon" class="normalButton"><i class="bi bi-search"></i></button>
         <input id="searchThis" name="searchThis" type="search" class="navSearch border" placeholder="Busca algo...">
+        <button type="submit" id="searchIcon" class="normalButton"><i class="bi bi-search"></i></button>
         <button type="button" id="advSearchIcon" class="normalButton"><i class="bi bi-list-stars"></i></button>
       </form>
     </div>

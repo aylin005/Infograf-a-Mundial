@@ -43,6 +43,10 @@ $router->add('/modular/filters', function() use ($renderView) {
     $renderView('modular/filters.php');
 });
 
+$router->add('/modular/likes', function() use ($renderView) {
+    $renderView('modular/likes.php');
+});
+
 // Backwards-compatible routes for pages previously named .html
 $router->add('/signUp', function() use ($renderView) { $renderView('signUp.php'); });
 $router->add('/login', function(...$args) use ($renderView, $database) {

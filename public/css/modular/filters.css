@@ -11,6 +11,7 @@
     left: 50%;
     transform: translate(-50%, -50%);
     overflow-y: scroll;
+    z-index: 99;
 }
 
 .modalTitle 
@@ -104,4 +105,14 @@
     display: absolute;
     filter: blur(3px);
     transition: filter 2s ease-in-out;
+    z-index: 98;
+}
+#showUser
+{
+  transition: ease-in-out 0.5s;
+  height: fit-content;
+}
+#showUser:hover
+{
+  background-color: var(--greyMediumWAlpha25);
 }
