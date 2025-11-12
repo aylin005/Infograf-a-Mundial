@@ -5,9 +5,11 @@ use App\Core\Database;
 use App\Models\UserModel;
 use App\Models\AdminModel;
 use App\Models\CategoryModel;
+use App\Models\WorldCupModel;
 use App\Controllers\UserController;
 use App\Controllers\AdminController;
 use App\Controllers\CategoryController;
+use App\Controllers\WorldCupController;
 use App\Middlewares\AuthMiddleware;
 
 $config = require_once __DIR__ . '\..\config\config.php';
@@ -81,6 +83,24 @@ $router->add('/categories/:id', function(string $method, string $id) use ($datab
     $gateway = new CategoryModel($database);
     $controller = new CategoryController($gateway);
     $controller->processRequest($method, $id);
+});
+
+// /worldcups  
+$router->add('/worldcups', function(string $method, ?string $id = null) use ($database) {
+    $gateway = new WorldCupModel($database);
+    $controller = new WorldCupController($gateway);
+    $controller->processRequest($method, $id);
+});
+$router->add('/worldcups/:id', function(string $method, string $id) use ($database) {
+    $gateway = new WorldCupModel($database);
+    $controller = new WorldCupController($gateway);
+    $controller->processRequest($method, $id);
+});
+// ruta especial para obtener solo los años de mundiales
+$router->add('/worldcups/years', function(string $method) use ($database) {
+    $gateway = new WorldCupModel($database);
+    $controller = new WorldCupController($gateway);
+    $controller->processRequest($method);
 });
 
 $router->add('/login', function(...$args) use ($renderView, $database) {
