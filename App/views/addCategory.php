@@ -35,42 +35,16 @@
                         <input id="typeCategory" name="typeCategory" type="text" class="w-80" placeholder="Añade una nueva categoría aquí">
                         <button type="submit" id="addCatButton" class="addCatButton"><i class="bi bi-plus-square addCatIcon x-largeText aliceblueText"></i></button>
                     </div>
+                    <div id="category-spinner" class="spinner" style="display: none;"></div>
+                    <p id="category-message" class="text-center fadeUp" style="min-height: 20px; display: none; opacity: 0;"></p>
                 </form>
                 <div id="listCategory" name="listCategory" class="w-100">
-                    <div id="addedCategory" name="addedCategory" class="categoryDisplay">
-                        <div class="container-fluid">
-                            <div class="row">
-                                <div class="col-10">
-                                    <p id="tagTitle" class="tagTitle">#Asistentes</p>
-                                </div>     
-                                <div class="col-2">
-                                    <div class="d-flex align-items-center justify-content-center">
-                                        <button id="editButton" class="noBackground noBorder tagButton"><i class="bi bi-pencil-square"></i></button>
-                                        <button id="deleteButton" class="noBackground noBorder  tagButton deleteButton"><i class="bi bi-x-square"></i></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="addedCategory" name="addedCategory" class="categoryDisplay">
-                        <div class="container-fluid">
-                            <div class="row">
-                                <div class="col-10">
-                                    <p id="tagTitle" class="tagTitle">#Polemicas</p>
-                                </div>     
-                                <div class="col-2">
-                                    <div class="d-flex align-items-center justify-content-center">
-                                        <button id="editButton" class="noBackground noBorder tagButton"><i class="bi bi-pencil-square"></i></button>
-                                        <button id="deleteButton" class="noBackground noBorder  tagButton deleteButton"><i class="bi bi-x-square"></i></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- Las categorías se cargarán dinámicamente aquí -->
                 </div>
             </main>
         <script src="/js/fetchThings/fetchNavBar.js"></script>
         <script src="/js/tooltip.js"></script>
+        <script src="/js/addCategory.js"></script>
     </body>
     </body>
 </html>
