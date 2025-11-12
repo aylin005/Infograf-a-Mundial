@@ -6,6 +6,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Esperar a que el DOM se actualice con el nuevo HTML
       setTimeout(() => {
+        // Actualizar foto del usuario en el navBar recién cargado
+        console.log('NavBar loaded, updating user photo...');
+        if (typeof updateNavBarUserPhoto === 'function') {
+          updateNavBarUserPhoto();
+        } else {
+          console.log('updateNavBarUserPhoto function not available, calling directly');
+          // Función local como fallback
+          try {
+            const userData = JSON.parse(sessionStorage.getItem('user') || '{}');
+            const navPhoto = document.getElementById('photoUser');
+            if (navPhoto && userData.image && (userData.image.startsWith('data:') || userData.image.startsWith('http'))) {
+              navPhoto.src = userData.image;
+              console.log('NavBar photo updated via fallback function');
+            }
+          } catch (error) {
+            console.error('Error in fallback photo update:', error);
+          }
+        }
+        
         const advSearch = document.getElementById("advSearchIcon");
         const main = document.getElementById("main");
 

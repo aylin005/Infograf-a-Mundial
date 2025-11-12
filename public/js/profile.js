@@ -84,14 +84,77 @@ document.addEventListener("DOMContentLoaded", function() {
             document.getElementById('userPhoto').src = userData.image;
         }
     }
+    // Manejo de input de imagen de perfil
+    const photoInput = document.getElementById("photo");
+    const userPhotoImg = document.getElementById("userPhoto");
+    if (photoInput && userPhotoImg) {
+        photoInput.addEventListener("change", () => {
+            if (photoInput.files && photoInput.files[0]) {
+                const file = photoInput.files[0];
+                
+                // Validar tamaño de imagen (máximo 15MB)
+                const maxSize = 15 * 1024 * 1024; // 15MB en bytes
+                if (file.size > maxSize) {
+                    showErrorText('La imagen de perfil es muy pesada.', false);
+                    photoInput.value = ''; // Limpiar input
+                    return;
+                }
+                
+                // Validar tipo de archivo
+                const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+                if (!validTypes.includes(file.type)) {
+                    showErrorText('Formato de imagen no válido. Use JPG, PNG o GIF.', false);
+                    photoInput.value = ''; // Limpiar input
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    userPhotoImg.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+    
     // Manejo de input de imagen de fondo
     const fileInput = document.getElementById("backgroundPhoto");
     const fileLabel = document.querySelector("label[for='backgroundPhoto']");
+    const profileBackgroundImg = document.getElementById("profileBackground");
     if (fileInput && fileLabel) {
         fileInput.addEventListener("change", () => {
             if (fileInput.files.length > 0) {
-                const fileName = fileInput.files[0].name;
+                const file = fileInput.files[0];
+                
+                // Validar tamaño de imagen (máximo 15MB)
+                const maxSize = 15 * 1024 * 1024; // 15MB en bytes
+                if (file.size > maxSize) {
+                    showErrorText('La imagen de fondo es muy pesada.', false);
+                    fileInput.value = ''; // Limpiar input
+                    fileLabel.textContent = "Subir foto de fondo";
+                    return;
+                }
+                
+                // Validar tipo de archivo
+                const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+                if (!validTypes.includes(file.type)) {
+                    showErrorText('Formato de imagen no válido. Use JPG, PNG o GIF.', false);
+                    fileInput.value = ''; // Limpiar input
+                    fileLabel.textContent = "Subir foto de fondo";
+                    return;
+                }
+                
+                const fileName = file.name;
                 fileLabel.textContent = `${fileName}`;
+                
+                // Update background image preview
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    if (profileBackgroundImg) {
+                        profileBackgroundImg.src = e.target.result;
+                    }
+                };
+                reader.readAsDataURL(file);
             } else {
                 fileLabel.textContent = "Subir foto de fondo";
             }
@@ -159,31 +222,45 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // PATCH al guardar perfil
+    // POST al guardar perfil
     const form = document.getElementById('signUpForm');
     if (form) {
         form.addEventListener('submit', async function(event) {
             event.preventDefault();
             let feedback = document.getElementById('custom-alert-message');
             if (feedback) {
-                feedback.textContent = '';
-                feedback.style.display = 'block';
-                feedback.style.visibility = 'visible';
-                feedback.style.opacity = '1';
+                showErrorText('', false);
             }
 
             // Recolectar datos, enviar null si vacío
             const id = userData.id;
-            const username = document.getElementById('username').value.trim() || null;
-            const email = document.getElementById('mail').value.trim() || null;
-            const full_name = document.getElementById('name').value.trim() || null;
-            const gender = document.getElementById('gender').value || null;
-            const birth_place = document.getElementById('countrySelect')?.value || null;
-            const nationality = document.getElementById('nationalitySelect')?.value || null;
-            // Imagenes (no obligatorio)
-            let image = null, background = null;
-            if (document.getElementById('userPhoto')?.src) image = document.getElementById('userPhoto').src;
-            if (document.getElementById('backgroundPhoto')?.src) background = document.getElementById('backgroundPhoto').src;
+            const username = document.getElementById('username').value.trim() || '';
+            const email = document.getElementById('mail').value.trim() || '';
+            const full_name = document.getElementById('name').value.trim() || '';
+            const gender = document.getElementById('gender').value || '';
+            const birth_place = document.getElementById('countrySelect')?.value || '';
+            const nationality = document.getElementById('nationalitySelect')?.value || '';
+            
+            // Usar FormData
+            const formData = new FormData();
+            formData.append('id', id); // ID para indicar que es actualización
+            formData.append('username', username);
+            formData.append('email', email);
+            formData.append('full_name', full_name);
+            formData.append('gender', gender);
+            formData.append('birth_place', birth_place);
+            formData.append('nationality', nationality);
+            
+            // Agregar archivos si existen
+            const photoInput = document.getElementById('photo');
+            if (photoInput && photoInput.files && photoInput.files[0]) {
+                formData.append('photo', photoInput.files[0]);
+            }
+            
+            const backgroundPhotoInput = document.getElementById('backgroundPhoto');
+            if (backgroundPhotoInput && backgroundPhotoInput.files && backgroundPhotoInput.files[0]) {
+                formData.append('backgroundPhoto', backgroundPhotoInput.files[0]);
+            }
             // Contraseña solo si se llenó
             let password = document.getElementById('password').value;
             let passwordConf = document.getElementById('passwordConf').value;
@@ -191,53 +268,132 @@ document.addEventListener("DOMContentLoaded", function() {
             if (password && passwordConf) {
                 if (password !== passwordConf) {
                     if (feedback) {
-                        feedback.textContent = '❌ Las contraseñas no coinciden.';
-                        feedback.classList.remove('text-success');
-                        feedback.classList.add('text-danger');
-                        feedback.style.display = 'block';
-                        feedback.style.visibility = 'visible';
-                        feedback.style.opacity = '1';
+                        showErrorText('❌ Las contraseñas no coinciden.', false);
                     }
                     return;
                 }
                 // Validar requisitos aquí si quieres (longitud, etc)
-                hash_password = password;
+                formData.append('hash_password', password);
             }
 
-            // Construir payload solo con campos editables
-            const payload = {
-                username,
-                email,
-                full_name,
-                gender,
-                birth_place,
-                nationality,
-                image,
-                background,
-                hash_password
-            };
-            // Eliminar campos nulos
-            Object.keys(payload).forEach(k => { if (payload[k] === null || payload[k] === '') delete payload[k]; });
-
+            // AJAX FETCH - POST /users
             try {
-                const res = await fetch(`/users/${id}`, {
-                    method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
+                console.log('Enviando POST a /users (edición con ID=' + id + ')');
+                console.log('FormData entries:', Array.from(formData.entries()));
+                
+                const res = await fetch(`/users`, {
+                    method: 'POST',
+                    body: formData // No headers - browser will set multipart/form-data
                 });
+                
+                console.log('Response status:', res.status);
                 const result = await res.json();
-                if (result.exito) {
+                console.log('Response data:', result);
+                if (result.exito) { 
                     if (feedback) {
-                        feedback.textContent = '✅ Cambios guardados correctamente.';
-                        feedback.classList.remove('text-danger');
-                        feedback.classList.add('text-success');
-                        feedback.style.display = 'block';
-                        feedback.style.visibility = 'visible';
-                        feedback.style.opacity = '1';
+                        showErrorText('✅ Cambios guardados correctamente.', true);
                     }
-                    // Actualizar sessionStorage
-                    Object.assign(userData, payload);
-                    sessionStorage.setItem('user', JSON.stringify(userData));
+                    
+                    // Si el backend devolvió datos actualizados completos, usarlos
+                    if (result.user_data) {
+                        console.log('Actualizando sessionStorage con datos completos del servidor');
+                        userData = result.user_data; // Usar datos completos del servidor
+                    } else {
+                        // Fallback: actualizar campos individuales
+                        console.log('Actualizando sessionStorage con datos del formulario');
+                        if (username) userData.username = username;
+                        if (email) userData.email = email;
+                        if (full_name) userData.full_name = full_name;
+                        if (gender) userData.gender = gender;
+                        if (birth_place) userData.birth_place = birth_place;
+                        if (nationality) userData.nationality = nationality;
+                    }
+                    
+                    //función async para manejar compresión y guardado
+                    const saveUserData = async () => {
+                        try {
+                            //1. intentar guardar datos completos primero
+                            sessionStorage.setItem('user', JSON.stringify(userData));
+                            console.log('User data saved to sessionStorage successfully');
+                        } catch (error) {
+                            //si se pasa un error de cuota comprimir imagenes
+                            if (error.name === 'QuotaExceededError' || error.message.includes('quota')) {
+                                console.warn('SessionStorage quota exceeded, compressing images');
+                                
+                                try {
+                                    //comprimir imágenes y reintentar
+                                    let compressedUserData = { ...userData };
+                                    
+                                    if (compressedUserData.image) {
+                                        console.log('Compressing profile image...');
+                                        compressedUserData.image = await compressImageForStorage(compressedUserData.image, 200);
+                                    }
+                                    
+                                    if (compressedUserData.background_image) {
+                                        console.log('Compressing background image...');
+                                        compressedUserData.background_image = await compressImageForStorage(compressedUserData.background_image, 200);
+                                    }
+                                    
+                                    sessionStorage.setItem('user', JSON.stringify(compressedUserData));
+                                    console.log('User data saved with compressed images');
+                                    
+                                    // Actualizar userData para que las imágenes comprimidas se usen en UI
+                                    userData = compressedUserData;
+                                    
+                                } catch (compressionError) {
+                                    console.warn('Compression failed, saving without images');
+                                    // Crear copia sin imágenes para sessionStorage
+                                    const userDataNoImages = { ...userData };
+                                    delete userDataNoImages.image;
+                                    delete userDataNoImages.background_image;
+                                    
+                                    try {
+                                        sessionStorage.setItem('user', JSON.stringify(userDataNoImages));
+                                        console.log('User data saved without images');
+                                        
+                                        // Guardar imágenes comprimidas por separado para UI
+                                        try {
+                                            if (userData.image) {
+                                                const compressedImage = await compressImageForStorage(userData.image, 150);
+                                                sessionStorage.setItem('user_image_temp', compressedImage);
+                                            }
+                                            if (userData.background_image) {
+                                                const compressedBg = await compressImageForStorage(userData.background_image, 150);
+                                                sessionStorage.setItem('user_bg_temp', compressedBg);
+                                            }
+                                            console.log('Compressed images saved separately for UI');
+                                        } catch (tempError) {
+                                            console.log('Could not save even compressed images separately');
+                                        }
+                                        
+                                    } catch (secondError) {
+                                        console.error('Failed to save even without images:', secondError);
+                                        sessionStorage.clear();
+                                        const essentialData = {
+                                            id: userData.id,
+                                            username: userData.username,
+                                            email: userData.email,
+                                            full_name: userData.full_name
+                                        };
+                                        sessionStorage.setItem('user', JSON.stringify(essentialData));
+                                    }
+                                }
+                            } else {
+                                console.error('Unexpected sessionStorage error:', error);
+                            }
+                        }
+                    };
+                    
+                    // Ejecutar la función de guardado
+                    await saveUserData();
+                    
+                    //actualizar la foto en el navBar y perfil si hay nueva imagen
+                    updateUserPhotoElements(userData);
+                    
+                    // Disparar evento personalizado para notificar cambio de datos de usuario
+                    window.dispatchEvent(new CustomEvent('userDataUpdated', { 
+                        detail: userData 
+                    }));
                     
                     // Recargar la página después de 1.5 segundos
                     setTimeout(() => {
@@ -245,24 +401,145 @@ document.addEventListener("DOMContentLoaded", function() {
                     }, 1500);
                 } else {
                     if (feedback) {
-                        feedback.textContent = '❌ Error: ' + (result.mensaje || 'No se pudo guardar.');
-                        feedback.classList.remove('text-success');
-                        feedback.classList.add('text-danger');
-                        feedback.style.display = 'block';
-                        feedback.style.visibility = 'visible';
-                        feedback.style.opacity = '1';
+                        showErrorText('❌ Error: ' + (result.mensaje || 'No se pudo guardar.'), false);
                     }
                 }
             } catch (err) {
+                console.error('Error en POST:', err);
                 if (feedback) {
-                    feedback.textContent = '❌ Error de conexión.';
-                    feedback.classList.remove('text-success');
-                    feedback.classList.add('text-danger');
-                    feedback.style.display = 'block';
-                    feedback.style.visibility = 'visible';
-                    feedback.style.opacity = '1';
+                    showErrorText('❌ Error de conexión: ' + err.message, false);
                 }
             }
         });
     }
+
+    // Función para actualizar las imágenes del usuario en diferentes elementos
+    function updateUserPhotoElements(optionalUserData = null) {
+        // Usar datos pasados como parámetro o los de sessionStorage
+        let userData = optionalUserData || JSON.parse(sessionStorage.getItem('user') || '{}');
+        
+        // Si no tiene imágenes en userData, buscar en storage temporal
+        if (!userData.image) {
+            const tempImage = sessionStorage.getItem('user_image_temp');
+            if (tempImage) userData.image = tempImage;
+        }
+        
+        if (!userData.background_image) {
+            const tempBg = sessionStorage.getItem('user_bg_temp');
+            if (tempBg) userData.background_image = tempBg;
+        }
+        
+        // Actualizar foto en el navBar
+        const navPhoto = document.getElementById('photoUser');
+        if (navPhoto && userData.image) {
+            if (userData.image.startsWith('data:') || userData.image.startsWith('http')) {
+                navPhoto.src = userData.image;
+                console.log('NavBar photo updated successfully');
+            }
+        }
+        
+        // Actualizar foto de perfil en la vista de perfil
+        if (window.profilePhoto && userData.image) {
+            if (userData.image.startsWith('data:') || userData.image.startsWith('http')) {
+                profilePhoto.src = userData.image;
+                console.log('Profile photo updated successfully');
+            }
+        }
+        
+        // Actualizar fondo de perfil en la vista de perfil
+        if (window.profileBackground && userData.background_image) {
+            if (userData.background_image.startsWith('data:') || userData.background_image.startsWith('http')) {
+                profileBackground.src = userData.background_image;
+                console.log('Background image updated successfully');
+            }
+        }
+    }
+    
+    // Llamar al cargar la página para actualizar elementos del navBar
+    updateUserPhotoElements();
+
+    // Función para comprimir imagen si es muy grande para sessionStorage
+    function compressImageForStorage(imageData, maxSizeKB = 500) {
+        return new Promise((resolve) => {
+            if (!imageData || !imageData.startsWith('data:image/')) {
+                resolve(imageData);
+                return;
+            }
+
+            // Calcular tamaño aproximado en KB
+            const sizeKB = (imageData.length * 3) / 4 / 1024; // base64 a bytes a KB
+            
+            if (sizeKB <= maxSizeKB) {
+                resolve(imageData);
+                return;
+            }
+
+            console.log(`Compressing image from ${sizeKB.toFixed(1)}KB to fit storage`);
+
+            // Si es muy grande, crear canvas para compresión
+            const img = new Image();
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                // Calcular nuevas dimensiones manteniendo proporción
+                let { width, height } = this;
+                const maxDimension = 800; // Máximo 800px en cualquier lado
+                
+                if (width > height && width > maxDimension) {
+                    height = (height * maxDimension) / width;
+                    width = maxDimension;
+                } else if (height > maxDimension) {
+                    width = (width * maxDimension) / height;
+                    height = maxDimension;
+                }
+                
+                canvas.width = width;
+                canvas.height = height;
+                
+                // Dibujar imagen redimensionada
+                ctx.drawImage(this, 0, 0, width, height);
+                
+                // Convertir a base64 con compresión
+                const compressedData = canvas.toDataURL('image/jpeg', 0.7);
+                const newSizeKB = (compressedData.length * 3) / 4 / 1024;
+                console.log(`Image compressed to ${newSizeKB.toFixed(1)}KB`);
+                
+                resolve(compressedData);
+            };
+            img.src = imageData;
+        });
+    }
+
+    // mensaje de error en el form
+    function showErrorText(message, success) {
+        let feedback = document.getElementById('custom-alert-message');
+        if (feedback) {
+            feedback.textContent = message;
+
+            if(success) {
+                feedback.classList.remove('text-danger');
+                feedback.classList.add('text-success');
+            } else {
+            feedback.classList.remove('text-success');
+            feedback.classList.add('text-danger');
+            }
+
+            feedback.style.display = 'block';
+            feedback.style.visibility = 'visible';
+            feedback.style.opacity = '1';
+            
+            // Ocultar mensaje después de 5 segundos
+            setTimeout(() => {
+                feedback.style.opacity = '0';
+                setTimeout(() => {
+                    feedback.style.display = 'none';
+                }, 300);
+            }, 5000);
+        } else {
+            // Fallback si no existe el elemento de feedback
+            alert(message);
+        }
+    }
+
 });

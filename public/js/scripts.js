@@ -71,8 +71,29 @@ function HideError(pInput, pMessage ,pQuitClass)
 //// NOTA: Cambiar imagen
 function ChangeImg(pFP, pFPbtn) 
 {
-    pFP.src = URL.createObjectURL(pFPbtn.files[0]);
-    return true;
+    if (pFPbtn.files && pFPbtn.files[0]) {
+        const file = pFPbtn.files[0];
+        
+        // Validar tamaño de imagen (máximo 15MB)
+        const maxSize = 15 * 1024 * 1024; // 15MB en bytes
+        if (file.size > maxSize) {
+            alert('La imagen es muy pesada. El tamaño máximo permitido es 15MB.');
+            pFPbtn.value = ''; // Limpiar input
+            return false;
+        }
+        
+        // Validar tipo de archivo
+        const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+        if (!validTypes.includes(file.type)) {
+            alert('Formato de imagen no válido. Use JPG, PNG o GIF.');
+            pFPbtn.value = ''; // Limpiar input
+            return false;
+        }
+        
+        pFP.src = URL.createObjectURL(file);
+        return true;
+    }
+    return false;
 }
 
 //// NOTA: Actualizar bandera del select
