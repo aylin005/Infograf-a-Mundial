@@ -22,6 +22,30 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("[⚠️] A T E N C I Ó N: Necesita proporcionar un título y una descripción");
         return;
       }
+      
+      //spinner cuando se envíe el form
+      showNewPostSpinner();
     });
   }
 });
+
+//manejar spinner de nuevo post
+function showNewPostSpinner() {
+  const spinner = document.getElementById('newpost-spinner');
+  const button = document.getElementById('postPost');
+  if (spinner && button) {
+    spinner.style.display = 'block';
+    button.disabled = true;
+    button.textContent = 'Publicando...';
+  }
+}
+
+function hideNewPostSpinner() {
+  const spinner = document.getElementById('newpost-spinner');
+  const button = document.getElementById('postPost');
+  if (spinner && button) {
+    spinner.style.display = 'none';
+    button.disabled = false;
+    button.textContent = 'Publicar';
+  }
+}

@@ -80,14 +80,14 @@ $router->add('/login', function(...$args) use ($renderView, $database) {
         $renderView('logIn.php');
     }
 });
-$router->add('/logout', function() {
+$router->add('/logout', function() use ($renderView) {
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
     session_unset();
     session_destroy();
-    header('Location: /login');
-    exit();
+    
+    $renderView('logout.php');
 });
 $router->add('/admin/login', function(...$args) use ($renderView, $database) {
     AuthMiddleware::clearSessionOnLogin();

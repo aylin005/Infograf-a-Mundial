@@ -227,6 +227,7 @@ document.addEventListener("DOMContentLoaded", function() {
     if (form) {
         form.addEventListener('submit', async function(event) {
             event.preventDefault();
+            showProfileSpinner();
             let feedback = document.getElementById('custom-alert-message');
             if (feedback) {
                 showErrorText('', false);
@@ -290,6 +291,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 const result = await res.json();
                 console.log('Response data:', result);
                 if (result.exito) { 
+                    hideProfileSpinner();
                     if (feedback) {
                         showErrorText('✅ Cambios guardados correctamente.', true);
                     }
@@ -400,12 +402,14 @@ document.addEventListener("DOMContentLoaded", function() {
                         window.location.reload();
                     }, 1500);
                 } else {
+                    hideProfileSpinner();
                     if (feedback) {
                         showErrorText('❌ Error: ' + (result.mensaje || 'No se pudo guardar.'), false);
                     }
                 }
             } catch (err) {
                 console.error('Error en POST:', err);
+                hideProfileSpinner();
                 if (feedback) {
                     showErrorText('❌ Error de conexión: ' + err.message, false);
                 }
@@ -540,6 +544,29 @@ document.addEventListener("DOMContentLoaded", function() {
             // Fallback si no existe el elemento de feedback
             alert(message);
         }
+
+
     }
 
 });
+
+// spinner de profile
+function showProfileSpinner() {
+    const spinner = document.getElementById('profile-spinner');
+    const button = document.getElementById('submitButton');
+    if (spinner && button) {
+        spinner.style.display = 'block';
+        button.disabled = true;
+        button.textContent = 'Guardando...';
+    }
+}
+
+function hideProfileSpinner() {
+    const spinner = document.getElementById('profile-spinner');
+    const button = document.getElementById('submitButton');
+    if (spinner && button) {
+        spinner.style.display = 'none';
+        button.disabled = false;
+        button.textContent = 'Guardar';
+    }
+}

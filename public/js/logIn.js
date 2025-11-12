@@ -36,6 +36,7 @@ document.addEventListener("DOMContentLoaded", function()
       }
       // Real login: POST to /login
       event.preventDefault();
+      showLoginSpinner();
       fetch('/login', {
         method: 'POST',
         headers: {
@@ -62,11 +63,34 @@ document.addEventListener("DOMContentLoaded", function()
             window.location.href = '/profile';
           }
         } else {
+          hideLoginSpinner();
           DisplayCustomAlert(`[❌] E R R O R: ${body.mensaje || 'Usuario o contraseña incorrectos'}`);
         }
       })
       .catch(() => {
+        hideLoginSpinner();
         DisplayCustomAlert('[❌] Error de conexión con el servidor');
       });
         }, false)
       });
+
+// Funciones para manejar spinner de login
+function showLoginSpinner() {
+  const spinner = document.getElementById('login-spinner');
+  const button = document.querySelector('button[type="submit"]');
+  if (spinner && button) {
+    spinner.style.display = 'block';
+    button.disabled = true;
+    button.textContent = 'Iniciando sesión...';
+  }
+}
+
+function hideLoginSpinner() {
+  const spinner = document.getElementById('login-spinner');
+  const button = document.querySelector('button[type="submit"]');
+  if (spinner && button) {
+    spinner.style.display = 'none';
+    button.disabled = false;
+    button.textContent = 'Continuar';
+  }
+}

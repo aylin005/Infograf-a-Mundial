@@ -138,6 +138,7 @@ document.addEventListener("DOMContentLoaded", function()
         if(areCampsFilled && isPasswordCorrect && isBirthdayCorrect && isUserCorrect)
         {
             console.log("Enviando datos a la API...");
+            showSignupSpinner();
             registerUser();
         }
     });
@@ -204,6 +205,7 @@ async function registerUser() {
 
         if (response.ok && result.exito) {
             // Registro exitoso
+            hideSignupSpinner();
             DisplayCustomAlert(`✅ ${result.mensaje || 'Registro exitoso!'}`);
             
             // Redirigir al login después de 2 segundos
@@ -212,11 +214,13 @@ async function registerUser() {
             }, 2000);
         } else {
             // Error en el registro
+            hideSignupSpinner();
             DisplayCustomAlert(`❌ ${result.mensaje || 'Error al registrar usuario'}`);
         }
 
     } catch (error) {
         console.error('Error al registrar usuario:', error);
+        hideSignupSpinner();
         DisplayCustomAlert('❌ Error de conexión. Intente nuevamente.');
     }
 }
@@ -286,5 +290,26 @@ function populateCountrySelect(selectElement, flagElement) {
             flagElement.src = '';
             flagElement.style.display = 'none';
         }
+
+//spinner de signup
+function showSignupSpinner() {
+    const spinner = document.getElementById('signup-spinner');
+    const button = document.getElementById('submitButton');
+    if (spinner && button) {
+        spinner.style.display = 'block';
+        button.disabled = true;
+        button.textContent = 'Registrando...';
+    }
+}
+
+function hideSignupSpinner() {
+    const spinner = document.getElementById('signup-spinner');
+    const button = document.getElementById('submitButton');
+    if (spinner && button) {
+        spinner.style.display = 'none';
+        button.disabled = false;
+        button.textContent = 'Registrarme';
+    }
+}
     });
 }

@@ -51,6 +51,7 @@
                             </div>
                             <br>
                             <p id="custom-alert-message" class="text-center text-danger small fadeUp"></p>
+                            <div id="login-spinner" class="spinner" style="display: none;"></div>
                             <button type="submit" class="btn d-block mx-auto mb-5 shadow">Continuar</button>
                         </form> 
                         <p class="text-center instruction smallerText">¿Aún no tienes una cuenta?</p>

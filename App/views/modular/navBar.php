@@ -22,10 +22,22 @@
     <div id="itemsContainer" class="col-3 col-sm-3 col-md-2 d-flex align-items-center justify-content-center">
       <a href="/profile"><img id="photoUser" class="navPhoto img-fluid" src="<?= asset('media/userPhoto.png') ?>" alt="Foto de usuario"></a>
       <a href="/newPost"><i class="bi bi-plus-square navIcon "></i></a>
-      <a href="/login"><i class="bi bi-box-arrow-in-right navIcon"></i></a>
+      
+      <?php
+      // Verificar si hay sesión activa
+      if (session_status() === PHP_SESSION_NONE) session_start();
+      $isLoggedIn = isset($_SESSION['user']) || isset($_SESSION['admin']);
+      ?>
+      
+      <?php if ($isLoggedIn): ?>
+        <!-- Logout icon para usuarios autenticados -->
+        <a href="/logout"><i class="bi bi-box-arrow-right navIcon" title="Cerrar sesión"></i></a>
+      <?php else: ?>
+        <!-- Login icon para usuarios no autenticados -->
+        <a href="/login"><i class="bi bi-box-arrow-in-right navIcon" title="Iniciar sesión"></i></a>
+      <?php endif; ?>
+      
       <!-- <a href="/adminPosts"><i class="bi bi-person-circle navIcon"></i></a> -->
-    <!-- NOTA: Para signOut-->
-      <!-- <a href="/login"><i class="bi bi-box-arrow-right navIcon"></i></a> -->
     </div>
   </nav>
 </div>

@@ -118,6 +118,7 @@
                             <input type="file" id="mundialPhoto" name="mundialPhoto" accept="image/*" autocomplete="off" class="hideThing">
                             </div>
                         <br><br>
+                        <div id="newpost-spinner" class="spinner" style="display: none;"></div>
                         <div class="d-flex justify-content-center align-items-center helperContainer">
                             <button type="button" id="discardPost" class="btn m-4 largeText">Descartar</button>
                             <button type="submit" id="postPost" class="btn m-4 largeText">Publicar</button>

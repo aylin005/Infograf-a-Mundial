@@ -153,6 +153,7 @@
                     </div>
                     <hr>
                     <p id="custom-alert-message" class="text-center text-danger fadeUp"></p>
+                    <div id="signup-spinner" class="spinner" style="display: none;"></div>
                     <button id="submitButton" type="submit" class="btn d-block mx-auto mb-5 shadow">Registrarme</button>
                 </form>
             </div>

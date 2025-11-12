@@ -284,6 +284,7 @@
                                 </div>
                                 <hr>
                                 <p id="custom-alert-message" class="text-center fadeUp" style="min-height: 20px;"></p>
+                                <div id="profile-spinner" class="spinner" style="display: none;"></div>
                                 <button id="submitButton" type="submit" class="btn d-block mx-auto mb-5 shadow">Guardar</button>
                             </form>
                         </div>
