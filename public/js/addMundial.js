@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initializeElements();
     loadCountries();
     setupEventListeners();
+    initializeCitySelect();
 });
 
 ///////////////////////////////////////
@@ -223,6 +224,9 @@ function addHostCountry() {
     if (flagElement) {
         flagElement.style.display = 'none';
     }
+
+    // Actualizar ciudades cuando se agrega un país
+    updateCitiesFromHostCountries();
 }
 
 ////////////////////////////////////////////////////
@@ -253,6 +257,122 @@ function updateHostCountriesList() {
 function removeHostCountry(index) {
     hostCountries.splice(index, 1);
     updateHostCountriesList();
+    // Actualizar ciudades cuando se remueve un país
+    updateCitiesFromHostCountries();
+}
+
+///////////////////////////////////////
+// Variables para manejo de ciudades
+///////////////////////////////////////
+let citiesCache = {}; // Cache para evitar llamadas repetidas a la API
+
+///////////////////////////////////////
+// Obtiene ciudades de un país específico
+///////////////////////////////////////
+async function getCitiesForCountry(countryName) {
+    // Verificar cache primero
+    if (citiesCache[countryName]) {
+        return citiesCache[countryName];
+    }
+
+    try {
+        const response = await fetch('https://countriesnow.space/api/v0.1/countries/cities', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                country: countryName.toLowerCase()
+            })
+        });
+
+        const data = await response.json();
+        
+        if (data.error === false && data.data) {
+            // Guardar en cache
+            citiesCache[countryName] = data.data;
+            return data.data;
+        } else {
+            console.warn(`No se encontraron ciudades para ${countryName}`);
+            return [];
+        }
+    } catch (error) {
+        console.error(`Error al obtener ciudades para ${countryName}:`, error);
+        return [];
+    }
+}
+
+///////////////////////////////////////
+// Actualiza el select de ciudades basado en los países sede
+///////////////////////////////////////
+async function updateCitiesFromHostCountries() {
+    const citySelect = document.getElementById('citySelect');
+    if (!citySelect) return;
+
+    // Mostrar spinner mientras carga
+    showSpinner('Cargando ciudades...');
+    
+    try {
+        if (hostCountries.length === 0) {
+            // No hay países sede, deshabilitar select
+            citySelect.innerHTML = '<option value="">Primero agrega países sede</option>';
+            citySelect.disabled = true;
+            hideSpinner();
+            return;
+        }
+
+        // Limpiar select y habilitar
+        citySelect.innerHTML = '<option value="">Cargando ciudades...</option>';
+        citySelect.disabled = false;
+
+        // Obtener ciudades para todos los países sede
+        const allCities = [];
+        for (const country of hostCountries) {
+            const cities = await getCitiesForCountry(country.name);
+            
+            // Agregar ciudades con información del país
+            cities.forEach(city => {
+                allCities.push({
+                    name: city,
+                    country: country.name,
+                    flag: country.flag
+                });
+            });
+        }
+
+        // Ordenar ciudades alfabéticamente
+        allCities.sort((a, b) => a.name.localeCompare(b.name));
+
+        // Cambiar mensaje inicial
+        citySelect.innerHTML = '<option value="">Seleccione una ciudad</option>';
+        
+        // Agregar ciudades al select
+        allCities.forEach(city => {
+            const option = document.createElement('option');
+            option.value = city.name;
+            option.textContent = `${city.name} (${city.country})`;
+            option.dataset.country = city.country;
+            option.dataset.flag = city.flag;
+            citySelect.appendChild(option);
+        });
+
+    } catch (error) {
+        console.error('Error al actualizar ciudades:', error);
+        showMessage('Error al cargar ciudades', 'danger');
+    } finally {
+        hideSpinner();
+    }
+}
+
+///////////////////////////////////////
+// Inicializa el select de ciudades vacío
+///////////////////////////////////////
+function initializeCitySelect() {
+    const citySelect = document.getElementById('citySelect');
+    if (citySelect) {
+        citySelect.innerHTML = '<option value="">Primero agrega países sede</option>';
+        citySelect.disabled = true;
+    }
 }
 
 ///////////////////////////////////////
@@ -325,14 +445,24 @@ function addCity() {
         return;
     }
 
+    const selectedOption = citySelect.options[citySelect.selectedIndex];
     const cityName = citySelect.value.trim();
+    const countryName = selectedOption.dataset.country || 'País desconocido';
     
-    if (cities.includes(cityName)) {
+    // Verificar si ya existe (buscar por nombre de ciudad)
+    if (cities.some(city => typeof city === 'string' ? city === cityName : city.name === cityName)) {
         showMessage('Esta ciudad ya está agregada', 'warning');
         return;
     }
 
-    cities.push(cityName);
+    // Agregar ciudad con información del país
+    const cityData = {
+        name: cityName,
+        country: countryName,
+        flag: selectedOption.dataset.flag
+    };
+
+    cities.push(cityData);
     updateCitiesList();
     citySelect.value = '';
 }
@@ -349,8 +479,13 @@ function updateCitiesList() {
     cities.forEach((city, index) => {
         const cityDiv = document.createElement('div');
         cityDiv.className = 'd-flex align-items-center height50x activeCursor';
+        
+        // Manejar tanto strings simples como objetos
+        const cityName = typeof city === 'string' ? city : city.name;
+        const countryInfo = typeof city === 'object' && city.country ? ` (${city.country})` : '';
+        
         cityDiv.innerHTML = `
-            <p class="showListElement shadow">${city}</p>
+            <p class="showListElement shadow">${cityName}${countryInfo}</p>
             <button type="button" class="addButton" onclick="removeCity(${index})">
                 <i class="bi bi-x-square deleteIcon"></i>
             </button>
