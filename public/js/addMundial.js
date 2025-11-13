@@ -5,6 +5,7 @@ let funFacts = [];
 let cities = [];
 let stadiums = [];
 let attachments = [];
+let currentWorldCupId = null; // ID del mundial en edición (null = modo inserción)
 
 document.addEventListener("DOMContentLoaded", () => {
     // verificar que el admin esté logueado 
@@ -18,6 +19,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     
     console.log('Admin autenticado:', window.adminData.username);
+    
+    // Revisar si hay logs de la operación anterior
+    checkLastAction();
     
     //inicialización
     initializeElements();
@@ -58,6 +62,12 @@ function setupEventListeners() {
     if (cancelBtn) {
         cancelBtn.addEventListener('click', handleCancel);
     }
+    
+    // Botón de añadir nuevo mundial
+    const addMundialBtn = document.getElementById('addMundialButton');
+    if (addMundialBtn) {
+        addMundialBtn.addEventListener('click', startNewWorldCup);
+    }
 
     // Botones de agregar
     setupAddButtons();
@@ -67,6 +77,44 @@ function setupEventListeners() {
     
     // Validación en tiempo real
     setupValidation();
+}
+
+///////////////////////////////////////
+// Verifica logs de la operación anterior
+///////////////////////////////////////
+function checkLastAction() {
+    const lastAction = localStorage.getItem('lastMundialAction');
+    if (lastAction) {
+        try {
+            const actionData = JSON.parse(lastAction);
+            console.log('LOGS DE OPERACIÓN ANTERIOR:');
+            console.log(`Acción: ${actionData.action}`);
+            console.log(`ID usado: ${actionData.worldCupId}`);
+            console.log(`Timestamp: ${actionData.timestamp}`);
+            console.log(`Resultado:`, actionData.result);
+            
+            // Limpiar para próxima vez
+            localStorage.removeItem('lastMundialAction');
+        } catch (e) {
+            console.error('Error al leer logs anteriores:', e);
+        }
+    }
+}
+
+///////////////////////////////////////
+// Inicia modo inserción (nuevo mundial)
+///////////////////////////////////////
+function startNewWorldCup() {
+    console.log('iniciando nuevo mundial...');
+    clearForm();
+    
+    // Cambiar texto del botón a modo inserción
+    const submitBtn = document.getElementById('submitBtn');
+    if (submitBtn) {
+        submitBtn.textContent = 'Guardar';
+    }
+    
+    showMessage('Formulario listo para crear un nuevo mundial', 'info');
 }
 
 ///////////////////////////////////////
@@ -850,6 +898,18 @@ async function handleSubmit(e) {
         
         const formData = new FormData();
         
+        // ID del mundial para modo edición (si existe)
+        console.log('DEBUG: currentWorldCupId =', currentWorldCupId);
+        console.log('DEBUG: tipo de currentWorldCupId:', typeof currentWorldCupId);
+        
+        // Alert temporal para debugging - no se pierde con redirecciones  
+        if (currentWorldCupId !== null && currentWorldCupId !== undefined) {
+            formData.append('id', currentWorldCupId);
+            console.log(`modo edición: enviando ID ${currentWorldCupId}`);
+        } else {
+            console.log(`modo inserción: nuevo mundial`);
+        }
+        
         // datos básicos (nombres que espera el SP)
         formData.append('year', document.getElementById('mundialYear')?.value || '');
         formData.append('name', document.getElementById('mundialName')?.value || '');
@@ -936,9 +996,23 @@ async function handleSubmit(e) {
         formData.append('attachments_count', attachments.length.toString());
         
         // debug: mostrar datos que se van a enviar
-        console.log('Datos a enviar:');
+        console.log(`${currentWorldCupId ? 'ACTUALIZANDO' : 'CREANDO'} mundial...`);
+        console.log('FormData contents:');
+        
+        let hasId = false;
         for (let [key, value] of formData.entries()) {
-            console.log(key, value);
+            if (key === 'id') {
+                hasId = true;
+                console.log(`${key}: ${value} (ESTE ES EL ID PARA EDICIÓN)`);
+            } else {
+                console.log(`${key}:`, value);
+            }
+        }
+        
+        if (!hasId && currentWorldCupId !== null) {
+            console.error(' ERROR: currentWorldCupId está definido pero NO se añadió al FormData');
+        } else if (!hasId) {
+            console.log(' Sin ID - creando nuevo mundial');
         }
         
         // enviar datos AJAX
@@ -958,9 +1032,9 @@ async function handleSubmit(e) {
             showMessage('Mundial creado exitosamente', 'success');
             setTimeout(() => {
                 window.location.href = '/adminMundials';
-            }, 2000);
+            }, 3000); // 3 segundos para ver mejor los logs
         } else {
-            throw new Error(result.mensaje || 'Error al crear el mundial');
+            throw new Error(result.mensaje || `Error al ${currentWorldCupId ? 'actualizar' : 'crear'} el mundial`);
         }
         
     } catch (error) {
@@ -1199,6 +1273,16 @@ async function loadWorldCupData(worldCupId) {
         const data = await response.json();
         console.log('Datos del mundial cargados:', data);
         
+        // Almacenar el ID del mundial para modo edición
+        currentWorldCupId = worldCupId;
+        console.log(`modo edición activado para Mundial ID: ${currentWorldCupId}`);
+        
+        // Cambiar texto del botón
+        const submitBtn = document.getElementById('submitBtn');
+        if (submitBtn) {
+            submitBtn.textContent = 'Actualizar';
+        }
+        
         // Asegurarse de que los países estén cargados antes de rellenar el formulario
         if (countriesData.length === 0) {
             console.log('Países no cargados, cargando primero...');
@@ -1220,8 +1304,8 @@ async function loadWorldCupData(worldCupId) {
 // Rellena el formulario con los datos del mundial
 ///////////////////////////////////////
 async function populateFormWithWorldCupData(data) {
-    // Limpiar formulario primero
-    clearForm();
+    //limpiar datos del formulario (preservando el modo edición)
+    clearFormData();
     
     // Los datos vienen directamente del modelo, no anidados en 'worldCup'
     console.log('Datos recibidos:', data);
@@ -1405,7 +1489,10 @@ function setSelectValue(id, value) {
     }
 }
 
-function clearForm() {
+// Limpia solo los datos del formulario SIN afectar el modo edición
+function clearFormData() {
+    console.log('Limpiando datos del formulario...');
+    
     // Limpiar arrays globales
     hostCountries = [];
     cities = [];
@@ -1467,6 +1554,18 @@ function clearForm() {
             input.value = '';
         }
     });
+}
+
+// Limpia completamente el formulario Y resetea el modo edición
+function clearForm() {
+    console.log('Reseteando formulario completo...');
+    
+    // Limpiar datos del formulario
+    clearFormData();
+    
+    // Resetear modo edición
+    currentWorldCupId = null;
+    console.log('Modo edición reseteado - volviendo a modo inserción');
 }
 
 ///////////////////////////////////////
