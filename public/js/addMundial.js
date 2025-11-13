@@ -878,98 +878,74 @@ function validateForm() {
     return isValid;
 }
 
-/////////////////////////////////////////////
- // maneja el envío del formulario
- /////////////////////////////////////////
+//////////////////////////////////////////////
+// maneja el envio del formulario
+//////////////////////////////////////////////
 async function handleSubmit(e) {
     e.preventDefault();
-    console.log('HandleSubmit ejecutándose...');
     
     if (!validateForm()) {
-        console.log('Validación falló');
         showMessage('[❌] Por favor, complete todos los campos obligatorios', 'danger');
         return;
     }
-    
-    console.log('Validación pasó, enviando datos...');
     
     try {
         showSpinner('Guardando mundial...');
         
         const formData = new FormData();
         
-        // ID del mundial para modo edición (si existe)
-        console.log('DEBUG: currentWorldCupId =', currentWorldCupId);
-        console.log('DEBUG: tipo de currentWorldCupId:', typeof currentWorldCupId);
-        
-        // Alert temporal para debugging - no se pierde con redirecciones  
+        // id del mundial para modo edicion
         if (currentWorldCupId !== null && currentWorldCupId !== undefined) {
             formData.append('id', currentWorldCupId);
-            console.log(`modo edición: enviando ID ${currentWorldCupId}`);
-        } else {
-            console.log(`modo inserción: nuevo mundial`);
         }
         
-        // datos básicos (nombres que espera el SP)
+        // datos basicos
         formData.append('year', document.getElementById('mundialYear')?.value || '');
         formData.append('name', document.getElementById('mundialName')?.value || '');
         formData.append('slogan', document.getElementById('mundialSlogan')?.value || '');
         formData.append('description', document.getElementById('generalDescription')?.value || '');
         
-        // logo del mundial 
+        // imagenes
         const logoPhoto = document.getElementById('mundialLogo');
         if (logoPhoto && logoPhoto.files[0]) {
             formData.append('logo', logoPhoto.files[0]);
         }
         
-        // imagen principal 
         const principalPhoto = document.getElementById('mundialPrincipalPhoto');
         if (principalPhoto && principalPhoto.files[0]) {
             formData.append('image', principalPhoto.files[0]);
         }
         
-        // descripción de la imagen principal
         const principalDescription = document.getElementById('imageDescription');
         if (principalDescription) {
             formData.append('image_description', principalDescription.value);
         }
         
-        // países sede (JSON para el SP)
+        // datos estructurados
         formData.append('host_countries_json', JSON.stringify(hostCountries));
-        
-        // datos curiosos como texto separado por delimitadores
-        const funFactsText = funFacts.join(' | '); // Separar con | 
-        formData.append('fun_fact', funFactsText);
-        
-        // información extra (ciudades y estadios como JSON)
-        const extraInfo = {
+        formData.append('fun_fact', funFacts.join(' | '));
+        formData.append('extra_info', JSON.stringify({
             cities: cities,
             stadiums: stadiums
-        };
-        formData.append('extra_info', JSON.stringify(extraInfo));
+        }));
         
-        // resultados de la final (campos que espera el SP)
+        // resultados de la final
         const team1 = document.getElementById('finalTeam1Select')?.value || '';
         const team2 = document.getElementById('finalTeam2Select')?.value || '';
         const goals1 = document.getElementById('finalGoalsTeam1')?.value || 0;
         const goals2 = document.getElementById('finalGoalsTeam2')?.value || 0;
         
-        // determinar campeón y subcampeón
-        let champion = '';
+        // determinar campeon y subcampeon
+        const winnerCountry = document.getElementById('winnerCountrySelect')?.value || '';
+        let champion = winnerCountry;
         let subchampion = '';
         
-        // lógica para determinar ganador (se puede mejorar después)
-        const winnerCountry = document.getElementById('winnerCountrySelect')?.value || '';
         if (winnerCountry === team1) {
-            champion = team1;
             subchampion = team2;
         } else if (winnerCountry === team2) {
-            champion = team2;
             subchampion = team1;
         } else {
-            // si no coincide, usar el país ganador seleccionado
-            champion = winnerCountry;
-            subchampion = team1 || team2; // usar uno de los finalistas
+            subchampion = team1 || team2;
         }
         
         formData.append('champion', champion);
@@ -978,9 +954,9 @@ async function handleSubmit(e) {
         formData.append('overtime', document.getElementById('extraTime')?.value || 0);
         formData.append('penalties_champion', document.getElementById('penaltyGoalsTeam1')?.value || 0);
         formData.append('penalties_subchampion', document.getElementById('penaltyGoalsTeam2')?.value || 0);
-        formData.append('leading_scorer', ''); // campo requerido por el SP, por ahora vacío
+        formData.append('leading_scorer', '');
         
-        // obtener admin_id de la sesión
+        // admin id de la sesion
         const adminUsername = window.adminData?.username || '';
         if (!adminUsername) {
             showMessage('Error: No se pudo obtener la información del administrador', 'error');
@@ -995,51 +971,26 @@ async function handleSubmit(e) {
         });
         formData.append('attachments_count', attachments.length.toString());
         
-        // debug: mostrar datos que se van a enviar
-        console.log(`${currentWorldCupId ? 'ACTUALIZANDO' : 'CREANDO'} mundial...`);
-        console.log('FormData contents:');
-        
-        let hasId = false;
-        for (let [key, value] of formData.entries()) {
-            if (key === 'id') {
-                hasId = true;
-                console.log(`${key}: ${value} (ESTE ES EL ID PARA EDICIÓN)`);
-            } else {
-                console.log(`${key}:`, value);
-            }
-        }
-        
-        if (!hasId && currentWorldCupId !== null) {
-            console.error(' ERROR: currentWorldCupId está definido pero NO se añadió al FormData');
-        } else if (!hasId) {
-            console.log(' Sin ID - creando nuevo mundial');
-        }
-        
-        // enviar datos AJAX
-        console.log('Enviando petición a /worldcups...');
+        // enviar datos
         const response = await fetch('/worldcups', {
             method: 'POST',
             body: formData
         });
         
-        console.log('Respuesta recibida:', response.status, response.statusText);
-        
         const result = await response.json();
-        console.log('Resultado del servidor:', result);
         
-        // El SP devuelve 'exito' (1 o 0) y 'mensaje'
         if (result.exito === 1 || result.exito === true) {
-            showMessage('Mundial creado exitosamente', 'success');
+            showMessage(`Mundial ${currentWorldCupId ? 'actualizado' : 'creado'} exitosamente`, 'success');
             setTimeout(() => {
                 window.location.href = '/adminMundials';
-            }, 3000); // 3 segundos para ver mejor los logs
+            }, 2000);
         } else {
             throw new Error(result.mensaje || `Error al ${currentWorldCupId ? 'actualizar' : 'crear'} el mundial`);
         }
         
     } catch (error) {
-        console.error('Error al enviar formulario:', error);
-        showMessage(`Error al crear el mundial: ${error.message}`, 'danger');
+        console.error('Error en handleSubmit:', error);
+        showMessage(`Error al ${currentWorldCupId ? 'actualizar' : 'crear'} el mundial: ${error.message}`, 'danger');
     } finally {
         hideSpinner();
     }
@@ -1253,7 +1204,7 @@ function selectWorldCup(worldCupId, year) {
 }
 
 ///////////////////////////////////////
-// Carga los datos de un mundial específico para edición
+// carga los datos de un mundial especifico para edicion
 ///////////////////////////////////////
 async function loadWorldCupData(worldCupId) {
     try {
@@ -1271,25 +1222,22 @@ async function loadWorldCupData(worldCupId) {
         }
 
         const data = await response.json();
-        console.log('Datos del mundial cargados:', data);
         
-        // Almacenar el ID del mundial para modo edición
+        // almacenar el id del mundial para modo edicion
         currentWorldCupId = worldCupId;
-        console.log(`modo edición activado para Mundial ID: ${currentWorldCupId}`);
         
-        // Cambiar texto del botón
+        // cambiar texto del boton
         const submitBtn = document.getElementById('submitBtn');
         if (submitBtn) {
             submitBtn.textContent = 'Actualizar';
         }
         
-        // Asegurarse de que los países estén cargados antes de rellenar el formulario
+        // asegurarse de que los paises esten cargados antes de rellenar el formulario
         if (countriesData.length === 0) {
-            console.log('Países no cargados, cargando primero...');
             await loadCountries();
         }
         
-        // Rellenar el formulario con los datos del mundial
+        // rellenar el formulario con los datos del mundial
         await populateFormWithWorldCupData(data);
         
     } catch (error) {
@@ -1301,30 +1249,27 @@ async function loadWorldCupData(worldCupId) {
 }
 
 ///////////////////////////////////////
-// Rellena el formulario con los datos del mundial
+// rellena el formulario con los datos del mundial
 ///////////////////////////////////////
 async function populateFormWithWorldCupData(data) {
-    //limpiar datos del formulario (preservando el modo edición)
+    // limpiar datos del formulario (preservando el modo edicion)
     clearFormData();
     
-    // Los datos vienen directamente del modelo, no anidados en 'worldCup'
-    console.log('Datos recibidos:', data);
-    
-    // Campos de texto básicos
+    // campos de texto basicos
     setInputValue('mundialYear', data.year);
     setInputValue('mundialName', data.name);
     setInputValue('mundialSlogan', data.slogan);
     setInputValue('generalDescription', data.description);
-    setInputValue('imageDescription', data.image_description);  // Para descripción de imagen principal
+    setInputValue('imageDescription', data.image_description);
     
-    // Selects de países (los países ya están cargados en este punto)
-    setSelectValue('winnerCountrySelect', data.champion);          // Ganador 
-    setSelectValue('finalTeam1Select', data.champion);             // Equipo 1 final
-    setSelectValue('finalTeam2Select', data.subchampion);          // Equipo 2 final
-    setSelectValue('penaltyTeam1Select', data.champion);           // Equipo 1 penalties 
-    setSelectValue('penaltyTeam2Select', data.subchampion);        // Equipo 2 penalties
+    // selects de paises
+    setSelectValue('winnerCountrySelect', data.champion);
+    setSelectValue('finalTeam1Select', data.champion);
+    setSelectValue('finalTeam2Select', data.subchampion);
+    setSelectValue('penaltyTeam1Select', data.champion);
+    setSelectValue('penaltyTeam2Select', data.subchampion);
     
-    // Parseamos el score para obtener goles individuales
+    // parsear el score para obtener goles individuales
     if (data.score) {
         const scoreMatch = data.score.match(/(\d+)-(\d+)/);
         if (scoreMatch) {
@@ -1333,18 +1278,18 @@ async function populateFormWithWorldCupData(data) {
         }
     }
     
-    // Tiempo extra y penalties
+    // tiempo extra y penalties
     setInputValue('extraTime', data.overtime || 0);
     setInputValue('penaltyGoalsTeam1', data.penalties_champion || 0);
     setInputValue('penaltyGoalsTeam2', data.penalties_subchampion || 0);
     
-    // Datos curiosos
+    // datos curiosos
     if (data.fun_fact) {
         funFacts = data.fun_fact.split(' | ').filter(fact => fact.trim());
         updateFunFactsList();
     }
     
-    // Información extra (parsear JSON si existe)
+    // informacion extra
     if (data.extra_info) {
         try {
             const extraInfo = JSON.parse(data.extra_info);
@@ -1361,11 +1306,9 @@ async function populateFormWithWorldCupData(data) {
         }
     }
     
-    //host countries - limpiar primero para evitar duplicados
+    // paises sede - evitar duplicados
     if (data.host_countries && Array.isArray(data.host_countries)) {
-        hostCountries = []; // Limpiar lista actual
-        
-        //set para evitar duplicados basado en el nombre del país
+        hostCountries = [];
         const uniqueCountries = new Set();
         
         data.host_countries.forEach(hc => {
@@ -1380,17 +1323,15 @@ async function populateFormWithWorldCupData(data) {
         });
         
         updateHostCountriesList();
-        // Actualizar ciudades basado en hostq countries
         updateCitiesFromHostCountries();
     }
     
-    // Attachments - cargar desde base64 y convertir a File objects
+    // attachments - cargar desde base64
     if (data.attachments && Array.isArray(data.attachments)) {
-        console.log(`Mundial tiene ${data.attachments.length} attachments`);
         loadAttachmentsFromData(data.attachments);
     }
     
-    // Mostrar imágenes si existen (como preview) y convertir a archivos
+    // mostrar imagenes como preview y convertir a archivos
     if (data.image) {
         showImagePreview('image', data.image);
         await convertBase64ToFileInput('image', data.image, 'mundialPrincipalPhoto');
@@ -1402,77 +1343,59 @@ async function populateFormWithWorldCupData(data) {
 }
 
 ///////////////////////////////////////
-// Muestra preview de imagen desde base64
+// muestra preview de imagen desde base64
 ///////////////////////////////////////
 function showImagePreview(type, base64Data) {
     let previewId;
     
-    // Mapear a los IDs del HTML
+    // mapear a los ids del html
     if (type === 'image') {
-        previewId = 'mundialPrincipalImage';  // Imagen principal
+        previewId = 'mundialPrincipalImage';
     } else if (type === 'logo') {
-        previewId = 'logo';                   // Logo del mundial
+        previewId = 'logo';
     }
     
     const preview = document.getElementById(previewId);
     
     if (preview && base64Data) {
-        // Verificar si es una URL válida o base64 (como en profile.js)
+        // verificar si es una url valida o base64
         if (base64Data.startsWith('data:') || base64Data.startsWith('http')) {
             preview.src = base64Data;
         } else {
-            // Si es solo base64 sin prefijo, agregarlo
+            // si es solo base64 sin prefijo, agregarlo
             preview.src = `data:image/jpeg;base64,${base64Data}`;
         }
         preview.style.display = 'block';
-        
-        console.log(`Preview cargado para ${type} en elemento ${previewId}`);
-    } else {
-        console.warn(`No se pudo cargar preview para ${type}:`, { preview: !!preview, hasData: !!base64Data });
     }
 }
 
 ///////////////////////////////////////
-// Funciones auxiliares para rellenar formulario
+// funciones auxiliares para rellenar formulario
 ///////////////////////////////////////
 function setInputValue(id, value) {
     const element = document.getElementById(id);
     if (element && value !== null && value !== undefined) {
         element.value = value;
-        console.log(`input ${id} seteado a: ${value}`);
-    } else {
-        console.warn(`no se pudo setear ${id}:`, { element: !!element, value });
     }
 }
 
 function setSelectValue(id, value) {
     const element = document.getElementById(id);
     if (element && value !== null && value !== undefined && value !== '') {
-        console.log(`Intentando setear ${id} con valor: ${value}`);
-        
-        // Buscar la opción que coincida con el valor
-        let found = false;
-        
-        // Normalizar el valor de búsqueda
         const normalizedValue = value.toLowerCase().trim();
+        let found = false;
         
         for (let option of element.options) {
             const optionText = option.textContent.toLowerCase().trim();
             const optionValue = option.value.toLowerCase().trim();
             
-            // Intentar múltiples tipos de coincidencia
+            // buscar coincidencia exacta o parcial
             if (optionValue === normalizedValue || 
                 optionText === normalizedValue ||
                 optionText.includes(normalizedValue) || 
-                normalizedValue.includes(optionText) ||
-                // Coincidencia parcial para casos como "United States" vs "USA"
-                (normalizedValue.length > 3 && optionText.includes(normalizedValue)) ||
-                (optionText.length > 3 && normalizedValue.includes(optionText))) {
+                normalizedValue.includes(optionText)) {
                 
                 element.value = option.value;
-                console.log(` ${id} seteado a: ${option.value} (${option.textContent})`);
-                
-                // Disparar evento change para actualizar banderas si es necesario
                 element.dispatchEvent(new Event('change'));
                 found = true;
                 break;
@@ -1480,34 +1403,28 @@ function setSelectValue(id, value) {
         }
         
         if (!found) {
-            console.warn(`No se encontró opción para ${id} con valor: "${value}"`);
-            // Listar las primeras opciones disponibles para debug
-            console.log(`Opciones disponibles (primeras 5):`, 
-                Array.from(element.options).slice(0, 5).map(opt => opt.textContent));
-            console.log('Opciones disponibles:', Array.from(element.options).map(opt => opt.value + ' -> ' + opt.textContent));
+            console.warn(`No se encontro opcion para ${id} con valor: "${value}"`);
         }
     }
 }
 
-// Limpia solo los datos del formulario SIN afectar el modo edición
+// limpia solo los datos del formulario sin afectar el modo edicion
 function clearFormData() {
-    console.log('Limpiando datos del formulario...');
-    
-    // Limpiar arrays globales
+    // limpiar arrays globales
     hostCountries = [];
     cities = [];
     stadiums = [];
     funFacts = [];
     attachments = [];
     
-    // Limpiar listas visuales
+    // limpiar listas visuales
     updateHostCountriesList();
     updateCitiesList();
     updateStadiumsList();
     updateFunFactsList();
     updateAttachmentsList();
     
-    // Limpiar campos específicos del formulario
+    // limpiar campos especificos del formulario
     const fieldsToReset = [
         'mundialYear', 'mundialName', 'mundialSlogan', 'generalDescription',
         'imageDescription', 'tooltip', 'finalGoalsTeam1', 'finalGoalsTeam2', 'extraTime',
@@ -1521,7 +1438,7 @@ function clearFormData() {
         }
     });
     
-    // Resetear selects de países
+    // resetear selects de paises
     const selectsToReset = [
         'winnerCountrySelect', 'finalTeam1Select', 'finalTeam2Select',
         'penaltyTeam1Select', 'penaltyTeam2Select', 'hostCountrySelect',
@@ -1535,7 +1452,7 @@ function clearFormData() {
         }
     });
     
-    // Resetear imágenes a default
+    // resetear imagenes a default
     const logo = document.getElementById('logo');
     const mainImage = document.getElementById('mundialPrincipalImage');
     
@@ -1546,7 +1463,7 @@ function clearFormData() {
         mainImage.src = '/media/userPhoto.png';
     }
     
-    // Limpiar inputs de archivos
+    // limpiar inputs de archivos
     const fileInputs = ['mundialLogo', 'mundialPrincipalPhoto', 'mundialPhoto'];
     fileInputs.forEach(inputId => {
         const input = document.getElementById(inputId);
@@ -1556,39 +1473,34 @@ function clearFormData() {
     });
 }
 
-// Limpia completamente el formulario Y resetea el modo edición
+// limpia completamente el formulario y resetea el modo edicion
 function clearForm() {
-    console.log('Reseteando formulario completo...');
-    
-    // Limpiar datos del formulario
+    // limpiar datos del formulario
     clearFormData();
     
-    // Resetear modo edición
+    // resetear modo edicion
     currentWorldCupId = null;
-    console.log('Modo edición reseteado - volviendo a modo inserción');
 }
 
 ///////////////////////////////////////
-//funciones auxiliares para manejo de archivos desde base64
+// funciones auxiliares para manejo de archivos desde base64
 ///////////////////////////////////////
 
-//convierte base64 a archivo File
+// convierte base64 a archivo file
 function base64ToFile(base64Data, filename, mimeType = 'image/jpeg') {
     try {
-        // Remover el prefijo data: si existe
+        // remover el prefijo data: si existe
         let base64 = base64Data;
         if (base64Data.includes(',')) {
             base64 = base64Data.split(',')[1];
         } else if (base64Data.startsWith('data:')) {
-            // Si empieza con data: pero no tiene coma, asumir que está malformado
-            console.warn('Base64 data malformado, intentando usar sin prefijo');
             base64 = base64Data.substring(base64Data.indexOf(':') + 1);
         }
         
-        // Limpiar espacios y caracteres no válidos
+        // limpiar espacios y caracteres no validos
         base64 = base64.replace(/\s/g, '');
         
-        // Convertir base64 a bytes
+        // convertir base64 a bytes
         const byteCharacters = atob(base64);
         const byteNumbers = new Array(byteCharacters.length);
         for (let i = 0; i < byteCharacters.length; i++) {
@@ -1596,42 +1508,33 @@ function base64ToFile(base64Data, filename, mimeType = 'image/jpeg') {
         }
         const byteArray = new Uint8Array(byteNumbers);
         
-        // Crear el archivo File
+        // crear el archivo file
         return new File([byteArray], filename, { type: mimeType });
     } catch (error) {
         console.error('Error al convertir base64 a File:', error);
-        console.log('Base64 data length:', base64Data?.length || 'N/A');
-        console.log('Base64 starts with:', base64Data?.substring(0, 50) || 'N/A');
         return null;
     }
 }
 
-// Convierte base64 a File y lo asigna al input correspondiente
+// convierte base64 a file y lo asigna al input correspondiente
 async function convertBase64ToFileInput(imageType, base64Data, inputId) {
     try {
         const input = document.getElementById(inputId);
-        if (!input) {
-            console.warn(`Input ${inputId} no encontrado`);
-            return;
-        }
+        if (!input) return;
         
-        // Crear filename basado en el tipo
+        // crear filename basado en el tipo
         const filename = imageType === 'logo' ? 'logo.jpg' : 'principal_image.jpg';
         
-        // Convertir base64 a File
+        // convertir base64 a file
         const file = base64ToFile(base64Data, filename);
         
         if (file) {
-            // Crear un DataTransfer para simular la selección de archivo
+            // crear un datatransfer para simular la seleccion de archivo
             const dataTransfer = new DataTransfer();
             dataTransfer.items.add(file);
             
-            // Asignar el archivo al input
+            // asignar el archivo al input
             input.files = dataTransfer.files;
-            
-            console.log(`Archivo ${filename} asignado a ${inputId}`);
-        } else {
-            console.warn(`No se pudo convertir imagen ${imageType} a archivo para ${inputId}`);
         }
         
     } catch (error) {
@@ -1639,47 +1542,38 @@ async function convertBase64ToFileInput(imageType, base64Data, inputId) {
     }
 }
 
-// Carga anexos desde datos de la base de datos
+// carga anexos desde datos de la base de datos
 async function loadAttachmentsFromData(attachmentsData) {
     try {
-        console.log('Cargando anexos, datos recibidos:', attachmentsData);
-        
-        // Limpiar anexos actuales
+        // limpiar anexos actuales
         attachments = [];
         
-        // Procesar cada anexo
+        // procesar cada anexo
         for (let i = 0; i < attachmentsData.length; i++) {
             const attachment = attachmentsData[i];
-            console.log(`Procesando anexo ${i}:`, attachment);
             
-            // Verificar diferentes posibles nombres de campo para la imagen
+            // verificar diferentes posibles nombres de campo para la imagen
             const imageData = attachment.image || attachment.image_data || attachment.data;
-            console.log('Imagen encontrada:', !!imageData, 'Tamaño aprox:', imageData ? imageData.length : 'N/A');
             
             if (imageData) {
-                // Crear filename único
+                // crear filename unico
                 const filename = `anexo_${i + 1}.jpg`;
                 
-                // Convertir base64 a File
+                // convertir base64 a file
                 const file = base64ToFile(imageData, filename);
                 
                 if (file) {
-                    // Agregar al array de anexos
+                    // agregar al array de anexos
                     attachments.push({
                         file: file,
                         description: attachment.description || `Anexo ${i + 1}`
                     });
-                    console.log(`Anexo ${i + 1} convertido correctamente`);
-                } else {
-                    console.warn(`No se pudo convertir anexo ${i + 1} a archivo`);
                 }
             }
         }
         
-        // Actualizar la vista de anexos
+        // actualizar la vista de anexos
         updateAttachmentsList();
-        
-        console.log(`${attachments.length} anexos cargados desde la base de datos`);
         
     } catch (error) {
         console.error('Error al cargar anexos:', error);
