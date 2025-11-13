@@ -28,6 +28,7 @@ async function loadWorldCupsForSlider() {
         if (data && Array.isArray(data)) {
             // procesar los datos para convertir las imagenes base64 a urls
             mundials = data.map(mundial => ({
+                id: mundial.id,
                 image: mundial.image ? `data:image/jpeg;base64,${mundial.image}` : '/media/userPhoto.png',
                 year: mundial.year,
                 slogan: mundial.slogan || 'Mundial de fútbol',
@@ -96,7 +97,7 @@ function showCarousel(pMundiales)
         const lazyLoad = i === 0 ? '' : `data-src="${mundial.image}" loading="lazy"`;
         
         item.innerHTML = `
-            <div class="imageDegraded">
+            <div class="imageDegraded" style="cursor: pointer;" onclick="goToMundial(${mundial.id})">
                 <a>
                     <img ${imgSrc ? `src="${imgSrc}"` : ''} 
                          ${lazyLoad} 
@@ -106,7 +107,7 @@ function showCarousel(pMundiales)
                 </a>
             </div>
             <div class="carousel-caption d-md-block mb-4">
-                <a href="/mundialDisplay">
+                <a href="/mundialDisplay?id=${mundial.id}">
                     <h1 class="pageTitle rem2size textShadow">Mundial ${mundial.year}</h1>
                 </a>
                 <h2 class="mundialSlogan textShadow">${mundial.slogan}</h2>
@@ -175,4 +176,11 @@ function showLoadingSpinner() {
 // oculta spinner de carga
 function hideLoadingSpinner() {
     // el spinner se oculta automaticamente cuando se cargan los datos del carousel
+}
+
+// navega al mundial especificado
+function goToMundial(worldCupId) {
+    if (worldCupId) {
+        window.location.href = `/mundialDisplay?id=${worldCupId}`;
+    }
 }

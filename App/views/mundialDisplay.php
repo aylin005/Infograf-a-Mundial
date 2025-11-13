@@ -24,13 +24,13 @@
             <main class="col-12 col-md-9">
                 <div class="row setHeight75px">
                     <div class="col-2 d-flex align-items-center">
-                        <button id="beforeMundial" onclick="location.href='/'" type="button" class="moveButton beforeButton shadow"><i class="bi bi-arrow-left-square"></i> 1930</button>
+                        <button id="beforeMundial" onclick="goToPreviousWorldCup()" type="button" class="moveButton beforeButton shadow" disabled><i class="bi bi-arrow-left-square"></i> <span id="previousYear">----</span></button>
                     </div>
                     <div class="col-8 d-flex align-items-center">
                         <button id="seeMundials" onclick="location.href='/'" type="button" class="moveButton middleButton shadow">Cronología de los mundiales</button>
                     </div>
                     <div class="col-2 d-flex align-items-center">
-                        <button id="afterMundial" onclick="location.href='/'" type="button" class="moveButton afterButton shadow">1938 <i class="bi bi-arrow-right-square"></i></button>
+                        <button id="afterMundial" onclick="goToNextWorldCup()" type="button" class="moveButton afterButton shadow" disabled><span id="nextYear">----</span> <i class="bi bi-arrow-right-square"></i></button>
                     </div>
                 </div>
                 <div class="mundialDisplay">
@@ -59,7 +59,7 @@
                                         <h4 class="infoTitle">Selección ganadora</h4>
                                     </div>
                                     <div class="d-flex align-items-center addLeftMargin">
-                                        <img id="mundialWinnerFlag" class="mundialWinnerFlag" src="/media/Flags/Italia-Emoji.png">
+                                        <!-- <img id="mundialWinnerFlag" class="mundialWinnerFlag" src="/media/Flags/Italia-Emoji.png"> -->
                                         <p id="mundialWinnerName" class="mundialWinnerName" >Italia</p>
                                     </div>
                                 </div>
@@ -200,5 +200,6 @@
         <script src="/js/fetchThings/fetchPreviewPosts.js"></script>
         <script src="/js/fetchThings/fetchCardsPosts.js"></script>
         <script src="/js/tooltip.js"></script>
+        <script src="/js/mundial.js"></script>
     </body>
 </html>

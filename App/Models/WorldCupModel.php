@@ -97,20 +97,35 @@ class WorldCupModel
 
     public function getSlider(): array
     {
-        $sql = "CALL sp_world_cup_general('getSlider', 0)";
-        $stmt = $this->conn->query($sql);
-        $data = []; 
+        try {
+            $sql = "CALL sp_world_cup_general('getSlider', 0)";
+            $stmt = $this->conn->query($sql);
+            $data = []; 
 
-        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            // convertir imagen blob a base64 si existe
-            if ($row['image']) {
-                $row['image'] = base64_encode($row['image']);
+            while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                // convertir imagen blob a base64 si existe
+                if (isset($row['image']) && !is_null($row['image'])) {
+                    $row['image'] = base64_encode($row['image']);
+                } else {
+                    $row['image'] = null;  // asegurar que sea null si no hay imagen
+                }
+                
+                // asegurar que todos los campos necesarios existan
+                $row['id'] = $row['id'] ?? 0;
+                $row['year'] = $row['year'] ?? 0;
+                $row['name'] = $row['name'] ?? '';
+                $row['slogan'] = $row['slogan'] ?? '';
+                
+                $data[] = $row;
             }
-            $data[] = $row;
+            
+            $stmt->closeCursor();
+            return $data;
+            
+        } catch (Exception $e) {
+            error_log("Error in getSlider(): " . $e->getMessage());
+            return [];
         }
-        
-        $stmt->closeCursor();
-        return $data;
     }
 
     public function insert(array $data, $id = 0): array

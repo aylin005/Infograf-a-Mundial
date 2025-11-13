@@ -75,8 +75,16 @@ class WorldCupController
 
         // GET /worldcups/slider
         if ($method === "GET" && strpos($uri, '/worldcups/slider') !== false) {
-            header('Content-Type: application/json');
-            echo json_encode($this->model->getSlider());
+            try {
+                $sliderData = $this->model->getSlider();
+                header('Content-Type: application/json');
+                echo json_encode($sliderData);
+            } catch (Exception $e) {
+                error_log("Error in /worldcups/slider endpoint: " . $e->getMessage());
+                http_response_code(500);
+                header('Content-Type: application/json');
+                echo json_encode(['error' => 'Internal server error', 'message' => $e->getMessage()]);
+            }
             return;
         }
 
