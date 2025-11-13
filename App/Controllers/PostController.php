@@ -84,7 +84,15 @@ class PostController
                         // los IDs ya vienen como CSV desde el frontend
                         error_log("PostController POST - Category IDs recibidos: " . $data['category_ids']);
                     } else {
-                        error_log("PostController POST - No se recibieron category_ids o no es string. Datos: " . json_encode($data));
+                        error_log("PostController POST - No se recibieron category_ids o no es string");
+                    }
+                    
+                    // procesar selecciones si vienen del frontend
+                    if (isset($data['selections']) && is_string($data['selections'])) {
+                        // ya vienen como CSV desde el frontend
+                        error_log("PostController POST - Selections recibidas: " . $data['selections']);
+                    } else {
+                        error_log("PostController POST - No se recibieron selections o no es string");
                     }
                     
                     // validar campos requeridos

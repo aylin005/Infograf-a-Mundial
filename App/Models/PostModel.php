@@ -87,19 +87,41 @@ class PostModel
                 }
             }
 
-            // llamar al stored procedure
-            $sql = "CALL sp_post_insert(:id, :user_id, :worldcup_id, :title, :content, :category_ids_csv)";
+            // procesar selecciones (nombres de países)
+            $nationalTeamsNames = null;
+            if (isset($data["selections"]) && !empty($data["selections"])) {
+                if (is_string($data["selections"])) {
+                    // ya viene como CSV desde el frontend
+                    $nationalTeamsNames = trim($data["selections"]);
+                    error_log("PostModel - National teams received as CSV: $nationalTeamsNames");
+                } elseif (is_array($data["selections"])) {
+                    // si viene como array, convertir a CSV
+                    $validNames = array_filter($data["selections"], function($name) {
+                        return !empty(trim($name));
+                    });
+                    
+                    if (!empty($validNames)) {
+                        $nationalTeamsNames = implode(',', $validNames);
+                        error_log("PostModel - National teams processed from array: $nationalTeamsNames");
+                    }
+                }
+            }
+
+            // llamar al stored procedure actualizado
+            $sql = "CALL sp_post_insert(:id, :user_id, :worldcup_id, :title, :content, :category_ids_csv, :nationalteams_names_csv)";
             $stmt = $this->conn->prepare($sql);
 
             // bind parametros
-            $stmt->bindValue(":id",                 $id,                        PDO::PARAM_INT);
-            $stmt->bindValue(":user_id",            (int)$data["user_id"],      PDO::PARAM_INT);
-            $stmt->bindValue(":worldcup_id",        (int)$data["worldcup_id"],  PDO::PARAM_INT);
-            $stmt->bindValue(":title",              trim($data["title"]),       PDO::PARAM_STR);
-            $stmt->bindValue(":content",            trim($data["content"]),     PDO::PARAM_STR);
-            $stmt->bindValue(":category_ids_csv",   $categoryIds,               PDO::PARAM_STR);
+            $stmt->bindValue(":id",                         $id,                        PDO::PARAM_INT);
+            $stmt->bindValue(":user_id",                    (int)$data["user_id"],      PDO::PARAM_INT);
+            $stmt->bindValue(":worldcup_id",                (int)$data["worldcup_id"],  PDO::PARAM_INT);
+            $stmt->bindValue(":title",                      trim($data["title"]),       PDO::PARAM_STR);
+            $stmt->bindValue(":content",                    trim($data["content"]),     PDO::PARAM_STR);
+            $stmt->bindValue(":category_ids_csv",           $categoryIds,               PDO::PARAM_STR);
+            $stmt->bindValue(":nationalteams_names_csv",    $nationalTeamsNames,        PDO::PARAM_STR);
 
             error_log("PostModel - Calling SP with category_ids_csv: " . ($categoryIds ?? 'NULL'));
+            error_log("PostModel - Calling SP with nationalteams_names_csv: " . ($nationalTeamsNames ?? 'NULL'));
 
             error_log("PostModel insert - Calling SP with params: id=$id, user_id={$data['user_id']}, worldcup_id={$data['worldcup_id']}, title='{$data['title']}'");
 

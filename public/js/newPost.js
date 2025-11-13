@@ -78,7 +78,24 @@ async function handleFormSubmit(event) {
         
         // agregar selecciones si las hay
         if (selectedSelections.length > 0) {
-            formData.append('selections', JSON.stringify(selectedSelections));
+            console.log('Selecciones seleccionadas:', selectedSelections);
+            
+            // extraer los nombres de los objetos de selecciones y enviar como CSV
+            const selectionNames = selectedSelections
+                .filter(selection => selection && selection.name && selection.name.trim()) // solo objetos con nombre válido
+                .map(selection => selection.name.trim());
+            
+            console.log('Nombres de selecciones filtrados:', selectionNames);
+            
+            if (selectionNames.length > 0) {
+                const csvSelections = selectionNames.join(',');
+                formData.append('selections', csvSelections);
+                console.log('CSV de selecciones enviado:', csvSelections);
+            } else {
+                console.warn('No se encontraron selecciones válidas');
+            }
+        } else {
+            console.log('No hay selecciones seleccionadas');
         }
         
         // agregar categorias si las hay
@@ -109,7 +126,8 @@ async function handleFormSubmit(event) {
             worldcup_id: selectedWorldCupId,
             selections: selectedSelections,
             categories: selectedCategories,
-            category_ids: selectedCategories.filter(cat => cat.id).map(cat => cat.id).join(',')
+            category_ids: selectedCategories.filter(cat => cat.id).map(cat => cat.id).join(','),
+            selections_csv: selectedSelections.filter(s => s && s.name && s.name.trim()).map(s => s.name.trim()).join(',')
         });
 
         // enviar datos
