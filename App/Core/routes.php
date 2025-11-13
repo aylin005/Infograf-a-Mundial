@@ -7,6 +7,7 @@ use App\Models\AdminModel;
 use App\Models\CategoryModel;
 use App\Models\WorldCupModel;
 use App\Models\PostModel;
+use App\Models\MultimediaModel;
 use App\Controllers\UserController;
 use App\Controllers\AdminController;
 use App\Controllers\CategoryController;
@@ -87,6 +88,34 @@ $router->add('/categories/:id', function(string $method, string $id) use ($datab
     $controller->processRequest($method, $id);
 });
 
+// /multimedia/image/:id - Servir imágenes multimedia
+$router->add('/multimedia/image/:id', function(string $method, string $id) use ($database) {
+    if ($method !== 'GET') {
+        http_response_code(405);
+        header('Content-Type: application/json');
+        echo json_encode(['error' => 'Method not allowed']);
+        return;
+    }
+    
+    $multimediaModel = new MultimediaModel($database);
+    $imageData = $multimediaModel->getImageBlob((int)$id);
+    
+    if ($imageData && !empty($imageData['image'])) {
+        // Determinar tipo MIME desde los datos binarios
+        $imageInfo = getimagesizefromstring($imageData['image']);
+        $contentType = $imageInfo['mime'] ?? 'image/jpeg'; // default
+        
+        header('Content-Type: ' . $contentType);
+        header('Content-Length: ' . strlen($imageData['image']));
+        header('Cache-Control: public, max-age=3600'); // Cache por 1 hora
+        echo $imageData['image'];
+    } else {
+        http_response_code(404);
+        header('Content-Type: application/json');
+        echo json_encode(['error' => 'Image not found']);
+    }
+});
+
 // /worldcups - RUTAS ESPECÍFICAS PRIMERO
 // ruta especial para obtener solo los años de mundiales
 $router->add('/worldcups/years', function(string $method) use ($database) {
@@ -117,12 +146,12 @@ $router->add('/worldcups/:id', function(string $method, string $id) use ($databa
 // /posts 
 $router->add('/posts', function(string $method, ?string $id = null) use ($database) {
     $gateway = new PostModel($database);
-    $controller = new PostController($gateway);
+    $controller = new PostController($gateway, $database);
     $controller->processRequest($method, $id);
 });
 $router->add('/posts/:id', function(string $method, string $id) use ($database) {
     $gateway = new PostModel($database);
-    $controller = new PostController($gateway);
+    $controller = new PostController($gateway, $database);
     $controller->processRequest($method, $id);
 });
 

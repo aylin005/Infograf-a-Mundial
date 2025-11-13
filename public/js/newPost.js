@@ -5,6 +5,7 @@ let countriesData = [];
 let categoriesData = [];
 let selectedSelections = [];
 let selectedCategories = [];
+let selectedMediaFiles = [];
 
 document.addEventListener("DOMContentLoaded", async () => {
     // cargar datos necesarios
@@ -22,6 +23,8 @@ function setupEventListeners() {
         discardBtn.addEventListener("click", () => {
             const confirmDiscard = confirm("[⚠️] A T E N C I Ó N: ¿Seguro que quieres descartar esta publicación? Esta acción no se puede deshacer.");
             if (confirmDiscard) {
+                // limpiar archivos multimedia para liberar memoria
+                cleanupMediaFiles();
                 location.href = "/";
             }
         });
@@ -49,6 +52,12 @@ function setupEventListeners() {
     const addCategoryBtn = document.getElementById('addCategory');
     if (addCategoryBtn) {
         addCategoryBtn.addEventListener('click', addCategory);
+    }
+
+    // input de archivos multimedia
+    const mediaFilesInput = document.getElementById('mediaFiles');
+    if (mediaFilesInput) {
+        mediaFilesInput.addEventListener('change', handleMediaFilesChange);
     }
 }
 
@@ -120,6 +129,19 @@ async function handleFormSubmit(event) {
             console.log('No hay categorías seleccionadas');
         }
         
+        // agregar archivos multimedia si los hay
+        if (selectedMediaFiles.length > 0) {
+            console.log('Archivos multimedia seleccionados:', selectedMediaFiles);
+            
+            selectedMediaFiles.forEach((file, index) => {
+                formData.append('mediaFiles[]', file);
+            });
+            
+            console.log(`${selectedMediaFiles.length} archivos multimedia agregados al FormData`);
+        } else {
+            console.log('No hay archivos multimedia seleccionados');
+        }
+        
         console.log('Enviando post:', { 
             title, 
             content, 
@@ -127,7 +149,8 @@ async function handleFormSubmit(event) {
             selections: selectedSelections,
             categories: selectedCategories,
             category_ids: selectedCategories.filter(cat => cat.id).map(cat => cat.id).join(','),
-            selections_csv: selectedSelections.filter(s => s && s.name && s.name.trim()).map(s => s.name.trim()).join(',')
+            selections_csv: selectedSelections.filter(s => s && s.name && s.name.trim()).map(s => s.name.trim()).join(','),
+            media_files_count: selectedMediaFiles.length
         });
 
         // enviar datos
@@ -506,6 +529,126 @@ function showErrorText(message, success) {
             // Fallback si no existe el elemento de feedback
             alert(message);
         }
+    }
 
+    // manejar cambio en el input de archivos multimedia
+    function handleMediaFilesChange(event) {
+        const files = Array.from(event.target.files);
+        
+        console.log('Archivos seleccionados:', files);
+        
+        files.forEach(file => {
+            // validar tipo de archivo
+            if (!isValidMediaFile(file)) {
+                alert(`El archivo "${file.name}" no es un tipo de medio válido (imagen o video).`);
+                return;
+            }
+            
+            // verificar si ya existe el archivo
+            if (selectedMediaFiles.find(existingFile => 
+                existingFile.name === file.name && existingFile.size === file.size)) {
+                console.log(`El archivo "${file.name}" ya está agregado.`);
+                return;
+            }
+            
+            // agregar archivo a la lista
+            selectedMediaFiles.push(file);
+            console.log(`Archivo "${file.name}" agregado a la lista.`);
+        });
+        
+        // actualizar preview
+        updateMediaPreview();
+        
+        // limpiar input para permitir seleccionar los mismos archivos de nuevo si se desea
+        event.target.value = '';
+    }
 
+    // validar si el archivo es imagen o video
+    function isValidMediaFile(file) {
+        const validTypes = [
+            // Imágenes
+            'image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp',
+            // Videos
+            'video/mp4', 'video/webm', 'video/ogg', 'video/avi', 'video/mov'
+        ];
+        
+        return validTypes.includes(file.type);
+    }
+
+    // actualizar preview de archivos multimedia
+    function updateMediaPreview() {
+        const container = document.getElementById('mediaContainer');
+        if (!container) return;
+
+        // limpiar contenido existente
+        container.innerHTML = '';
+        
+        selectedMediaFiles.forEach((file, index) => {
+            const previewDiv = document.createElement('div');
+            previewDiv.className = 'media-preview-item';
+            previewDiv.dataset.index = index;
+            
+            // crear elemento de vista previa según el tipo
+            if (file.type.startsWith('image/')) {
+                const img = document.createElement('img');
+                img.className = 'media-preview-img';
+                img.src = URL.createObjectURL(file);
+                img.alt = file.name;
+                previewDiv.appendChild(img);
+            } else if (file.type.startsWith('video/')) {
+                const video = document.createElement('video');
+                video.className = 'media-preview-video';
+                video.src = URL.createObjectURL(file);
+                video.controls = false;
+                video.muted = true;
+                previewDiv.appendChild(video);
+            }
+            
+            // botón para eliminar
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'media-remove-btn';
+            removeBtn.innerHTML = '×';
+            removeBtn.title = 'Eliminar archivo';
+            removeBtn.onclick = (e) => {
+                e.preventDefault();
+                removeMediaFile(index);
+            };
+            previewDiv.appendChild(removeBtn);
+            
+            // nombre del archivo
+            const filename = document.createElement('div');
+            filename.className = 'media-preview-filename';
+            filename.textContent = file.name;
+            previewDiv.appendChild(filename);
+            
+            container.appendChild(previewDiv);
+        });
+        
+        console.log(`Preview actualizado con ${selectedMediaFiles.length} archivos`);
+    }
+
+    // eliminar archivo multimedia
+    function removeMediaFile(index) {
+        if (index >= 0 && index < selectedMediaFiles.length) {
+            const removedFile = selectedMediaFiles.splice(index, 1)[0];
+            console.log(`Archivo "${removedFile.name}" eliminado`);
+            updateMediaPreview();
+        }
+    }
+
+    // limpiar archivos multimedia y liberar memoria
+    function cleanupMediaFiles() {
+        selectedMediaFiles.forEach(file => {
+            // revocar URLs de objeto para liberar memoria
+            const previewItems = document.querySelectorAll('.media-preview-item img, .media-preview-item video');
+            previewItems.forEach(item => {
+                if (item.src && item.src.startsWith('blob:')) {
+                    URL.revokeObjectURL(item.src);
+                }
+            });
+        });
+        
+        selectedMediaFiles = [];
+        updateMediaPreview();
+        console.log('Archivos multimedia limpiados');
     }

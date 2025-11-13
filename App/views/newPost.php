@@ -85,23 +85,15 @@
                                 <!-- NOTA: Apartado para la media -->
                                 <h2 id="importantText" class="textLeft aliceblueText m-4">Selecciona la media que desees compartir</h2>
                                 <div class="d-flex align-items-center w-100">
-                                    <label for="mundialPhoto" class="d-flex justify-content-center align-items-center">
+                                    <label for="mediaFiles" class="d-flex justify-content-center align-items-center">
                                         <i class="bi bi-upload btn"></i>
                                     </label>
-                                    <!-- NOTA:Añadir scroll en x -->
-                                    <div id="mediaContainer" class="w-100 mediaContainer">
-                                        <div id="displayMediaImg" class="displayMediaImg">
-                                            <img src="/media/pruebas/Roblox-Wallpapers-Desktop.jpg" class="showImage">
-                                            <i class="bi bi-zoom-in zoomIcon"></i>
-                                        </div>
-                                        <div id="displayMediaVideo" class="displayMediaVideo">
-                                            <video src="/media/Mundiales/1986/Publications/1.mp4" class="showVideo" controls>
-                                                <i class="bi bi-zoom-in"></i>
-                                            </div>
-                                        </div>
+                                    <!-- Container para preview horizontal de medios -->
+                                    <div id="mediaContainer" class="w-100 mediaContainer d-flex overflow-auto">
+                                        <!-- Los archivos seleccionados aparecerán aquí -->
                                     </div>
                                 </div>
-                            <input type="file" id="mundialPhoto" name="mundialPhoto" accept="image/*" autocomplete="off" class="hideThing">
+                            <input type="file" id="mediaFiles" name="mediaFiles[]" accept="image/*,video/*" multiple autocomplete="off" class="hideThing">
                             </div>
                         <br><br>
                         <p id="custom-alert-message" class="text-center fadeUp" style="min-height: 20px;"></p>

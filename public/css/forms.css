@@ -209,3 +209,62 @@ p
 {
   .formTitle{font-size: xx-large !important;} 
 }
+
+/* Estilos para preview de medios */
+.media-preview-item {
+    position: relative;
+    margin-right: 15px;
+    flex-shrink: 0;
+    background-color: var(--blackWAlpha50);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.media-preview-img, .media-preview-video {
+    width: 150px;
+    height: 120px;
+    object-fit: cover;
+    display: block;
+}
+
+.media-preview-video {
+    background-color: var(--almostBlack);
+}
+
+.media-remove-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: rgba(220, 53, 69, 0.8);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+.media-remove-btn:hover {
+    background-color: rgba(220, 53, 69, 1);
+}
+
+.media-preview-filename {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: var(--whiteGrey);
+    padding: 4px 6px;
+    font-size: 10px;
+    font-family: 'Offside', sans-serif;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
