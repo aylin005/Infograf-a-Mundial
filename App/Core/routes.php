@@ -93,6 +93,13 @@ $router->add('/worldcups/years', function(string $method) use ($database) {
     $controller->processRequest($method);
 });
 
+// ruta especial para obtener datos del slider
+$router->add('/worldcups/slider', function(string $method) use ($database) {
+    $gateway = new WorldCupModel($database);
+    $controller = new WorldCupController($gateway);
+    $controller->processRequest($method);
+});
+
 // /worldcups - RUTAS GENERALES DESPUÉS  
 $router->add('/worldcups', function(string $method, ?string $id = null) use ($database) {
     $gateway = new WorldCupModel($database);

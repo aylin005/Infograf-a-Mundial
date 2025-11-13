@@ -95,6 +95,24 @@ class WorldCupModel
         return $data;
     }
 
+    public function getSlider(): array
+    {
+        $sql = "CALL sp_world_cup_general('getSlider', 0)";
+        $stmt = $this->conn->query($sql);
+        $data = []; 
+
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            // convertir imagen blob a base64 si existe
+            if ($row['image']) {
+                $row['image'] = base64_encode($row['image']);
+            }
+            $data[] = $row;
+        }
+        
+        $stmt->closeCursor();
+        return $data;
+    }
+
     public function insert(array $data, $id = 0): array
     {
         // procesar imagenes 

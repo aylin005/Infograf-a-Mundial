@@ -25,8 +25,8 @@
                 <div class="col-12 col-md-9">
                     <h1 class="pageTitle aliceblueText">La cronología del hito deportivo</h1>
                     <div id="mundialSlider" class="carousel slide addPadding0x5x" data-ride="carousel" data-bs-ride="true">
+                        <div id="carousel-indicators" class="carousel-indicators"></div>
                         <div id="carousel-inner" class="carousel-inner">
-                            <div id="carousel-indicators" class="carousel-indicators"></div>
                         </div>
                         <!--////////////////////////////////////////////////////////////////////////////////////-->
                         <button class="carousel-control-prev" type="button" data-bs-target="#mundialSlider" data-bs-slide="prev">

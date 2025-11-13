@@ -73,6 +73,13 @@ class WorldCupController
             return;
         }
 
+        // GET /worldcups/slider
+        if ($method === "GET" && strpos($uri, '/worldcups/slider') !== false) {
+            header('Content-Type: application/json');
+            echo json_encode($this->model->getSlider());
+            return;
+        }
+
         switch ($method) {
             // GET /worldcups
             case "GET":
