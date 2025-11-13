@@ -222,8 +222,49 @@ class WorldCupController
             }
             
             // procesar host_countries si vienen como JSON string
-            if (isset($data['host_countries']) && is_string($data['host_countries'])) {
+            if (isset($data['host_countries_json']) && is_string($data['host_countries_json'])) {
+                $data['host_countries'] = json_decode($data['host_countries_json'], true);
+                error_log("WorldCup Controller - host_countries parsed: " . json_encode($data['host_countries']));
+            } elseif (isset($data['host_countries']) && is_string($data['host_countries'])) {
                 $data['host_countries'] = json_decode($data['host_countries'], true);
+            }
+            
+            // procesar attachments individuales (attachment_0, attachment_1, etc.)
+            $attachments = [];
+            $attachmentCount = intval($data['attachments_count'] ?? 0);
+            
+            for ($i = 0; $i < $attachmentCount; $i++) {
+                $attachmentKey = "attachment_$i";
+                $descriptionKey = "attachment_{$i}_description";
+                
+                if (isset($_FILES[$attachmentKey]) && $_FILES[$attachmentKey]['error'] === UPLOAD_ERR_OK) {
+                    $attachmentFile = $_FILES[$attachmentKey];
+                    
+                    // validar tamaño
+                    if ($attachmentFile['size'] > $maxSize) {
+                        error_log("Attachment $i too large: " . $attachmentFile['size'] . " bytes");
+                        continue;
+                    }
+                    
+                    // validar tipo
+                    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+                    $mimeType = finfo_file($finfo, $attachmentFile['tmp_name']);
+                    finfo_close($finfo);
+                    
+                    if (in_array($mimeType, $allowedTypes)) {
+                        $attachmentContent = file_get_contents($attachmentFile['tmp_name']);
+                        $attachments[] = [
+                            'image' => $attachmentContent,
+                            'description' => $data[$descriptionKey] ?? "Attachment " . ($i + 1)
+                        ];
+                        error_log("Processed attachment $i, size: " . strlen($attachmentContent) . " bytes");
+                    }
+                }
+            }
+            
+            if (!empty($attachments)) {
+                $data['attachments'] = $attachments;
+                error_log("WorldCup Controller - attachments processed: " . count($attachments) . " items");
             }
             
         } elseif (strpos($contentType, 'application/json') !== false) {

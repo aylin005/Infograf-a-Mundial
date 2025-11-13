@@ -291,6 +291,10 @@ function populateCountrySelect(selectElement, flagElement) {
             flagElement.style.display = 'none';
         }
 
+
+    });
+}
+
 //spinner de signup
 function showSignupSpinner() {
     const spinner = document.getElementById('signup-spinner');
@@ -310,6 +314,4 @@ function hideSignupSpinner() {
         button.disabled = false;
         button.textContent = 'Registrarme';
     }
-}
-    });
 }

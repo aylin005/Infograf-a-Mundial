@@ -98,10 +98,13 @@
 }
 .mundialPrincipalImage
 {
-    width: 300px !important;
-    height: 350px !important;
+    max-width: 300px !important;
+    max-height: 350px !important;
+    width: auto !important;
+    height: auto !important;
     padding: 3% !important;
     margin-left: 5% !important;
+    object-fit: contain !important;
 }
 .trophyIcon
 {

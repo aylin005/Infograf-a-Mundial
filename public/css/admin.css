@@ -160,17 +160,65 @@ h2
 .formLogo
 {
     width: 100%;
-    height: 100%;
+    height: auto;
+    max-height: 150px;
     padding: 5%;
+    object-fit: contain;
 }
 .selectYear
 {
-    width: 75% !important;
+    width: 100% !important;
     font-family: 'syncopate', Verdana, Geneva, Tahoma, sans-serif;
     font-size: 1.5rem;
-    padding: 2.6% 4.5%;
-    margin-left: 15%;
+    padding: 8px 12px;
+    margin-left: 0;
     background-color: var(--blackWAlpha50) !important;
+    border: 1px solid var(--greyMedium);
+    border-radius: 5px;
+    color: var(--whiteGrey) !important;
+}
+
+.selectYear:focus
+{
+    border-color: var(--mundialBlue) !important;
+    box-shadow: 0 0 0 0.2rem rgba(47, 75, 237, 0.25) !important;
+    outline: none;
+}
+
+.selectYear::placeholder
+{
+    color: var(--greyMedium2) !important;
+}
+
+#mundialName
+{
+    font-family: 'syncopate', Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 1.2rem;
+    padding: 8px 12px;
+    background-color: var(--blackWAlpha50) !important;
+    border: 1px solid var(--greyMedium);
+    color: var(--whiteGrey) !important;
+    border-radius: 5px;
+}
+
+#mundialName:focus
+{
+    border-color: var(--mundialBlue) !important;
+    box-shadow: 0 0 0 0.2rem rgba(47, 75, 237, 0.25) !important;
+    outline: none;
+}
+
+#mundialName::placeholder
+{
+    color: var(--greyMedium2) !important;
+}
+
+/* Estilos para los labels del formulario de mundial */
+.form-label.text-light.small {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    font-size: 0.85rem;
 }
 .selectCountry
 {
@@ -238,12 +286,43 @@ h2
 {
   opacity: 1;
 }
+.imageContainer
+{
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  gap: 15px;
+  padding: 10px;
+  max-width: 100%;
+  scrollbar-width: thin;
+  scrollbar-color: var(--whiteGrey) var(--greyDarker);
+}
+
+.imageContainer::-webkit-scrollbar {
+  height: 8px;
+}
+
+.imageContainer::-webkit-scrollbar-track {
+  background: var(--greyDarker);
+  border-radius: 4px;
+}
+
+.imageContainer::-webkit-scrollbar-thumb {
+  background: var(--whiteGrey);
+  border-radius: 4px;
+}
+
+.imageContainer::-webkit-scrollbar-thumb:hover {
+  background: #fff;
+}
+
 .previewInfoImage
 {
   position: relative;
-  width: 300px; /* o lo que necesites */
+  width: 300px;
   height: auto;
-  margin:1.5%
+  margin: 0;
+  flex-shrink: 0;
 }
 .helperContainer
 {
