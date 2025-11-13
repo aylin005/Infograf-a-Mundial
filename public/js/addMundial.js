@@ -869,7 +869,7 @@ async function handleSubmit(e) {
         }
         
         // descripción de la imagen principal
-        const principalDescription = document.querySelector('.card-body textarea');
+        const principalDescription = document.getElementById('imageDescription');
         if (principalDescription) {
             formData.append('image_description', principalDescription.value);
         }
@@ -1174,8 +1174,415 @@ function selectWorldCup(worldCupId, year) {
         selectedButton.classList.add('selected');
     }
     
-    showMessage(`Mundial ${year} seleccionado`, 'success');
+    // Cargar datos del mundial para edición
+    loadWorldCupData(worldCupId);
+}
+
+///////////////////////////////////////
+// Carga los datos de un mundial específico para edición
+///////////////////////////////////////
+async function loadWorldCupData(worldCupId) {
+    try {
+        showSpinner('Cargando datos del mundial...');
+        
+        const response = await fetch(`/worldcups/${worldCupId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('Datos del mundial cargados:', data);
+        
+        // Asegurarse de que los países estén cargados antes de rellenar el formulario
+        if (countriesData.length === 0) {
+            console.log('Países no cargados, cargando primero...');
+            await loadCountries();
+        }
+        
+        // Rellenar el formulario con los datos del mundial
+        await populateFormWithWorldCupData(data);
+        
+    } catch (error) {
+        console.error('Error al cargar datos del mundial:', error);
+        showMessage('Error al cargar los datos del mundial', 'danger');
+    } finally {
+        hideSpinner();
+    }
+}
+
+///////////////////////////////////////
+// Rellena el formulario con los datos del mundial
+///////////////////////////////////////
+async function populateFormWithWorldCupData(data) {
+    // Limpiar formulario primero
+    clearForm();
     
-    // TODO: Cargar datos del mundial para edición
-    // loadWorldCupData(worldCupId);
+    // Los datos vienen directamente del modelo, no anidados en 'worldCup'
+    console.log('Datos recibidos:', data);
+    
+    // Campos de texto básicos
+    setInputValue('mundialYear', data.year);
+    setInputValue('mundialName', data.name);
+    setInputValue('mundialSlogan', data.slogan);
+    setInputValue('generalDescription', data.description);
+    setInputValue('imageDescription', data.image_description);  // Para descripción de imagen principal
+    
+    // Selects de países (los países ya están cargados en este punto)
+    setSelectValue('winnerCountrySelect', data.champion);          // Ganador 
+    setSelectValue('finalTeam1Select', data.champion);             // Equipo 1 final
+    setSelectValue('finalTeam2Select', data.subchampion);          // Equipo 2 final
+    setSelectValue('penaltyTeam1Select', data.champion);           // Equipo 1 penalties 
+    setSelectValue('penaltyTeam2Select', data.subchampion);        // Equipo 2 penalties
+    
+    // Parseamos el score para obtener goles individuales
+    if (data.score) {
+        const scoreMatch = data.score.match(/(\d+)-(\d+)/);
+        if (scoreMatch) {
+            setInputValue('finalGoalsTeam1', scoreMatch[1]);      // Goles equipo 1
+            setInputValue('finalGoalsTeam2', scoreMatch[2]);      // Goles equipo 2
+        }
+    }
+    
+    // Tiempo extra y penalties
+    setInputValue('extraTime', data.overtime || 0);
+    setInputValue('penaltyGoalsTeam1', data.penalties_champion || 0);
+    setInputValue('penaltyGoalsTeam2', data.penalties_subchampion || 0);
+    
+    // Datos curiosos
+    if (data.fun_fact) {
+        funFacts = data.fun_fact.split(' | ').filter(fact => fact.trim());
+        updateFunFactsList();
+    }
+    
+    // Información extra (parsear JSON si existe)
+    if (data.extra_info) {
+        try {
+            const extraInfo = JSON.parse(data.extra_info);
+            if (extraInfo.cities && Array.isArray(extraInfo.cities)) {
+                cities = extraInfo.cities.map(city => ({ name: city }));
+                updateCitiesList();
+            }
+            if (extraInfo.stadiums && Array.isArray(extraInfo.stadiums)) {
+                stadiums = extraInfo.stadiums;
+                updateStadiumsList();
+            }
+        } catch (e) {
+            console.warn('Error parsing extra_info JSON:', e);
+        }
+    }
+    
+    //host countries - limpiar primero para evitar duplicados
+    if (data.host_countries && Array.isArray(data.host_countries)) {
+        hostCountries = []; // Limpiar lista actual
+        
+        //set para evitar duplicados basado en el nombre del país
+        const uniqueCountries = new Set();
+        
+        data.host_countries.forEach(hc => {
+            if (!uniqueCountries.has(hc.country)) {
+                uniqueCountries.add(hc.country);
+                hostCountries.push({
+                    name: hc.country,
+                    city: hc.city,
+                    stadium: hc.stadium
+                });
+            }
+        });
+        
+        updateHostCountriesList();
+        // Actualizar ciudades basado en hostq countries
+        updateCitiesFromHostCountries();
+    }
+    
+    // Attachments - cargar desde base64 y convertir a File objects
+    if (data.attachments && Array.isArray(data.attachments)) {
+        console.log(`Mundial tiene ${data.attachments.length} attachments`);
+        loadAttachmentsFromData(data.attachments);
+    }
+    
+    // Mostrar imágenes si existen (como preview) y convertir a archivos
+    if (data.image) {
+        showImagePreview('image', data.image);
+        await convertBase64ToFileInput('image', data.image, 'mundialPrincipalPhoto');
+    }
+    if (data.logo) {
+        showImagePreview('logo', data.logo);
+        await convertBase64ToFileInput('logo', data.logo, 'mundialLogo');
+    }
+}
+
+///////////////////////////////////////
+// Muestra preview de imagen desde base64
+///////////////////////////////////////
+function showImagePreview(type, base64Data) {
+    let previewId;
+    
+    // Mapear a los IDs del HTML
+    if (type === 'image') {
+        previewId = 'mundialPrincipalImage';  // Imagen principal
+    } else if (type === 'logo') {
+        previewId = 'logo';                   // Logo del mundial
+    }
+    
+    const preview = document.getElementById(previewId);
+    
+    if (preview && base64Data) {
+        // Verificar si es una URL válida o base64 (como en profile.js)
+        if (base64Data.startsWith('data:') || base64Data.startsWith('http')) {
+            preview.src = base64Data;
+        } else {
+            // Si es solo base64 sin prefijo, agregarlo
+            preview.src = `data:image/jpeg;base64,${base64Data}`;
+        }
+        preview.style.display = 'block';
+        
+        console.log(`Preview cargado para ${type} en elemento ${previewId}`);
+    } else {
+        console.warn(`No se pudo cargar preview para ${type}:`, { preview: !!preview, hasData: !!base64Data });
+    }
+}
+
+///////////////////////////////////////
+// Funciones auxiliares para rellenar formulario
+///////////////////////////////////////
+function setInputValue(id, value) {
+    const element = document.getElementById(id);
+    if (element && value !== null && value !== undefined) {
+        element.value = value;
+        console.log(`input ${id} seteado a: ${value}`);
+    } else {
+        console.warn(`no se pudo setear ${id}:`, { element: !!element, value });
+    }
+}
+
+function setSelectValue(id, value) {
+    const element = document.getElementById(id);
+    if (element && value !== null && value !== undefined && value !== '') {
+        console.log(`Intentando setear ${id} con valor: ${value}`);
+        
+        // Buscar la opción que coincida con el valor
+        let found = false;
+        
+        // Normalizar el valor de búsqueda
+        const normalizedValue = value.toLowerCase().trim();
+        
+        for (let option of element.options) {
+            const optionText = option.textContent.toLowerCase().trim();
+            const optionValue = option.value.toLowerCase().trim();
+            
+            // Intentar múltiples tipos de coincidencia
+            if (optionValue === normalizedValue || 
+                optionText === normalizedValue ||
+                optionText.includes(normalizedValue) || 
+                normalizedValue.includes(optionText) ||
+                // Coincidencia parcial para casos como "United States" vs "USA"
+                (normalizedValue.length > 3 && optionText.includes(normalizedValue)) ||
+                (optionText.length > 3 && normalizedValue.includes(optionText))) {
+                
+                element.value = option.value;
+                console.log(` ${id} seteado a: ${option.value} (${option.textContent})`);
+                
+                // Disparar evento change para actualizar banderas si es necesario
+                element.dispatchEvent(new Event('change'));
+                found = true;
+                break;
+            }
+        }
+        
+        if (!found) {
+            console.warn(`No se encontró opción para ${id} con valor: "${value}"`);
+            // Listar las primeras opciones disponibles para debug
+            console.log(`Opciones disponibles (primeras 5):`, 
+                Array.from(element.options).slice(0, 5).map(opt => opt.textContent));
+            console.log('Opciones disponibles:', Array.from(element.options).map(opt => opt.value + ' -> ' + opt.textContent));
+        }
+    }
+}
+
+function clearForm() {
+    // Limpiar arrays globales
+    hostCountries = [];
+    cities = [];
+    stadiums = [];
+    funFacts = [];
+    attachments = [];
+    
+    // Limpiar listas visuales
+    updateHostCountriesList();
+    updateCitiesList();
+    updateStadiumsList();
+    updateFunFactsList();
+    updateAttachmentsList();
+    
+    // Limpiar campos específicos del formulario
+    const fieldsToReset = [
+        'mundialYear', 'mundialName', 'mundialSlogan', 'generalDescription',
+        'imageDescription', 'tooltip', 'finalGoalsTeam1', 'finalGoalsTeam2', 'extraTime',
+        'penaltyGoalsTeam1', 'penaltyGoalsTeam2', 'funFact', 'stadium'
+    ];
+    
+    fieldsToReset.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field) {
+            field.value = '';
+        }
+    });
+    
+    // Resetear selects de países
+    const selectsToReset = [
+        'winnerCountrySelect', 'finalTeam1Select', 'finalTeam2Select',
+        'penaltyTeam1Select', 'penaltyTeam2Select', 'hostCountrySelect',
+        'citySelect'
+    ];
+    
+    selectsToReset.forEach(selectId => {
+        const select = document.getElementById(selectId);
+        if (select) {
+            select.selectedIndex = 0;
+        }
+    });
+    
+    // Resetear imágenes a default
+    const logo = document.getElementById('logo');
+    const mainImage = document.getElementById('mundialPrincipalImage');
+    
+    if (logo) {
+        logo.src = '/media/userPhoto.png';
+    }
+    if (mainImage) {
+        mainImage.src = '/media/userPhoto.png';
+    }
+    
+    // Limpiar inputs de archivos
+    const fileInputs = ['mundialLogo', 'mundialPrincipalPhoto', 'mundialPhoto'];
+    fileInputs.forEach(inputId => {
+        const input = document.getElementById(inputId);
+        if (input) {
+            input.value = '';
+        }
+    });
+}
+
+///////////////////////////////////////
+//funciones auxiliares para manejo de archivos desde base64
+///////////////////////////////////////
+
+//convierte base64 a archivo File
+function base64ToFile(base64Data, filename, mimeType = 'image/jpeg') {
+    try {
+        // Remover el prefijo data: si existe
+        let base64 = base64Data;
+        if (base64Data.includes(',')) {
+            base64 = base64Data.split(',')[1];
+        } else if (base64Data.startsWith('data:')) {
+            // Si empieza con data: pero no tiene coma, asumir que está malformado
+            console.warn('Base64 data malformado, intentando usar sin prefijo');
+            base64 = base64Data.substring(base64Data.indexOf(':') + 1);
+        }
+        
+        // Limpiar espacios y caracteres no válidos
+        base64 = base64.replace(/\s/g, '');
+        
+        // Convertir base64 a bytes
+        const byteCharacters = atob(base64);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        
+        // Crear el archivo File
+        return new File([byteArray], filename, { type: mimeType });
+    } catch (error) {
+        console.error('Error al convertir base64 a File:', error);
+        console.log('Base64 data length:', base64Data?.length || 'N/A');
+        console.log('Base64 starts with:', base64Data?.substring(0, 50) || 'N/A');
+        return null;
+    }
+}
+
+// Convierte base64 a File y lo asigna al input correspondiente
+async function convertBase64ToFileInput(imageType, base64Data, inputId) {
+    try {
+        const input = document.getElementById(inputId);
+        if (!input) {
+            console.warn(`Input ${inputId} no encontrado`);
+            return;
+        }
+        
+        // Crear filename basado en el tipo
+        const filename = imageType === 'logo' ? 'logo.jpg' : 'principal_image.jpg';
+        
+        // Convertir base64 a File
+        const file = base64ToFile(base64Data, filename);
+        
+        if (file) {
+            // Crear un DataTransfer para simular la selección de archivo
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            
+            // Asignar el archivo al input
+            input.files = dataTransfer.files;
+            
+            console.log(`Archivo ${filename} asignado a ${inputId}`);
+        } else {
+            console.warn(`No se pudo convertir imagen ${imageType} a archivo para ${inputId}`);
+        }
+        
+    } catch (error) {
+        console.error(`Error al convertir base64 a archivo para ${imageType}:`, error);
+    }
+}
+
+// Carga anexos desde datos de la base de datos
+async function loadAttachmentsFromData(attachmentsData) {
+    try {
+        console.log('Cargando anexos, datos recibidos:', attachmentsData);
+        
+        // Limpiar anexos actuales
+        attachments = [];
+        
+        // Procesar cada anexo
+        for (let i = 0; i < attachmentsData.length; i++) {
+            const attachment = attachmentsData[i];
+            console.log(`Procesando anexo ${i}:`, attachment);
+            
+            // Verificar diferentes posibles nombres de campo para la imagen
+            const imageData = attachment.image || attachment.image_data || attachment.data;
+            console.log('Imagen encontrada:', !!imageData, 'Tamaño aprox:', imageData ? imageData.length : 'N/A');
+            
+            if (imageData) {
+                // Crear filename único
+                const filename = `anexo_${i + 1}.jpg`;
+                
+                // Convertir base64 a File
+                const file = base64ToFile(imageData, filename);
+                
+                if (file) {
+                    // Agregar al array de anexos
+                    attachments.push({
+                        file: file,
+                        description: attachment.description || `Anexo ${i + 1}`
+                    });
+                    console.log(`Anexo ${i + 1} convertido correctamente`);
+                } else {
+                    console.warn(`No se pudo convertir anexo ${i + 1} a archivo`);
+                }
+            }
+        }
+        
+        // Actualizar la vista de anexos
+        updateAttachmentsList();
+        
+        console.log(`${attachments.length} anexos cargados desde la base de datos`);
+        
+    } catch (error) {
+        console.error('Error al cargar anexos:', error);
+    }
 }

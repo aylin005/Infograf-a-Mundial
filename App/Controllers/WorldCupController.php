@@ -68,17 +68,8 @@ class WorldCupController
         
         // GET /worldcups/years
         if ($method === "GET" && strpos($uri, '/worldcups/years') !== false) {
-            error_log("WorldCup Controller - Processing /worldcups/years request");
-            try {
-                header('Content-Type: application/json');
-                $result = $this->model->getYears();
-                error_log("WorldCup Controller - getYears result: " . json_encode($result));
-                echo json_encode($result);
-            } catch (Exception $e) {
-                error_log("WorldCup Controller - Error in /worldcups/years: " . $e->getMessage());
-                http_response_code(500);
-                echo json_encode(['error' => $e->getMessage()]);
-            }
+            header('Content-Type: application/json');
+            echo json_encode($this->model->getYears());
             return;
         }
 

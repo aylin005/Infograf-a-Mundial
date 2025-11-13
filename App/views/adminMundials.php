@@ -199,7 +199,7 @@
                                                     <br>
                                                 </div>
                                                 <div class="card-body">
-                                                    <textarea class="w-100 m-2 offside-regular noBackground noBorder smallerText" placeholder="Añade algo importante aquí" autocomplete="off"></textarea>
+                                                    <textarea id="imageDescription" name="imageDescription" class="w-100 m-2 offside-regular noBackground noBorder smallerText" placeholder="Añade algo importante aquí" autocomplete="off"></textarea>
                                                 </div>
                                             </div>
                                         </div>
