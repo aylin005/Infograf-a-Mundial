@@ -83,16 +83,23 @@ class WorldCupModel
 
     public function getYears(): array
     {
-        $sql = "CALL sp_world_cup_general('getYears', 0)";
-        $stmt = $this->conn->query($sql);
-        $data = []; 
+        try {
+            error_log("WorldCup Model - getYears() called");
+            $sql = "CALL sp_world_cup_general('getYears', 0)";
+            $stmt = $this->conn->query($sql);
+            $data = []; 
 
-        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $data[] = $row;
+            while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $data[] = $row;
+            }
+            
+            $stmt->closeCursor();
+            error_log("WorldCup Model - getYears() returned " . count($data) . " records");
+            return $data;
+        } catch (Exception $e) {
+            error_log("WorldCup Model - getYears() error: " . $e->getMessage());
+            throw $e;
         }
-        
-        $stmt->closeCursor();
-        return $data;
     }
 
     public function insert(array $data, $id = 0): array

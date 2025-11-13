@@ -85,7 +85,15 @@ $router->add('/categories/:id', function(string $method, string $id) use ($datab
     $controller->processRequest($method, $id);
 });
 
-// /worldcups  
+// /worldcups - RUTAS ESPECÍFICAS PRIMERO
+// ruta especial para obtener solo los años de mundiales
+$router->add('/worldcups/years', function(string $method) use ($database) {
+    $gateway = new WorldCupModel($database);
+    $controller = new WorldCupController($gateway);
+    $controller->processRequest($method);
+});
+
+// /worldcups - RUTAS GENERALES DESPUÉS  
 $router->add('/worldcups', function(string $method, ?string $id = null) use ($database) {
     $gateway = new WorldCupModel($database);
     $controller = new WorldCupController($gateway);
@@ -95,12 +103,6 @@ $router->add('/worldcups/:id', function(string $method, string $id) use ($databa
     $gateway = new WorldCupModel($database);
     $controller = new WorldCupController($gateway);
     $controller->processRequest($method, $id);
-});
-// ruta especial para obtener solo los años de mundiales
-$router->add('/worldcups/years', function(string $method) use ($database) {
-    $gateway = new WorldCupModel($database);
-    $controller = new WorldCupController($gateway);
-    $controller->processRequest($method);
 });
 
 $router->add('/login', function(...$args) use ($renderView, $database) {

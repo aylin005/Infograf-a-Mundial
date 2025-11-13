@@ -107,6 +107,13 @@ h2
     transform: scale(1.001);
     background-color: var(--mundialBlue);
 }
+.timelineButton.selected
+{
+    background-color: var(--mundialGreen) !important;
+    transform: scale(1.05);
+    color: white;
+    box-shadow: 0 4px 8px var(--blackWAlpha50);
+}
 .arrow
 {
     cursor: pointer;

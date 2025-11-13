@@ -71,10 +71,8 @@
                                     <div class="col-10">
                                         <div class="timeline">
                                             <hr class="timelineLine">
-                                            <div class="buttonContainer d-flex align-items-center">
-                                                <button id="timelineButton1" class="timelineButton shadow">1930</button>
-                                                <button id="timelineButton2" class="timelineButton shadow">1934</button>
-                                                <button id="timelineButton2" class="timelineButton shadow">1938</button>
+                                            <div id="timelineContainer" class="buttonContainer d-flex align-items-center">
+                                                <!-- Los botones se cargarán dinámicamente -->
                                             </div>
                                         </div>
                                     </div>
