@@ -340,7 +340,7 @@
         <script src="/js/scripts.js"></script>
         <script src="/js/fetchThings/fetchNavBar.js"></script>
         <script src="/js/tooltip.js"></script>
-        <script src="/js/mundial.js"></script>
+        <!-- <script src="/js/mundial.js"></script> -->
         <script src="/js/addMundial.js"></script>
     </body>
 </html>

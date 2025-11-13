@@ -33,24 +33,20 @@
             <!--NOTA: Añadir nota para cuando le rechazan la publicación-->
             <div class="container-fluid">
                 <div id="newPostContainer" class="shadow">
-                    <form action="/" method="post" accept-charset="UTF-8" id="addPostForm" enctype="multipart/form-data">
+                    <form action="#" method="post" accept-charset="UTF-8" id="addPostForm" enctype="multipart/form-data">
                         <div class="container-fluid">
-                            <input id="postTitle" name="postTitle" maxlength="40" class="postFormTitle" placeholder="Ponle un título a tu publicación" autocomplete="off">
+                            <input id="postTitle" name="postTitle" maxlength="40" class="postFormTitle" placeholder="Ponle un título a tu publicación" autocomplete="off" required>
                             <div class="row">
                                 <!-- NOTA: Apartado para definir categorías/post -->
                                 <div class="col-5">
                                     <div class="d-flex align-items-center">
-                                        <input type="checkbox" id="isMundial" name="isMundial"> 
-                                        <label for="isMundial">Sobre Mundiales</label>
-                                        <!--NOTA: Este se debe de activar solo si la opción está seleccionada-->
-                                        <select id="selectYear">
-                                            <option id="1" name="1">1930</option>
-                                            <option id="2" name="2">1934</option>
-                                            <option id="3" name="3">1938</option>
+                                        <label for="selectYear">Sobre Mundiales</label>
+                                        <select id="selectYear" name="selectYear" required>
+                                            <option value="">Selecciona un mundial</option>
                                         </select>
                                     </div>
-                                    <!--NOTA: De acuerdo al año que el usuario haya seleccionado, hacer display de las sedes-->
-                                    <p id="showCountries" class="whiteGreyText countryDisplay"> Italia</p>
+                                    <!--NOTA: De acuerdo al año que el usuario haya seleccionado, hacer display del nombre de mundial-->
+                                    <p id="showCountries" class="whiteGreyText countryDisplay">Selecciona un mundial</p>
                                     <!---------------------------------------------------------->
                                     <div class="d-flex align-items-center">
                                         <input type="checkbox" id="isSelection" name="isSelection"> 
@@ -58,17 +54,12 @@
                                     </div>
                                     <div class="d-flex">
                                         <select id="selectionSelected" class="w-100">
-                                            <option id="ca" name="ca">Canadiense</option>
-                                            <option id="mx" name="mx">Mexicana</option>
-                                            <option id="us" name="us">Estadounidense</option>
+                                            <option value="">Selecciona una selección</option>
                                         </select>
-                                        <button type="button" id="addCategory" class="noBackground noBorder transparentButton  marginSides5x"><i class="bi bi-plus-square addCatIcon"></i></button>
+                                        <button type="button" id="addSelection" class="noBackground noBorder transparentButton marginSides5x"><i class="bi bi-plus-square addCatIcon"></i></button>
                                     </div>
-                                    <div id="listCategories" name="listCategories" class="previewList">
-                                        <div id="addedCategory" name="addedCategory" class="d-flex align-items-center height50x">
-                                            <p class="showListElement shadow">Canadiense</p>
-                                            <button type="button" class="addButton noBackground noBorder"><i class="bi bi-x-square deleteIcon"></i></button>
-                                        </div>
+                                    <div id="listSelections" name="listSelections" class="previewList">
+                                        <!-- selecciones se agregaran dinamicamente aqui -->
                                     </div>
                                     <!---------------------------------------------------------->
                                     <!--NOTA: Esto de las categorías podría modularse-->
@@ -76,24 +67,19 @@
                                     <label for="tagSelected">Seleccionar categorías</label>
                                     <div class="d-flex">
                                         <select id="tagSelected" class="w-100">
-                                            <option id="cat1" name="cat1">#Jugadas</option>
-                                            <option id="cat2" name="cat2">#Entrevistas</option>
-                                            <option id="cat3" name="cat3">#Asistentes</option>
+                                            <option value="">Cargando categorías...</option>
                                         </select>
-                                        <button type="button" id="addCategory" class="noBackground noBorder transparentButton  marginSides5x"><i class="bi bi-plus-square addCatIcon"></i></button>
+                                        <button type="button" id="addCategory" class="noBackground noBorder transparentButton marginSides5x"><i class="bi bi-plus-square addCatIcon"></i></button>
                                     </div>
         
                                     <div id="listCategories" name="listCategories" class="previewList">
-                                        <div id="addedCategory" name="addedCategory" class="d-flex align-items-center height50x">
-                                            <p class="showListElement shadow">#hola</p>
-                                            <button type="button" class="addButton noBackground noBorder"><i class="bi bi-x-square deleteIcon"></i></button>
-                                        </div>
+                                        <!-- categorias se agregaran dinamicamente aqui -->
                                     </div>
                                     <br>
                                 </div>
                                 <!-- NOTA: Apartado para descripción -->
                                 <div class="col-7 border-start">
-                                    <textarea class="postContent" placeholder="Comparte algo con el mundo" autocomplete="off" required></textarea>
+                                    <textarea id="postContent" name="postContent" class="postContent" placeholder="Comparte algo con el mundo" autocomplete="off" required></textarea>
                                 </div>
                                 <hr>
                                 <!-- NOTA: Apartado para la media -->
@@ -118,6 +104,7 @@
                             <input type="file" id="mundialPhoto" name="mundialPhoto" accept="image/*" autocomplete="off" class="hideThing">
                             </div>
                         <br><br>
+                        <p id="custom-alert-message" class="text-center fadeUp" style="min-height: 20px;"></p>
                         <div id="newpost-spinner" class="spinner" style="display: none;"></div>
                         <div class="d-flex justify-content-center align-items-center helperContainer">
                             <button type="button" id="discardPost" class="btn m-4 largeText">Descartar</button>

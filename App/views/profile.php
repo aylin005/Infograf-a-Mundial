@@ -299,7 +299,7 @@
         <script src="/js/fetchThings/fetchCardsPosts.js"></script>
         <script src="/js/tooltip.js"></script>
         <script src="/js/cardPost.js"></script>
-        <script src="/js/mundial.js"></script>
+        <!-- <script src="/js/mundial.js"></script> -->
         <script src="/js/signUp.js"></script>
         <script src="/js/profile.js"></script>
     </body>

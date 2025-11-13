@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Post con Categorías</title>
+</head>
+<body>
+    <h1>Test - Crear Post con Categorías</h1>
+    
+    <form id="testForm">
+        <label>Título:</label>
+        <input type="text" id="title" value="Test Post con Categorías"><br><br>
+        
+        <label>Contenido:</label>
+        <textarea id="content">Este es un post de prueba con categorías</textarea><br><br>
+        
+        <label>Mundial ID:</label>
+        <input type="number" id="worldcup_id" value="1"><br><br>
+        
+        <label>Category IDs (CSV):</label>
+        <input type="text" id="category_ids" value="1,2,3" placeholder="1,2,3"><br><br>
+        
+        <button type="submit">Crear Post</button>
+    </form>
+    
+    <div id="result"></div>
+    
+    <script>
+        document.getElementById('testForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData();
+            formData.append('title', document.getElementById('title').value);
+            formData.append('content', document.getElementById('content').value);
+            formData.append('worldcup_id', document.getElementById('worldcup_id').value);
+            formData.append('category_ids', document.getElementById('category_ids').value);
+            
+            console.log('Enviando datos:', {
+                title: document.getElementById('title').value,
+                content: document.getElementById('content').value,
+                worldcup_id: document.getElementById('worldcup_id').value,
+                category_ids: document.getElementById('category_ids').value
+            });
+            
+            try {
+                const response = await fetch('/posts', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                console.log('Respuesta:', result);
+                
+                document.getElementById('result').innerHTML = 
+                    `<h3>Resultado:</h3><pre>${JSON.stringify(result, null, 2)}</pre>`;
+                    
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('result').innerHTML = 
+                    `<h3>Error:</h3><p>${error.message}</p>`;
+            }
+        });
+    </script>
+</body>
+</html>
