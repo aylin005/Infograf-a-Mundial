@@ -120,4 +120,38 @@ class CommentModel
             ];
         }
     }
+
+    /**
+     * Toggle like en un comentario
+     * @param int $userId - ID del usuario
+     * @param int $commentId - ID del comentario
+     * @return array - resultado con exito, mensaje
+     */
+    public function toggleLike(int $userId, int $commentId): array
+    {
+        try {
+            // preparar stored procedure
+            $sql = "CALL sp_comment_like_toggle(:userId, :commentId)";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(':userId', $userId, PDO::PARAM_INT);
+            $stmt->bindValue(':commentId', $commentId, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            // obtener resultado
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
+            
+            return [
+                'exito' => (bool)($result['exito'] ?? false),
+                'mensaje' => $result['mensaje'] ?? 'Error desconocido'
+            ];
+            
+        } catch (Exception $e) {
+            error_log("Error en toggleLike: " . $e->getMessage());
+            return [
+                'exito' => false,
+                'mensaje' => 'Error al dar like: ' . $e->getMessage()
+            ];
+        }
+    }
 }

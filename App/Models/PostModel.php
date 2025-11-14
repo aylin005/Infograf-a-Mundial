@@ -471,4 +471,40 @@ class PostModel
         }
     }
 
+    /**
+     * Registrar o cambiar voto en un post
+     * @param int $userId - ID del usuario
+     * @param int $postId - ID del post
+     * @param string $voteType - 'upvote' o 'downvote'
+     * @return array - resultado con exito, mensaje
+     */
+    public function votePost(int $userId, int $postId, string $voteType): array
+    {
+        try {
+            // preparar stored procedure
+            $sql = "CALL sp_post_vote_manage(:userId, :postId, :voteType)";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(':userId', $userId, PDO::PARAM_INT);
+            $stmt->bindValue(':postId', $postId, PDO::PARAM_INT);
+            $stmt->bindValue(':voteType', $voteType, PDO::PARAM_STR);
+            $stmt->execute();
+            
+            // obtener resultado
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
+            
+            return [
+                'exito' => (bool)($result['exito'] ?? false),
+                'mensaje' => $result['mensaje'] ?? 'Error desconocido'
+            ];
+            
+        } catch (Exception $e) {
+            error_log("Error en votePost: " . $e->getMessage());
+            return [
+                'exito' => false,
+                'mensaje' => 'Error al votar: ' . $e->getMessage()
+            ];
+        }
+    }
+
 }

@@ -597,4 +597,75 @@ class PostController
             echo json_encode(["message" => "Error interno del servidor"]);
         }
     }
+
+    /**
+     * Votar en un post
+     * POST /posts/vote
+     * Body: { "post_id": int, "vote_type": "upvote"|"downvote" }
+     */
+    public function votePost(): void
+    {
+        // iniciar sesión si no está iniciada
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        // verificar autenticación
+        if (!isset($_SESSION['user']['id'])) {
+            http_response_code(401);
+            header('Content-Type: application/json');
+            echo json_encode(["message" => "Usuario no autenticado"]);
+            return;
+        }
+
+        $userId = (int)$_SESSION['user']['id'];
+
+        // obtener datos del body
+        $data = json_decode(file_get_contents("php://input"), true);
+
+        if (!isset($data['post_id']) || !isset($data['vote_type'])) {
+            http_response_code(400);
+            header('Content-Type: application/json');
+            echo json_encode(["message" => "Faltan datos requeridos: post_id y vote_type"]);
+            return;
+        }
+
+        $postId = (int)$data['post_id'];
+        $voteType = $data['vote_type'];
+
+        // validar vote_type
+        if (!in_array($voteType, ['upvote', 'downvote'])) {
+            http_response_code(400);
+            header('Content-Type: application/json');
+            echo json_encode(["message" => "vote_type debe ser 'upvote' o 'downvote'"]);
+            return;
+        }
+
+        try {
+            $result = $this->model->votePost($userId, $postId, $voteType);
+
+            if ($result['exito']) {
+                http_response_code(200);
+                header('Content-Type: application/json');
+                echo json_encode([
+                    "success" => true,
+                    "message" => $result['mensaje']
+                ]);
+            } else {
+                http_response_code(400);
+                header('Content-Type: application/json');
+                echo json_encode([
+                    "success" => false,
+                    "message" => $result['mensaje']
+                ]);
+            }
+
+        } catch (Exception $e) {
+            error_log("Error en PostController::votePost(): " . $e->getMessage());
+            http_response_code(500);
+            header('Content-Type: application/json');
+            echo json_encode(["message" => "Error interno del servidor"]);
+        }
+    }
 }
+

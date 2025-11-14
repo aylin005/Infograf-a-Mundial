@@ -159,6 +159,13 @@ $router->add('/posts/search', function(string $method) use ($database) {
     $controller->searchPosts($method);
 });
 
+// /posts/vote - votar en un post
+$router->add('/posts/vote', function(string $method) use ($database) {
+    $gateway = new PostModel($database);
+    $controller = new PostController($gateway, $database);
+    $controller->votePost();
+});
+
 // /posts/comments - obtener comentarios de un post
 $router->add('/posts/comments', function(string $method) use ($database) {
     $gateway = new PostModel($database);
@@ -183,6 +190,13 @@ $router->add('/comments', function(string $method) use ($database) {
     $gateway = new CommentModel($database);
     $controller = new CommentController($gateway);
     $controller->processRequest($method);
+});
+
+// /comments/like - toggle like en comentario (POST)
+$router->add('/comments/like', function(string $method) use ($database) {
+    $gateway = new CommentModel($database);
+    $controller = new CommentController($gateway);
+    $controller->toggleLike();
 });
 
 // /comments/:id - eliminar comentario (DELETE)

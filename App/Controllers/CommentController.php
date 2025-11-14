@@ -192,4 +192,65 @@ class CommentController
             echo json_encode(["message" => "Error interno del servidor"]);
         }
     }
+
+    /**
+     * Toggle like en un comentario
+     * POST /comments/like
+     * Body: { "comment_id": int }
+     */
+    public function toggleLike(): void
+    {
+        // iniciar sesión si no está iniciada
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        // verificar autenticación
+        if (!isset($_SESSION['user']['id'])) {
+            http_response_code(401);
+            header('Content-Type: application/json');
+            echo json_encode(["message" => "Usuario no autenticado"]);
+            return;
+        }
+
+        $userId = (int)$_SESSION['user']['id'];
+
+        // obtener datos del body
+        $data = json_decode(file_get_contents("php://input"), true);
+
+        if (!isset($data['comment_id'])) {
+            http_response_code(400);
+            header('Content-Type: application/json');
+            echo json_encode(["message" => "Falta el parámetro comment_id"]);
+            return;
+        }
+
+        $commentId = (int)$data['comment_id'];
+
+        try {
+            $result = $this->model->toggleLike($userId, $commentId);
+
+            if ($result['exito']) {
+                http_response_code(200);
+                header('Content-Type: application/json');
+                echo json_encode([
+                    "success" => true,
+                    "message" => $result['mensaje']
+                ]);
+            } else {
+                http_response_code(400);
+                header('Content-Type: application/json');
+                echo json_encode([
+                    "success" => false,
+                    "message" => $result['mensaje']
+                ]);
+            }
+
+        } catch (Exception $e) {
+            error_log("Error en CommentController::toggleLike(): " . $e->getMessage());
+            http_response_code(500);
+            header('Content-Type: application/json');
+            echo json_encode(["message" => "Error interno del servidor"]);
+        }
+    }
 }
