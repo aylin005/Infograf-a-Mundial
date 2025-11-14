@@ -130,9 +130,22 @@ class PostController
                         }
                     }
 
-                    // obtener user_id desde sesion (por ahora usar 1 como default para testing)
-                    session_start();
-                    $userId = $_SESSION['user_id'] ?? 1; // fallback para testing
+                    // obtener user_id desde sesión
+                    if (session_status() === PHP_SESSION_NONE) {
+                        session_start();
+                    }
+                    
+                    // verificar que el usuario esté autenticado
+                    if (!isset($_SESSION['user']['id'])) {
+                        http_response_code(401);
+                        echo json_encode([
+                            'exito' => false,
+                            'mensaje' => 'Usuario no autenticado'
+                        ]);
+                        return;
+                    }
+                    
+                    $userId = (int)$_SESSION['user']['id'];
                     $data['user_id'] = $userId;
                     
                     error_log("PostController POST - user_id asignado: $userId");
