@@ -197,6 +197,7 @@
         </div>
         <div id="filterContainer"></div>
         <script src="/js/fetchThings/fetchNavBar.js"></script>
+        <script src="/js/filters.js"></script>
         <script src="/js/fetchThings/fetchPreviewPosts.js"></script>
         <script src="/js/fetchThings/fetchCardsPosts.js"></script>
         <script src="/js/tooltip.js"></script>

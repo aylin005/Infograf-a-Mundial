@@ -46,21 +46,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     filterMenu.style.opacity = "1";
                     document.body.style.overflow = "hidden";
                   }
-                  const select1 = document.getElementById("countrySelect");
-                  const flagImg1 = document.getElementById("miniFlag");
-                  const select2 = document.getElementById("nationalitySelect");
-                  const flagImg2 = document.getElementById("natFlag");
-
-                  select1.addEventListener('change', ()=>UpdateFlag(select1,flagImg1));
-                  select2.addEventListener('change', ()=>UpdateFlag(select2,flagImg2));
-                  UpdateFlag(select1, flagImg1); //NOTA: se cambia la bandera
-                  UpdateFlag(select2, flagImg2);
-
-                  function UpdateFlag(pSelect, pFlag) 
-                  {
-                    const selectedOption = pSelect.options[pSelect.selectedIndex];
-                    const imgSrc = selectedOption.getAttribute("data-image");
-                    pFlag.src = imgSrc;
+                  
+                  // inicializar filtros dinámicos
+                  if (window.initializeFilters) {
+                    window.initializeFilters();
                   }
 
                   const closeModal = document.getElementById("closeModal");

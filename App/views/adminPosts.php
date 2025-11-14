@@ -46,6 +46,7 @@
             </div>
                 
         <script src="/js/fetchThings/fetchNavBar.js"></script>
+        <script src="/js/filters.js"></script>
         <script src="/js/tooltip.js"></script>
         <script src="/js/adminPosts.js"></script>
     </body>

@@ -160,6 +160,7 @@
         </main>
         <div id="filterContainer"></div>
         <script src="/js/fetchThings/fetchNavBar.js"></script>
+        <script src="/js/filters.js"></script>
         <script src="/js/scripts.js"></script>
         <!-- <script src="/js/mundial.js"></script> -->
         <script src="/js/signUp.js"></script>

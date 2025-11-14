@@ -12,17 +12,12 @@
                 <label for="tagSelected" class="sectionTitle">Buscar por categorías</label>
                 <div class="d-flex">
                     <select id="tagSelected" class="w-100 offside-regular">
-                        <option id="cat1" name="cat1" class="selectOpt smallText">#Jugadas</option>
-                        <option id="cat2" name="cat2" class="selectOpt smallText">#Entrevistas</option>
-                        <option id="cat3" name="cat3" class="selectOpt smallText">#Asistentes</option>
+                        <option value="">Selecciona una categoría</option>
                     </select>
                     <button type="button" class="noBackground noBorder addCatIcon x-largeText aliceblueText"><i class="bi bi-plus-square"></i></button>
                 </div>
                 <div id="listCategories" name="listCategories" class="previewList">
-                    <div id="addedCategory" name="addedCategory" class="d-flex align-items-center height50x">
-                        <p class="showListElement shadow smallerText">#hola</p>
-                        <button type="button" class="addButton noBackground noBorder"><i class="bi bi-x-square deleteIcon"></i></button>
-                    </div>
+                    <!-- Categorías seleccionadas se mostrarán aquí -->
                 </div>
             </div>
             <hr class="whiteGreyText">    
@@ -48,11 +43,9 @@
             <div id="byCountries">
               <label for= "countrySelect" class="sectionTitle">Sede </label>
                 <div class="d-flex">
-                    <img id="miniFlag" class="miniFlag">
+                    <img id="miniFlag" class="miniFlag" style="display: none;">
                     <select id="countrySelect" class="offside-regular w-80 d-block mx-auto">
-                        <option id="flag-Can" name="flag-Can" data-image="/media/Flags/Canada-Emoji.png" class="selectOpt smallText">Canadá</option>
-                        <option id="flag-Mex" name="flag-Mex" data-image="/media/Flags/Mexico-Emoji.png" class="selectOpt smallText">México</option>
-                        <option id="flag-EU" name="flag-EU" data-image="/media/Flags/US-Emoji.png" class="selectOpt smallText">Estados Unidos</option>
+                        <option value="">Selecciona una sede</option>
                     </select>
                 </div>
             </div>
@@ -65,11 +58,9 @@
                     <label for="bySelection" class="sectionTitle">Por selección</label>
                 </div>
                 <div class="d-flex">
-                    <img id="natFlag" class="miniFlag">
+                    <img id="natFlag" class="miniFlag" style="display: none;">
                     <select id="nationalitySelect" class="offside-regular w-80 d-block mx-auto">
-                        <option id="flag-Can" name="flag-Can" data-image="/media/Flags/Canada-Emoji.png" class="selectOpt smallText">Canadiense</option>
-                        <option id="flag-Mex" name="flag-Mex" data-image="/media/Flags/Mexico-Emoji.png" class="selectOpt smallText">Mexicano</option>
-                        <option id="flag-EU" name="flag-EU" data-image="/media/Flags/US-Emoji.png" class="selectOpt smallText">Estadounidense</option>
+                        <option value="">Selecciona una selección</option>
                     </select>
                 </div>
             </div>
@@ -82,23 +73,19 @@
                 <label for="byMundial" class="sectionTitle">Mundiales</label>
               </div>
               <select id="selectYear" class="offside-regular w-80 d-block mx-auto">
-                <option class="selectOpt smallText">1930</option>
-                <option class="selectOpt smallText">1934</option>
-                <option class="selectOpt smallText">1938</option>
+                <option value="">Selecciona un mundial</option>
               </select>
             </div>
             <hr class="whiteGreyText">  
 
             <!-- NOTA: Orden -->
             <div id="orderBy">
-                <label for="orderSelect" class="sectionTitle">Ordenar mundiales por</label>
-                <select id="tagSelected" class="offside-regular w-80 d-block mx-auto">
-                    <option class="selectOpt smallText">Más recientes primero</option>
-                    <option class="selectOpt smallText">Más antiguos primero</option>
-                    <option class="selectOpt smallText">Por país (A-Z)</option>
-                    <option class="selectOpt smallText">Por país (Z-A)</option>
-                    <option class="selectOpt smallText">Más upvotes</option>
-                    <option class="selectOpt smallText">Más comentarios</option>
+                <label for="orderSelect" class="sectionTitle">Ordenar publicaciones por</label>
+                <select id="orderSelect" class="offside-regular w-80 d-block mx-auto">
+                    <option value="newest">Más recientes primero</option>
+                    <option value="oldest">Más antiguos primero</option>
+                    <option value="most_liked">Más upvotes</option>
+                    <option value="most_comments">Más comentarios</option>
                 </select>
             </div>
             <br>

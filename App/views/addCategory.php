@@ -43,6 +43,7 @@
                 </div>
             </main>
         <script src="/js/fetchThings/fetchNavBar.js"></script>
+        <script src="/js/filters.js"></script>
         <script src="/js/tooltip.js"></script>
         <script src="/js/addCategory.js"></script>
     </body>
