@@ -507,4 +507,30 @@ class PostModel
         }
     }
 
+    /**
+     * Obtener el voto actual del usuario para un post
+     * @param int $userId - ID del usuario
+     * @param int $postId - ID del post
+     * @return string|null - 'upvote', 'downvote', o null
+     */
+    public function getUserVote(int $userId, int $postId): ?string
+    {
+        try {
+            $sql = "CALL sp_post_vote_get('getUserVote', :userId, :postId)";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(':userId', $userId, PDO::PARAM_INT);
+            $stmt->bindValue(':postId', $postId, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
+            
+            return $result['vote'] ?? null;
+            
+        } catch (Exception $e) {
+            error_log("Error en getUserVote: " . $e->getMessage());
+            return null;
+        }
+    }
+
 }

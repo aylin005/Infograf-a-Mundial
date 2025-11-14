@@ -8,7 +8,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     
     await loadPost(postId);
     await loadComments(postId);
+    await loadUserVote(postId);
     setupCommentForm(postId);
+    setupVoteButtons(postId);
 });
 
 // obtener el ID del post desde la URL
@@ -112,6 +114,9 @@ function renderPost(post) {
     if (descriptionElement) {
         descriptionElement.textContent = post.content || 'Sin contenido';
     }
+    
+    // actualizar contadores de votos
+    updateVoteCounts(post.upvotes || 0, post.downvotes || 0);
     
     // multimedia
     renderMultimedia(post.multimedia || []);
@@ -367,8 +372,10 @@ function createCommentElement(comment) {
                 </div>
                 <div class="col-2">
                     <div class="d-flex align-items-center justify-content-center">
-                        <button class="noBackground transparentButton margin7xLnR noBorder"><i class="bi bi-hand-thumbs-up postOptions"></i></button>
-                        <p class="my-auto p-0 small whiteGreyText">${comment.likes || 0}</p>
+                        <button class="noBackground transparentButton margin7xLnR noBorder likeCommentBtn" data-comment-id="${comment.id}">
+                            <i class="bi bi-hand-thumbs-up postOptions"></i>
+                        </button>
+                        <p class="my-auto p-0 small whiteGreyText likeCount">${comment.likes || 0}</p>
                     </div>
                 </div>
             </div>
@@ -387,6 +394,15 @@ function createCommentElement(comment) {
             </div>
         </div>
     `;
+    
+    // configurar like button
+    const likeBtn = commentDiv.querySelector('.likeCommentBtn');
+    if (likeBtn) {
+        likeBtn.addEventListener('click', () => handleCommentLike(comment.id, commentDiv));
+    }
+    
+    // cargar estado del like del usuario
+    loadUserCommentLike(comment.id, commentDiv);
     
     // mostrar botón de eliminar solo si es el autor del comentario
     checkCommentOwnership(commentDiv, comment.user_id);
@@ -539,4 +555,197 @@ function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+}
+
+// ==================== FUNCIONALIDAD DE VOTOS ====================
+
+// configurar botones de voto
+function setupVoteButtons(postId) {
+    const upvoteBtn = document.querySelector('#goodVoteButton button');
+    const downvoteBtn = document.querySelector('#badVoteButton');
+    
+    if (upvoteBtn) {
+        upvoteBtn.addEventListener('click', () => handleVote(postId, 'upvote'));
+    }
+    
+    if (downvoteBtn) {
+        downvoteBtn.addEventListener('click', () => handleVote(postId, 'downvote'));
+    }
+}
+
+// cargar voto actual del usuario
+async function loadUserVote(postId) {
+    try {
+        const response = await fetch(`/posts/${postId}/user-vote`);
+        if (response.ok) {
+            const data = await response.json();
+            // siempre actualizar el estado, incluso si es null (sin voto)
+            updateVoteButtonState(data.vote);
+        }
+    } catch (error) {
+        console.log('No se pudo cargar el voto del usuario');
+    }
+}
+
+// manejar voto (upvote o downvote)
+async function handleVote(postId, voteType) {
+    try {
+        const response = await fetch('/posts/vote', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                post_id: parseInt(postId),
+                vote_type: voteType
+            })
+        });
+        
+        if (response.status === 401) {
+            if (confirm('Debes iniciar sesión para votar. ¿Deseas ir a la página de inicio de sesión?')) {
+                window.location.href = '/login';
+            }
+            return;
+        }
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+            alert(data.message || 'Error al registrar voto');
+            return;
+        }
+        
+        // actualizar contadores sin recargar todo
+        await updatePostVoteCounts(postId);
+        await loadUserVote(postId);
+        
+    } catch (error) {
+        console.error('Error voting:', error);
+        alert('Error al registrar voto. Por favor intenta de nuevo.');
+    }
+}
+
+// actualizar solo los contadores de votos desde el servidor
+async function updatePostVoteCounts(postId) {
+    try {
+        const response = await fetch(`/posts/${postId}`);
+        if (response.ok) {
+            const post = await response.json();
+            updateVoteCounts(post.upvotes || 0, post.downvotes || 0);
+        }
+    } catch (error) {
+        console.log('No se pudieron actualizar los contadores');
+    }
+}
+
+// actualizar estado visual de los botones de voto
+function updateVoteButtonState(currentVote) {
+    const upvoteBtn = document.querySelector('#goodVoteButton button');
+    const downvoteBtn = document.querySelector('#badVoteButton');
+    const upvoteIcon = upvoteBtn?.querySelector('i');
+    const downvoteIcon = downvoteBtn?.querySelector('i');
+    
+    // resetear estados
+    if (upvoteIcon) {
+        upvoteIcon.classList.remove('bi-arrow-up-square-fill');
+        upvoteIcon.classList.add('bi-arrow-up-square');
+    }
+    if (downvoteIcon) {
+        downvoteIcon.classList.remove('bi-arrow-down-square-fill');
+        downvoteIcon.classList.add('bi-arrow-down-square');
+    }
+    
+    // aplicar estado activo
+    if (currentVote === 'upvote' && upvoteIcon) {
+        upvoteIcon.classList.remove('bi-arrow-up-square');
+        upvoteIcon.classList.add('bi-arrow-up-square-fill');
+    } else if (currentVote === 'downvote' && downvoteIcon) {
+        downvoteIcon.classList.remove('bi-arrow-down-square');
+        downvoteIcon.classList.add('bi-arrow-down-square-fill');
+    }
+}
+
+// actualizar contadores de votos
+function updateVoteCounts(upvotes, downvotes) {
+    const upvoteCount = document.getElementById('goodVote');
+    const downvoteCount = document.getElementById('badVote');
+    
+    if (upvoteCount) {
+        upvoteCount.textContent = upvotes;
+    }
+    if (downvoteCount) {
+        downvoteCount.textContent = downvotes;
+    }
+}
+
+// ==================== FUNCIONALIDAD DE LIKES EN COMENTARIOS ====================
+
+// manejar like en comentario
+async function handleCommentLike(commentId, commentElement) {
+    try {
+        const response = await fetch('/comments/like', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                comment_id: parseInt(commentId)
+            })
+        });
+        
+        if (response.status === 401) {
+            if (confirm('Debes iniciar sesión para dar like. ¿Deseas ir a la página de inicio de sesión?')) {
+                window.location.href = '/login';
+            }
+            return;
+        }
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+            alert(data.message || 'Error al dar like');
+            return;
+        }
+        
+        // actualizar contador y estado visual
+        const likeCountElement = commentElement.querySelector('.likeCount');
+        const likeBtn = commentElement.querySelector('.likeCommentBtn i');
+        
+        if (data.likes !== undefined && likeCountElement) {
+            likeCountElement.textContent = data.likes;
+        }
+        
+        // toggle icono filled/unfilled
+        if (likeBtn) {
+            if (likeBtn.classList.contains('bi-hand-thumbs-up-fill')) {
+                likeBtn.classList.remove('bi-hand-thumbs-up-fill');
+                likeBtn.classList.add('bi-hand-thumbs-up');
+            } else {
+                likeBtn.classList.remove('bi-hand-thumbs-up');
+                likeBtn.classList.add('bi-hand-thumbs-up-fill');
+            }
+        }
+        
+    } catch (error) {
+        console.error('Error liking comment:', error);
+        alert('Error al dar like. Por favor intenta de nuevo.');
+    }
+}
+
+// cargar estado del like del usuario para un comentario
+async function loadUserCommentLike(commentId, commentElement) {
+    try {
+        const response = await fetch(`/comments/${commentId}/user-like`);
+        if (response.ok) {
+            const data = await response.json();
+            const likeBtn = commentElement.querySelector('.likeCommentBtn i');
+            
+            if (data.hasLiked && likeBtn) {
+                likeBtn.classList.remove('bi-hand-thumbs-up');
+                likeBtn.classList.add('bi-hand-thumbs-up-fill');
+            }
+        }
+    } catch (error) {
+        console.log('No se pudo cargar el estado del like');
+    }
 }

@@ -667,5 +667,38 @@ class PostController
             echo json_encode(["message" => "Error interno del servidor"]);
         }
     }
-}
 
+    /**
+     * Obtener el voto actual del usuario para un post
+     */
+    public function getUserVote(string $postId): void
+    {
+        // iniciar sesión si no está iniciada
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        // verificar autenticación
+        if (!isset($_SESSION['user']['id'])) {
+            http_response_code(200);
+            header('Content-Type: application/json');
+            echo json_encode(["vote" => null]);
+            return;
+        }
+
+        $userId = (int)$_SESSION['user']['id'];
+        $postId = (int)$postId;
+
+        try {
+            $vote = $this->model->getUserVote($userId, $postId);
+            http_response_code(200);
+            header('Content-Type: application/json');
+            echo json_encode(["vote" => $vote]);
+        } catch (Exception $e) {
+            error_log("Error en PostController::getUserVote(): " . $e->getMessage());
+            http_response_code(500);
+            header('Content-Type: application/json');
+            echo json_encode(["vote" => null]);
+        }
+    }
+}

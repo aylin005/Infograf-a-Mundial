@@ -166,6 +166,13 @@ $router->add('/posts/vote', function(string $method) use ($database) {
     $controller->votePost();
 });
 
+// /posts/:id/user-vote - obtener voto actual del usuario
+$router->add('/posts/:id/user-vote', function(string $method, string $id) use ($database) {
+    $gateway = new PostModel($database);
+    $controller = new PostController($gateway, $database);
+    $controller->getUserVote($id);
+});
+
 // /posts/comments - obtener comentarios de un post
 $router->add('/posts/comments', function(string $method) use ($database) {
     $gateway = new PostModel($database);
@@ -197,6 +204,13 @@ $router->add('/comments/like', function(string $method) use ($database) {
     $gateway = new CommentModel($database);
     $controller = new CommentController($gateway);
     $controller->toggleLike();
+});
+
+// /comments/:id/user-like - obtener estado del like del usuario
+$router->add('/comments/:id/user-like', function(string $method, string $id) use ($database) {
+    $gateway = new CommentModel($database);
+    $controller = new CommentController($gateway);
+    $controller->getUserLike((int)$id);
 });
 
 // /comments/:id - eliminar comentario (DELETE)

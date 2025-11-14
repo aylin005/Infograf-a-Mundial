@@ -231,11 +231,15 @@ class CommentController
             $result = $this->model->toggleLike($userId, $commentId);
 
             if ($result['exito']) {
+                // obtener el número actualizado de likes
+                $likesCount = $this->model->getLikesCount($commentId);
+                
                 http_response_code(200);
                 header('Content-Type: application/json');
                 echo json_encode([
                     "success" => true,
-                    "message" => $result['mensaje']
+                    "message" => $result['mensaje'],
+                    "likes" => $likesCount
                 ]);
             } else {
                 http_response_code(400);
@@ -251,6 +255,42 @@ class CommentController
             http_response_code(500);
             header('Content-Type: application/json');
             echo json_encode(["message" => "Error interno del servidor"]);
+        }
+    }
+
+    /**
+     * Obtener el estado del like del usuario para un comentario
+     * GET /comments/:id/user-like
+     */
+    public function getUserLike(int $commentId): void
+    {
+        // iniciar sesión si no está iniciada
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        // verificar autenticación
+        if (!isset($_SESSION['user']['id'])) {
+            http_response_code(200);
+            header('Content-Type: application/json');
+            echo json_encode(["hasLiked" => false]);
+            return;
+        }
+
+        $userId = (int)$_SESSION['user']['id'];
+
+        try {
+            $hasLiked = $this->model->hasUserLiked($userId, $commentId);
+            
+            http_response_code(200);
+            header('Content-Type: application/json');
+            echo json_encode(["hasLiked" => $hasLiked]);
+
+        } catch (Exception $e) {
+            error_log("Error en CommentController::getUserLike(): " . $e->getMessage());
+            http_response_code(500);
+            header('Content-Type: application/json');
+            echo json_encode(["hasLiked" => false]);
         }
     }
 }

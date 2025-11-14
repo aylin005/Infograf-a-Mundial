@@ -154,4 +154,54 @@ class CommentModel
             ];
         }
     }
+
+    /**
+     * Obtener el número actualizado de likes de un comentario
+     * @param int $commentId - ID del comentario
+     * @return int - número de likes
+     */
+    public function getLikesCount(int $commentId): int
+    {
+        try {
+            $sql = "CALL sp_comment_like_get('getLikesCount', NULL, :commentId)";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(':commentId', $commentId, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
+            
+            return (int)($result['likes'] ?? 0);
+            
+        } catch (Exception $e) {
+            error_log("Error en getLikesCount: " . $e->getMessage());
+            return 0;
+        }
+    }
+
+    /**
+     * Verificar si un usuario ha dado like a un comentario
+     * @param int $userId - ID del usuario
+     * @param int $commentId - ID del comentario
+     * @return bool - true si ha dado like, false si no
+     */
+    public function hasUserLiked(int $userId, int $commentId): bool
+    {
+        try {
+            $sql = "CALL sp_comment_like_get('checkUserLike', :userId, :commentId)";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(':userId', $userId, PDO::PARAM_INT);
+            $stmt->bindValue(':commentId', $commentId, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
+            
+            return (bool)($result['hasLiked'] ?? false);
+            
+        } catch (Exception $e) {
+            error_log("Error en hasUserLiked: " . $e->getMessage());
+            return false;
+        }
+    }
 }
