@@ -259,7 +259,15 @@ class UserController
                 'user_id' => $_SESSION['user']['id'],
                 'username' => $_SESSION['user']['username'] ?? '',
                 'email' => $_SESSION['user']['email'] ?? '',
-                'full_name' => $_SESSION['user']['full_name'] ?? ''
+                'full_name' => $_SESSION['user']['full_name'] ?? '',
+                'is_admin' => false
+            ]);
+        } elseif (isset($_SESSION['admin'])) {
+            http_response_code(200);
+            echo json_encode([
+                'authenticated' => true,
+                'is_admin' => true,
+                'username' => $_SESSION['admin']['username'] ?? ''
             ]);
         } else {
             http_response_code(200);

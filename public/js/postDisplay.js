@@ -401,7 +401,9 @@ async function checkCommentOwnership(commentElement, commentUserId) {
         const response = await fetch('/users/current');
         if (response.ok) {
             const data = await response.json();
-            if (data.authenticated && data.user_id && data.user_id === commentUserId) {
+            
+            // mostrar botón si es admin o si es el autor del comentario
+            if (data.authenticated && (data.is_admin || (data.user_id && data.user_id === commentUserId))) {
                 const deleteBtn = commentElement.querySelector('.deleteCommentBtn');
                 if (deleteBtn) {
                     deleteBtn.style.display = 'block';

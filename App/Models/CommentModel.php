@@ -86,4 +86,42 @@ class CommentModel
             ];
         }
     }
+
+    /**
+     * Eliminar un comentario como administrador (sin validar ownership)
+     * @param int $commentId - ID del comentario a eliminar
+     * @return array - resultado con exito, mensaje
+     */
+    public function deleteCommentByAdmin(int $commentId): array
+    {
+        try {
+            // marcar comentario como inactivo directamente
+            $sql = "UPDATE comments SET is_active = FALSE WHERE id = :commentId";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(':commentId', $commentId, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            if ($stmt->rowCount() > 0) {
+                return [
+                    'exito' => true,
+                    'mensaje' => 'Comentario eliminado por administrador',
+                    'id' => $commentId
+                ];
+            } else {
+                return [
+                    'exito' => false,
+                    'mensaje' => 'Comentario no encontrado',
+                    'id' => null
+                ];
+            }
+            
+        } catch (Exception $e) {
+            error_log("Error en deleteCommentByAdmin: " . $e->getMessage());
+            return [
+                'exito' => false,
+                'mensaje' => 'Error al eliminar el comentario: ' . $e->getMessage(),
+                'id' => null
+            ];
+        }
+    }
 }

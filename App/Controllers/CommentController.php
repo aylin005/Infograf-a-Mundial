@@ -152,18 +152,28 @@ class CommentController
             session_start();
         }
 
-        // verificar autenticacion
-        if (!isset($_SESSION['user']['id'])) {
+        // verificar autenticacion (usuario o admin)
+        $isAdmin = isset($_SESSION['admin']);
+        $isUser = isset($_SESSION['user']['id']);
+        
+        if (!$isAdmin && !$isUser) {
             http_response_code(401);
             header('Content-Type: application/json');
             echo json_encode(["message" => "Usuario no autenticado"]);
             return;
         }
 
-        $userId = (int)$_SESSION['user']['id'];
+        // si es admin, puede eliminar cualquier comentario
+        // si es usuario normal, solo puede eliminar sus propios comentarios
+        $userId = $isUser ? (int)$_SESSION['user']['id'] : 0;
 
         try {
-            $result = $this->model->deleteComment($commentId, $userId);
+            // si es admin, forzamos la eliminación sin validar ownership
+            if ($isAdmin) {
+                $result = $this->model->deleteCommentByAdmin($commentId);
+            } else {
+                $result = $this->model->deleteComment($commentId, $userId);
+            }
 
             if ($result['exito']) {
                 http_response_code(200);
