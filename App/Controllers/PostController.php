@@ -555,4 +555,46 @@ class PostController
         $d = \DateTime::createFromFormat('Y-m-d', $date);
         return $d && $d->format('Y-m-d') === $date;
     }
+
+    /**
+     * Obtener comentarios de un post
+     * GET /posts/comments?post_id=X
+     */
+    public function getComments(): void
+    {
+        // verificar que se proporcione post_id
+        if (!isset($_GET['post_id'])) {
+            http_response_code(400);
+            header('Content-Type: application/json');
+            echo json_encode(["message" => "Falta el parámetro post_id"]);
+            return;
+        }
+
+        $postId = (int)$_GET['post_id'];
+
+        if ($postId <= 0) {
+            http_response_code(400);
+            header('Content-Type: application/json');
+            echo json_encode(["message" => "ID de post inválido"]);
+            return;
+        }
+
+        try {
+            $comments = $this->model->getComments($postId);
+            
+            http_response_code(200);
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => true,
+                'comments' => $comments,
+                'total' => count($comments)
+            ]);
+
+        } catch (Exception $e) {
+            error_log("Error en PostController::getComments(): " . $e->getMessage());
+            http_response_code(500);
+            header('Content-Type: application/json');
+            echo json_encode(["message" => "Error interno del servidor"]);
+        }
+    }
 }

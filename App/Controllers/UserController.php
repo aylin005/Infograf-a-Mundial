@@ -239,5 +239,35 @@ class UserController
         return $data;
     }
 
+    /**
+     * Obtener información del usuario actual desde la sesión
+     * GET /users/current
+     */
+    public function getCurrentUser(): void
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        header('Content-Type: application/json');
+
+        // verificar si hay usuario en sesión
+        if (isset($_SESSION['user']) && isset($_SESSION['user']['id'])) {
+            http_response_code(200);
+            echo json_encode([
+                'authenticated' => true,
+                'user_id' => $_SESSION['user']['id'],
+                'username' => $_SESSION['user']['username'] ?? '',
+                'email' => $_SESSION['user']['email'] ?? '',
+                'full_name' => $_SESSION['user']['full_name'] ?? ''
+            ]);
+        } else {
+            http_response_code(200);
+            echo json_encode([
+                'authenticated' => false
+            ]);
+        }
+    }
+
 
 }

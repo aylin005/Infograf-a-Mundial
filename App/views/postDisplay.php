@@ -74,126 +74,15 @@
                     </div>
                 </div>
                 <div class="col-sm-5 col p-3 blackWAlpha25Background activateScrollY height570x">
-                    <form action="/postDisplay" method="post" id="addComment" accept-charset="UTF-8">
-                        <textarea id="commentSomething" name="commentSomething" class="commentSomething" placeholder="Comenta algo aquí..."></textarea>
+                    <form id="addCommentForm" accept-charset="UTF-8">
+                        <textarea id="commentSomething" name="commentSomething" class="commentSomething" placeholder="Comenta algo aquí..." maxlength="1000"></textarea>
                         <div class="d-flex justify-content-end">
-                            <button type="submit"class="commentButton small shadow addMarginRight5x">Publicar</button>
+                            <button type="submit" class="commentButton small shadow addMarginRight5x">Publicar</button>
                         </div>
                         <br>
                     </form> 
                     <div id="commentsContainer">
-                        <div id="comments" class="comments quitMarginBottom">
-                            <div class="container-fluid noPadding">
-                                <div class="row w-100">
-                                    <div class="col-1">
-                                        <img id="commentUserPhoto" class="commentUserPhoto img-fluid" src="/media/pruebas/ll.png">
-                                    </div>
-                                    <div class="col-9">
-                                        <p id="postUsername" class="commentUsername"> @cocos</p>
-                                        <p id="datePosted" class="commentData"> <i class="bi bi-clock"></i> 21-04-06</p>
-                                    </div>
-                                    <div class="col-2">
-                                        <div class="d-flex align-items-center justify-content-center">
-                                            <button id="likePost" class="noBackground transparentButton margin7xLnR noBorder"><i class="bi bi-hand-thumbs-up postOptions"></i></button>
-                                            <p class="my-auto p-0 small whiteGreyText">123</p>
-                                        </div>
-                                        <!-- <i class="bi bi-hand-thumbs-up-fill"></i> -->
-                                    </div>
-                                </div>
-                                <hr class="whiteGreyText m-1">
-                                <p id="commentDescription" class="commentDescription">Estás equivocado porque</p>
-                                <hr class="whiteGreyText noMargin">
-                                <div class="row">
-                                    <div class="col-11">
-                                        <button id="reportComment" class="noBackground noBorder transparentButton"  data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-custom-class="custom-littleTooltip" title="Reportar"><i class="bi bi-flag postOptions"></i></button>
-                                    </div>
-                                    <div class="col-1">
-                                        <div class="d-flex align-items-center justify-content-center">
-                                            <button id="deletePost" class="noBackground noBorder transparentButton margin7xLnR"><i class="bi bi-trash postOptions"></i></button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- --------------------------------------------------------------------- -->
-                        <form action="/postDisplay" id="replyForm" method="post" class="border-top">
-                            <textarea id="replyText" name="replyText" class="commentSomething" placeholder="Comenta algo aquí..."></textarea>
-                            <div class="d-flex justify-content-end">
-                                <button type="submit" class="commentButton small addMarginRight5x">Publicar</button>
-                            </div>
-                            <br>
-                        </form>
-                        <!-- --------------------------------------------------------------------->
-                        <!-- --------------------------------------------------------------------->
-                        <div class="d-flex justify-content-center">
-                            <button class="showReplyButton">Mostrar respuestas <i class="bi bi-arrow-down-square"></i> </button>
-                        </div>
-                        <div id="allReplys">
-                            <div id="replyComment" class="replyComment">
-                                <div class="container-fluid noPadding">
-                                    <div class="row w-100">
-                                        <div class="col-1">
-                                            <img id="replyUserPhoto" class="commentUserPhoto img-fluid" src="/media/pruebas/momazo.jpg">
-                                        </div>
-                                        <div class="col-9">
-                                            <p id="replyUsername" class="commentUsername"> @ye</p>
-                                            <p id="datePosted" class="commentData"> <i class="bi bi-clock"></i> 21-04-06</p>
-                                        </div>
-                                        <div class="col-2">
-                                            <div class="d-flex align-items-center justify-content-center">
-                                                <button id="likePost" class="noBackground transparentButton margin7xLnR noBorder"><i  class="bi bi-hand-thumbs-up postOptions"></i></button>
-                                                <p class="my-auto p-0 small whiteGreyText">23</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <hr class="whiteGreyText m-1">
-                                <p id="replyDescription" class="commentDescription">IP: 92.28.211.234</p>
-                                <hr class="whiteGreyText noMargin">
-                                <div class="row">
-                                    <div class="col-11">
-                                        <button id="reportComment" class="noBackground noBorder transparentButton"  data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-custom-class="custom-littleTooltip" title="Reportar"><i class="bi bi-flag postOptions"></i></button>
-                                    </div>
-                                    <div class="col-1">
-                                        <div class="d-flex align-items-center justify-content-center">
-                                            <button id="deletePost" class="noBackground noBorder transparentButton margin7xLnR"><i id="deleteReply" class="bi bi-trash postOptions"></i></button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div id="comments" class="comments quitMarginBottom">
-                            <div class="container-fluid noPadding">
-                                <div class="row w-100">
-                                    <div class="col-1">
-                                        <img id="commentUserPhoto" class="commentUserPhoto img-fluid" src="/media/pruebas/Mario-64-cake-620x360.jpg">
-                                    </div>
-                                    <div class="col-9">
-                                        <p id="postUsername" class="commentUsername"> @tuabuelito</p>
-                                        <p id="datePosted" class="commentData"> <i class="bi bi-clock"></i> 21-04-06</p>
-                                    </div>
-                                    <div class="col-2">
-                                        <div class="d-flex align-items-center justify-content-center">
-                                            <button id="likePost" class="noBackground transparentButton margin7xLnR noBorder"><i  class="bi bi-hand-thumbs-up postOptions"></i></button>
-                                            <p class="my-auto p-0 small whiteGreyText">70</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <hr class="whiteGreyText m-1">
-                                <p id="commentDescription" class="commentDescription">No peleen 😭</p>
-                                <hr class="whiteGreyText noMargin">
-                                <div class="row">
-                                    <div class="col-11">
-                                        <button id="reportComment" class="noBackground noBorder transparentButton"  data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-custom-class="custom-littleTooltip" title="Reportar"><i class="bi bi-flag postOptions"></i></button>
-                                    </div>
-                                    <div class="col-1">
-                                        <div class="d-flex align-items-center justify-content-center">
-                                            <button id="deletePost" class="noBackground noBorder transparentButton margin7xLnR"><i class="bi bi-trash postOptions"></i></button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <!-- Los comentarios se cargarán dinámicamente aquí -->
                     </div>
                     <br>
                 </div>

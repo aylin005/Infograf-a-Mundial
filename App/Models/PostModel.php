@@ -433,4 +433,42 @@ class PostModel
         }
     }
 
+    /**
+     * Obtener los comentarios de un post
+     * @param int $postId - ID del post
+     * @return array - array de comentarios con info del usuario
+     */
+    public function getComments(int $postId): array
+    {
+        try {
+            // preparar stored procedure
+            $sql = "CALL sp_post_general('getComments', :postId, NULL, NULL, NULL)";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(':postId', $postId, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            // obtener comentarios
+            $comments = [];
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $comments[] = [
+                    'id' => (int)$row['id'],
+                    'user_id' => (int)$row['user_id'],
+                    'username' => $row['username'],
+                    'user_image' => $row['image'] ? base64_encode($row['image']) : null,
+                    'content' => $row['content'],
+                    'likes' => (int)($row['likes'] ?? 0),
+                    'created_at' => $row['created_at']
+                ];
+            }
+            
+            $stmt->closeCursor();
+            
+            return $comments;
+            
+        } catch (Exception $e) {
+            error_log("Error en getComments: " . $e->getMessage());
+            return [];
+        }
+    }
+
 }

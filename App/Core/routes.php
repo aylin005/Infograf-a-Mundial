@@ -8,11 +8,13 @@ use App\Models\CategoryModel;
 use App\Models\WorldCupModel;
 use App\Models\PostModel;
 use App\Models\MultimediaModel;
+use App\Models\CommentModel;
 use App\Controllers\UserController;
 use App\Controllers\AdminController;
 use App\Controllers\CategoryController;
 use App\Controllers\WorldCupController;
 use App\Controllers\PostController;
+use App\Controllers\CommentController;
 use App\Middlewares\AuthMiddleware;
 
 $config = require_once __DIR__ . '\..\config\config.php';
@@ -63,6 +65,13 @@ $router->add('/mundialDisplay', function() use ($renderView) { $renderView('mund
 ////////////////////////////////////////////////////////////////////
 // RUTAS PARA CONTROLADORES /////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
+
+// /users/current - obtener usuario actual de la sesión (DEBE IR ANTES de /users/:id)
+$router->add('/users/current', function(string $method) use ($database) {
+    $gateway = new UserModel($database);
+    $controller = new UserController($gateway);
+    $controller->getCurrentUser();
+});
 
 // /users
 $router->add('/users', function(string $method, ?string $id = null) use ($database) {
@@ -143,11 +152,18 @@ $router->add('/worldcups/:id', function(string $method, string $id) use ($databa
     $controller->processRequest($method, $id);
 });
 
-// /posts/search - búsqueda avanzada de posts (DEBE IR ANTES de /posts/:id)
+// /posts/search - búsqueda avanzada de posts 
 $router->add('/posts/search', function(string $method) use ($database) {
     $gateway = new PostModel($database);
     $controller = new PostController($gateway, $database);
     $controller->searchPosts($method);
+});
+
+// /posts/comments - obtener comentarios de un post
+$router->add('/posts/comments', function(string $method) use ($database) {
+    $gateway = new PostModel($database);
+    $controller = new PostController($gateway, $database);
+    $controller->getComments();
 });
 
 // /posts 
@@ -159,6 +175,20 @@ $router->add('/posts', function(string $method, ?string $id = null) use ($databa
 $router->add('/posts/:id', function(string $method, string $id) use ($database) {
     $gateway = new PostModel($database);
     $controller = new PostController($gateway, $database);
+    $controller->processRequest($method, $id);
+});
+
+// /comments - crear comentario (POST)
+$router->add('/comments', function(string $method) use ($database) {
+    $gateway = new CommentModel($database);
+    $controller = new CommentController($gateway);
+    $controller->processRequest($method);
+});
+
+// /comments/:id - eliminar comentario (DELETE)
+$router->add('/comments/:id', function(string $method, string $id) use ($database) {
+    $gateway = new CommentModel($database);
+    $controller = new CommentController($gateway);
     $controller->processRequest($method, $id);
 });
 
