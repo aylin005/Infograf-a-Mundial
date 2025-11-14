@@ -145,9 +145,15 @@ function createPostElement(post) {
 function createMundialAndTeamTags(post) {
     let tags = [];
     
-    // mundial
-    if (post.name && post.year) {
-        tags.push(`<button onClick="location.href='/results'" class="posTickets">Mundial ${escapeHtml(post.name)} ${post.year}</button>`);
+    // mundial - solo mostrar el año o el nombre completo según lo que venga
+    if (post.year) {
+        // si tiene nombre, mostrarlo solo si no es redundante
+        if (post.name && !post.name.toLowerCase().includes(post.year.toString())) {
+            tags.push(`<button onClick="location.href='/results'" class="posTickets">${escapeHtml(post.name)} ${post.year}</button>`);
+        } else {
+            // solo mostrar el año si el nombre ya lo incluye o no existe
+            tags.push(`<button onClick="location.href='/results'" class="posTickets">${post.year}</button>`);
+        }
     }
     
     // equipos nacionales
