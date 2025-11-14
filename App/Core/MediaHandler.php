@@ -8,7 +8,7 @@ use Exception;
  */
 class MediaHandler
 {
-    private const UPLOAD_DIR = 'uploads/multimedia/';
+    private const UPLOAD_DIR = 'public/uploads/multimedia/';
     private const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10MB para imágenes
     private const MAX_VIDEO_SIZE = 100 * 1024 * 1024; // 100MB para videos
     
@@ -119,8 +119,8 @@ class MediaHandler
             throw new Exception('No se pudo guardar el archivo de video');
         }
         
-        // Retornar path relativo para la BD
-        return self::UPLOAD_DIR . $uniqueName;
+        // Retornar path relativo a public/ para acceso web (sin 'public/' en el path)
+        return '/uploads/multimedia/' . $uniqueName;
     }
     
     /**

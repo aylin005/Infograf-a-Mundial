@@ -326,4 +326,44 @@ class PostController
         
         return $normalized;
     }
+
+    // GET /pendingPosts / se llama desde routes.php
+    public function getPendingPosts(string $method): void
+    {
+        if ($method !== 'GET') {
+            http_response_code(405);
+            header("Allow: GET");
+            echo json_encode(['error' => 'metodo no permitido']);
+            return;
+        }
+
+        try {
+            // obtener parametros de paginacion
+            $page = (int)($_GET['page'] ?? 1);
+            $pageSize = (int)($_GET['page_size'] ?? 10);
+            
+            // validar parametros
+            if ($page < 1) $page = 1;
+            if ($pageSize < 1 || $pageSize > 100) $pageSize = 10;
+            
+            // obtener posts pendientes del modelo
+            $result = $this->model->getPending($page, $pageSize);
+            
+            // enviar respuesta
+            header('Content-Type: application/json');
+            echo json_encode($result);
+            
+        } catch (Exception $e) {
+            error_log("Error in PostController getPendingPosts(): " . $e->getMessage());
+            http_response_code(500);
+            header('Content-Type: application/json');
+            echo json_encode([
+                'error' => 'error interno del servidor',
+                'posts' => [],
+                'total_records' => 0,
+                'current_page' => 1,
+                'has_more' => false
+            ]);
+        }
+    }
 }

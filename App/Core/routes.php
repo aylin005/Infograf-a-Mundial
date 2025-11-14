@@ -208,6 +208,14 @@ $router->add('/addCategory', function() use ($renderView) {
     $renderView('addCategory.php'); 
 });
 
+// ruta para obtener posts pendientes (solo admin)
+$router->add('/pendingPosts', function(string $method) use ($database) {
+    AuthMiddleware::requireAdmin();
+    $gateway = new PostModel($database);
+    $controller = new PostController($gateway, $database);
+    $controller->getPendingPosts($method);
+});
+
 
 
 // Disparar el router con la URI actual

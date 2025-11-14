@@ -37,91 +37,16 @@
                         <input class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault">
                         <label class="form-check-label whiteGreyText offside-regular addPaddingRight" for="switchCheckDefault">Ordenar por antigüedad</label>
                     </div>
-                    <div id="publication" class="publication">
-                        <div class="container-fluid noPadding">
-                            <div class="row w-100">
-                                <div class="col-1">
-                                    <img id="postUserPhoto" class="postUserPhoto img-fluid" src="/media/userPhoto.png">
-                                </div>
-                                <div class="col-7">
-                                    <p id="postUsername" class="postUsername"> @itsie</p>
-                                    <p id="datePosted" class="postData"> <i class="bi bi-clock"></i> 21-04-06</p>
-                                    <p id="dateEdited" class="postData"> <i class="bi bi-pencil-square"></i> 22-04-06</p>
-                                </div>
-                                <div class="col-4">
-                                    <div class="d-flex align-items-center justify-content-center">
-                                        <button id="approvedButton" type="button" class="noBorder noBackground adjustButton" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-custom-class="custom-littleTooltip" title="Aprobar"><i class="bi bi-check-square"></i></button>
-                                        <button id="deniedButton" type="button" class="noBorder noBackground adjustButton denied"  data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-custom-class="custom-littleTooltip" title="Rechazar"><i class="bi bi-x-square"></i></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <hr class="whiteGreyText">
-                        <button onClick="location.href='/results'" id="mundialPost" class="posTickets" >1986</button>
-                        <button onClick="location.href='/results'" id="selectionPost" class="posTickets" >Selección Argentina</button>
-                        <h1 id="postTitle" class="postTitle">La mejor jugada de Maradona</h1>
-                        <p id="postDescription" class="postDescription">Yo creo que la mejor jugada fue en el 86, aquí adjunto mis pruebas</p>
-                        <hr class="whiteGreyText noMargin">
-                        <div id="mediaContainer" class="mediaContainer">
-                            <div id="displayMediaImg" class="displayMediaImg">
-                                <img src="/media/pruebas/Roblox-Wallpapers-Desktop.jpg" class="showImage">
-                                <i class="bi bi-zoom-in zoomIcon"></i>
-                            </div>
-                            <div id="displayMediaVideo" class="displayMediaVideo">
-                                <video src="/media/Mundiales/1986/Publications/1.mp4" class="showVideo" controls>
-                                <i class="bi bi-zoom-in"></i>
-                            </div>
-                            <div id="displayMediaImg" class="displayMediaImg">
-                                <img src="/media/pruebas/Roblox-Wallpapers-Desktop.jpg" class="showImage">
-                                <i class="bi bi-zoom-in zoomIcon"></i>
-                            </div>
-                            <div id="displayMediaVideo" class="displayMediaVideo">
-                                <video src="/media/Mundiales/1986/Publications/1.mp4" class="showVideo" controls>
-                                <i class="bi bi-zoom-in"></i>
-                            </div>
-                            <div id="displayMediaImg" class="displayMediaImg">
-                                <img src="/media/pruebas/Roblox-Wallpapers-Desktop.jpg" class="showImage">
-                                <i class="bi bi-zoom-in zoomIcon"></i>
-                            </div>
-                            <div id="displayMediaVideo" class="displayMediaVideo">
-                                <video src="/media/Mundiales/1986/Publications/1.mp4" class="showVideo" controls>
-                                <i class="bi bi-zoom-in"></i>
-                            </div>
-                        </div>
-                        <div id="categoryContainer" class="categoryContainer">
-                            <button onClick="location.href='/results'" id="postTag" class="postTagButton" >#Goleadas</button>
-                            <button onClick="location.href='/results'" id="postTag" class="postTagButton" >#CampeonDelMundo</button>
-                        </div>
-                    </div>
                     
-                    <div id="comments" class="publication">
-                        <div class="container-fluid noPadding">
-                            <div class="row w-100">
-                                <div class="col-1">
-                                    <img id="postUserPhoto" class="postUserPhoto img-fluid" src="/media/userPhoto.png">
-                                </div>
-                                <div class="col-7">
-                                    <p id="postUsername" class="postUsername"> @queso-999</p>
-                                    <p id="datePosted" class="postData"> <i class="bi bi-clock"></i> 08-09-2025</p>
-                                    <p id="dateEdited" class="postData"> <i class="bi bi-pencil-square"></i> 09-09-2025</p>
-                                </div>
-                                <div class="col-4">
-                                    <div class="d-flex align-items-center justify-content-center">
-                                        <button id="approvedButton" type="button" class="noBorder noBackground adjustButton" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-custom-class="custom-littleTooltip" title="Aprobar"><i class="bi bi-check-square"></i></button>
-                                        <button id="deniedButton" type="button" class="noBorder noBackground adjustButton denied"  data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-custom-class="custom-littleTooltip" title="Rechazar"><i class="bi bi-x-square"></i></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <hr class="whiteGreyText">
-                        <p id="postDescription" class="postDescription">Solo hay dos puntos de vista, el mío y el equivocado</p>
-                        <button onclick="location.href='/postDisplay'" id="ogPost" class="btn d-block mx-auto py-1 shadow smallerText">Ver publicación original</button>
+                    <!-- Container for dynamic posts loaded via JavaScript -->
+                    <div id="postsContainer">
+                        <!-- Posts will be loaded here dynamically -->
                     </div>
                 </main>
             </div>
                 
         <script src="/js/fetchThings/fetchNavBar.js"></script>
         <script src="/js/tooltip.js"></script>
-    </body>
+        <script src="/js/adminPosts.js"></script>
     </body>
 </html>

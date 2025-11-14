@@ -13,22 +13,82 @@ class PostModel
         $this->conn = $database->getConnection();
     }
 
-    // obtener todos los posts
-    public function getAll(): array
+    /**
+     * obtener posts pendientes paginados
+     * @param int $pageNumber - numero de pagina (inicia en 1)
+     * @param int $pageSize - tamaño de pagina
+     * @return array - resultado con posts, total_records, current_page, has_more
+     */
+    public function getPending(int $pageNumber = 1, int $pageSize = 10): array
     {
         try {
-            $sql = "SELECT * FROM posts WHERE is_active = TRUE ORDER BY created_at DESC";
-            $stmt = $this->conn->query($sql);
-            $data = [];
-
+            // preparar stored procedure
+            $sql = "CALL sp_post_general('getPending', NULL, :pageNumber, :pageSize)";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(':pageNumber', $pageNumber, PDO::PARAM_INT);
+            $stmt->bindValue(':pageSize', $pageSize, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            // primer result set: conteo total
+            $countResult = $stmt->fetch(PDO::FETCH_ASSOC);
+            $totalRecords = $countResult['total_records'] ?? 0;
+            
+            // avanzar al segundo result set
+            $stmt->nextRowset();
+            
+            // segundo result set: datos de posts
+            $posts = [];
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $data[] = $row;
+                // procesar arrays json
+                if (isset($row['categories'])) {
+                    $row['categories'] = json_decode($row['categories'], true) ?? [];
+                }
+                if (isset($row['national_teams'])) {
+                    $row['national_teams'] = json_decode($row['national_teams'], true) ?? [];
+                }
+                if (isset($row['multimedia'])) {
+                    $row['multimedia'] = json_decode($row['multimedia'], true) ?? [];
+                }
+                
+                // procesar imagen del usuario (BLOB a base64)
+                if (isset($row['image']) && $row['image'] !== null) {
+                    // si es un recurso (resource), leerlo
+                    if (is_resource($row['image'])) {
+                        $row['image'] = stream_get_contents($row['image']);
+                    }
+                    // convertir a base64 si no está vacío
+                    if (!empty($row['image'])) {
+                        $row['image'] = base64_encode($row['image']);
+                    } else {
+                        $row['image'] = null;
+                    }
+                }
+                
+                $posts[] = $row;
             }
-
-            return $data;
+            
+            // calcular si hay mas paginas
+            $hasMore = ($pageNumber * $pageSize) < $totalRecords;
+            
+            return [
+                'posts' => $posts,
+                'total_records' => $totalRecords,
+                'current_page' => $pageNumber,
+                'page_size' => $pageSize,
+                'has_more' => $hasMore,
+                'total_pages' => ceil($totalRecords / $pageSize)
+            ];
+            
         } catch (Exception $e) {
-            error_log("Error in PostModel getAll(): " . $e->getMessage());
-            return [];
+            error_log("Error in PostModel getPending(): " . $e->getMessage());
+            return [
+                'posts' => [],
+                'total_records' => 0,
+                'current_page' => $pageNumber,
+                'page_size' => $pageSize,
+                'has_more' => false,
+                'total_pages' => 0
+            ];
         }
     }
 
