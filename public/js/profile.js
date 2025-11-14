@@ -6,6 +6,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Cargar países antes de mostrar perfil
     loadCountries();
+    
+    // Cargar posts del usuario
+    loadUserPosts();
 
     // Mostrar datos en la vista de perfil
     if (window.profileBackground && userData.background) {

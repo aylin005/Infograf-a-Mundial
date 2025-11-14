@@ -11,6 +11,7 @@
         <link rel="stylesheet" href="/CSS/profile.css">
         <link rel="stylesheet" href="/CSS/modular/navBar.css">
         <link rel="stylesheet" href="/CSS/modular/cardPost.css">
+        <link rel="stylesheet" href="/CSS/modular/previewPost.css">
         <link rel="stylesheet" href="/CSS/modular/filters.css">
         <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
         <link rel="stylesheet" href="/icons/icons-1.13.1/font/bootstrap-icons.css">
@@ -64,60 +65,7 @@
                 <div class="tab-content">
                     <div class="tab-pane fade show active" id="postContainer" role="tabpanel">
                         <div id="container4Post" class="container4Post">
-                            <div id="postCard" class="d-flex">
-                                <div class="card cardSize borderDegraded" data-bs-theme="dark">
-                                    <div class="card-body imageDegraded noMargin noPadding">
-                                        <video id="videoCard" src="/media/Mundiales/1986/Publications/1.mp4" class="backgroundCard" muted loop></video>
-                                        <div class="row">
-                                            <div class="col-7 over">
-                                            <!--NOTA: Si está en su perfil, aparecer los íconos de edición. Si no, solo hacer display del nombre-->
-                                            <!-- <p id="userCard" class="userCard"> @itsie</p> -->
-                                                <a href="/newPost"><i id="editPost" class="bi bi-pencil-square cardIcon"></i></a>
-                                                <i id="deletePost" class="bi bi-trash cardIcon"></i>
-                                            </div>
-                                            <div class="col-5 over">
-                                                <div class="d-flex calificationCard align-items-center justify-content-center">
-                                                    <div class="d-flex align-items-center">
-                                                        <a href="/postDisplay"><i id="goToComments" class="bi bi-chat-left-dots messageIcon"></i></a>
-                                                        <p id="commentsCard" class="cantUpvotes noMargin">4M</p>
-                                                    </div>
-                                                    <div class="d-flex align-items-center">
-                                                        <i id="goodVotePost" class="bi bi-arrow-up-square-fill goodVoteIcon"></i>
-                                                        <p id="upvotesCard" class="cantUpvotes noMargin">4M</p>
-                                                    </div>
-                                                    <i id="badvotesCard" class="bi bi-arrow-down-square-fill badVoteIcon"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-12 over">
-                                                <a href="/postDisplay" class="over"><h5 id="titleCard" class="card-title cardTitle over">La mejor jugada de Maradona</h5></a>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div id="ticketsContainer" class="col-12 over">
-                                                <div class="d-flex over">
-                                                    <button id="yearCard" type="button" onclick="location.href='/results'" class="ticketsCard">1986</button>
-                                                    <button id="selectionCard" type="button" onclick="location.href='/results'" class="ticketsCard">Selección argentina</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-12 over">
-                                                <div id="tagContainer" class="d-flex align-items-center tagContainer">
-                                                    <button id="tagCard" type="button" onclick="location.href='/results'" class="tags">#TopJugadas</button>
-                                                    <button id="tagCard" type="button" onclick="location.href='/results'" class="tags">#Mejoresjugadores</button>
-                                                    <button id="tagCard" type="button" onclick="location.href='/results'" class="tags">#Argentina</button>
-                                                    <button id="tagCard" type="button" onclick="location.href='/results'" class="tags">#Campeón</button>
-                                                    <button id="tagCard" type="button" onclick="location.href='/results'" class="tags">#ElReyDelFutbol</button>
-                                                    <button id="tagCard" type="button" onclick="location.href='/results'" class="tags">#epocaDorada</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- ---------------------------------------------------------------------------------------------------- -->
+                            <!-- Los posts del usuario se cargarán aquí dinámicamente -->
                         </div>
                     </div>
           
@@ -298,9 +246,11 @@
         <script src="/js/fetchThings/fetchNavBar.js"></script>
         <script src="/js/navBar.js"></script>
         <script src="/js/filters.js"></script>
+        <script src="/js/fetchThings/fetchPreviewPosts.js"></script>
         <script src="/js/fetchThings/fetchCardsPosts.js"></script>
         <script src="/js/tooltip.js"></script>
         <script src="/js/cardPost.js"></script>
+        <script src="/js/userPosts.js"></script>
         <!-- <script src="/js/mundial.js"></script> -->
         <script src="/js/signUp.js"></script>
         <script src="/js/profile.js"></script>

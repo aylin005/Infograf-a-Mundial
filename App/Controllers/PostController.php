@@ -714,4 +714,47 @@ class PostController
             echo json_encode(["vote" => null]);
         }
     }
+
+    /**
+     * Obtener posts de un usuario específico
+     */
+    public function getPostsByUser(string $method): void
+    {
+        if ($method !== 'GET') {
+            http_response_code(405);
+            header('Content-Type: application/json');
+            echo json_encode(["message" => "Método no permitido"]);
+            return;
+        }
+
+        // obtener user_id del query param
+        $userId = $_GET['user_id'] ?? null;
+
+        if (!$userId) {
+            http_response_code(400);
+            header('Content-Type: application/json');
+            echo json_encode(["message" => "Falta el parámetro user_id"]);
+            return;
+        }
+
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $pageSize = isset($_GET['page_size']) ? (int)$_GET['page_size'] : 10;
+
+        try {
+            $result = $this->model->getPostsByUser((int)$userId, $page, $pageSize);
+            
+            http_response_code(200);
+            header('Content-Type: application/json');
+            echo json_encode($result);
+        } catch (Exception $e) {
+            error_log("Error en PostController::getPostsByUser(): " . $e->getMessage());
+            http_response_code(500);
+            header('Content-Type: application/json');
+            echo json_encode([
+                'posts' => [],
+                'total_records' => 0,
+                'message' => 'Error al obtener posts del usuario'
+            ]);
+        }
+    }
 }

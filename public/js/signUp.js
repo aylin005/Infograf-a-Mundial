@@ -1,7 +1,10 @@
 window.addEventListener("load", () => 
 {
-    document.getElementById("formOverLogo").classList.add("show");
-    document.getElementById("signUpContainer").classList.add("show");
+    const formOverLogo = document.getElementById("formOverLogo");
+    const signUpContainer = document.getElementById("signUpContainer");
+    
+    if (formOverLogo) formOverLogo.classList.add("show");
+    if (signUpContainer) signUpContainer.classList.add("show");
 });
 
 document.addEventListener("DOMContentLoaded", function() 

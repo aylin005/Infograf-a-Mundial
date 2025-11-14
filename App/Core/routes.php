@@ -73,6 +73,13 @@ $router->add('/users/current', function(string $method) use ($database) {
     $controller->getCurrentUser();
 });
 
+// /users/:id/posts - obtener posts de un usuario específico 
+$router->add('/users/:id/posts', function(string $method, string $id) use ($database) {
+    $gateway = new PostModel($database);
+    $controller = new PostController($gateway, $database);
+    $controller->getPostsByUser($method);
+});
+
 // /users
 $router->add('/users', function(string $method, ?string $id = null) use ($database) {
     $gateway = new UserModel($database);

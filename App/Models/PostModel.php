@@ -533,4 +533,103 @@ class PostModel
         }
     }
 
+    /**
+     * Obtener posts de un usuario específico
+     * @param int $userId - ID del usuario
+     * @param int $pageNumber - número de página
+     * @param int $pageSize - tamaño de página
+     * @return array - resultado con posts, total_records, current_page, has_more
+     */
+    public function getPostsByUser(int $userId, int $pageNumber = 1, int $pageSize = 10): array
+    {
+        try {
+            $sql = "CALL sp_post_get_by_user(:userId, :pageNumber, :pageSize)";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(':userId', $userId, PDO::PARAM_INT);
+            $stmt->bindValue(':pageNumber', $pageNumber, PDO::PARAM_INT);
+            $stmt->bindValue(':pageSize', $pageSize, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            // primer result set: conteo total
+            $countResult = $stmt->fetch(PDO::FETCH_ASSOC);
+            $totalRecords = $countResult['total_records'] ?? 0;
+            
+            // avanzar al segundo result set
+            $stmt->nextRowset();
+            
+            // segundo result set: datos de posts
+            $posts = [];
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                // procesar arrays json
+                if (isset($row['categories'])) {
+                    $row['categories'] = json_decode($row['categories'], true) ?? [];
+                }
+                if (isset($row['national_teams'])) {
+                    $row['national_teams'] = json_decode($row['national_teams'], true) ?? [];
+                }
+                if (isset($row['multimedia'])) {
+                    $row['multimedia'] = json_decode($row['multimedia'], true) ?? [];
+                    
+                    // procesar imágenes BLOB en multimedia
+                    foreach ($row['multimedia'] as &$media) {
+                        if ($media['type'] === 'image' && !empty($media['image'])) {
+                            $imageData = $media['image'];
+                            
+                            if (is_string($imageData) && strpos($imageData, 'base64:type') === 0) {
+                                $parts = explode(':', $imageData, 3);
+                                if (count($parts) === 3) {
+                                    $media['image'] = $parts[2];
+                                } else {
+                                    $media['image'] = base64_encode($imageData);
+                                }
+                            } else {
+                                $media['image'] = base64_encode($imageData);
+                            }
+                        }
+                    }
+                    unset($media);
+                }
+                
+                // procesar imagen del usuario (BLOB a base64)
+                if (isset($row['image']) && $row['image'] !== null) {
+                    if (is_resource($row['image'])) {
+                        $row['image'] = stream_get_contents($row['image']);
+                    }
+                    if (!empty($row['image'])) {
+                        $row['image'] = base64_encode($row['image']);
+                    } else {
+                        $row['image'] = null;
+                    }
+                }
+                
+                $posts[] = $row;
+            }
+            
+            $stmt->closeCursor();
+            
+            // calcular si hay mas paginas
+            $hasMore = ($pageNumber * $pageSize) < $totalRecords;
+            
+            return [
+                'posts' => $posts,
+                'total_records' => $totalRecords,
+                'current_page' => $pageNumber,
+                'page_size' => $pageSize,
+                'has_more' => $hasMore,
+                'total_pages' => ceil($totalRecords / $pageSize)
+            ];
+            
+        } catch (Exception $e) {
+            error_log("Error en getPostsByUser: " . $e->getMessage());
+            return [
+                'posts' => [],
+                'total_records' => 0,
+                'current_page' => $pageNumber,
+                'page_size' => $pageSize,
+                'has_more' => false,
+                'total_pages' => 0
+            ];
+        }
+    }
+
 }
