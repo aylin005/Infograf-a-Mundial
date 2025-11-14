@@ -458,15 +458,15 @@ class PostController
         try {
             // construir array de filtros desde query params
             $filters = [
-                'term' =>               $_GET['term'] ?? null,
-                'category_ids_csv' =>   $_GET['categories'] ?? null,
-                'host_country' =>       $_GET['host_country'] ?? null,
-                'national_team' =>      $_GET['national_team'] ?? null,
-                'date_from' =>          $_GET['date_from'] ?? null,
-                'date_to' =>            $_GET['date_to'] ?? null,
-                'sort_by' =>            $_GET['sort_by'] ?? 'newest',
-                'page' =>               (int)($_GET['page'] ?? 1),
-                'page_size' =>          (int)($_GET['page_size'] ?? 10)
+                'term' => $_GET['term'] ?? null,
+                'category_ids_csv' => $_GET['categories'] ?? null,
+                'host_country' => $_GET['host_country'] ?? null,
+                'national_team' => $_GET['national_team'] ?? null,
+                'date_from' => $_GET['date_from'] ?? null,
+                'date_to' => $_GET['date_to'] ?? null,
+                'sort_by' => $_GET['sort_by'] ?? 'newest',
+                'page' => (int)($_GET['page'] ?? 1),
+                'page_size' => (int)($_GET['page_size'] ?? 10)
             ];
             
             // validar parámetros de paginación
@@ -524,8 +524,11 @@ class PostController
         }
     }
 
-
-     //Validar formato de fecha YYYY-MM-DD
+    /**
+     * Validar formato de fecha YYYY-MM-DD
+     * @param string $date - fecha a validar
+     * @return bool - true si es válida, false si no
+     */
     private function isValidDate(string $date): bool
     {
         $d = \DateTime::createFromFormat('Y-m-d', $date);

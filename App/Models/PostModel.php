@@ -185,6 +185,28 @@ class PostModel
                 }
                 if (isset($row['multimedia'])) {
                     $row['multimedia'] = json_decode($row['multimedia'], true) ?? [];
+                    
+                    // procesar imágenes BLOB en multimedia
+                    foreach ($row['multimedia'] as &$media) {
+                        if ($media['type'] === 'image' && !empty($media['image'])) {
+                            $imageData = $media['image'];
+                            
+                            // Si los datos ya están en base64 con prefijo, extraer la parte real
+                            if (is_string($imageData) && strpos($imageData, 'base64:type') === 0) {
+                                // Formato: base64:type252:ACTUAL_BASE64_DATA
+                                $parts = explode(':', $imageData, 3);
+                                if (count($parts) === 3) {
+                                    $media['image'] = $parts[2]; // Ya está en base64
+                                } else {
+                                    $media['image'] = base64_encode($imageData);
+                                }
+                            } else {
+                                // Datos binarios reales, codificar a base64
+                                $media['image'] = base64_encode($imageData);
+                            }
+                        }
+                    }
+                    unset($media); // limpiar referencia
                 }
                 
                 // procesar imagen del usuario (BLOB a base64)

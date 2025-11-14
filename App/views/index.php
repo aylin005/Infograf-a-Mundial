@@ -55,7 +55,7 @@
         </main>
         <div id="filterContainer"></div>
         <script src="<?= asset('js/fetchThings/fetchNavBar.js') ?>"></script>
-        <script src="<?= asset('js/fetchThings/fetchCardsPosts.js') ?>"></script>
+        <!-- <script src="js/fetchThings/fetchCardsPosts.js"></script> -->
         <script src="<?= asset('js/fetchThings/fetchPreviewPosts.js') ?>"></script>
         <script src="<?= asset('js/home.js') ?>"></script>
     </body>
