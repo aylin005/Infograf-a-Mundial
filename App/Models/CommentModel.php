@@ -95,25 +95,21 @@ class CommentModel
     public function deleteCommentByAdmin(int $commentId): array
     {
         try {
-            // marcar comentario como inactivo directamente
-            $sql = "UPDATE comments SET is_active = FALSE WHERE id = :commentId";
+            // usar stored procedure con user_id = 0 para admin
+            $sql = "CALL sp_comment_save_delete('delete', :commentId, 0, NULL, NULL)";
             $stmt = $this->conn->prepare($sql);
             $stmt->bindValue(':commentId', $commentId, PDO::PARAM_INT);
             $stmt->execute();
             
-            if ($stmt->rowCount() > 0) {
-                return [
-                    'exito' => true,
-                    'mensaje' => 'Comentario eliminado por administrador',
-                    'id' => $commentId
-                ];
-            } else {
-                return [
-                    'exito' => false,
-                    'mensaje' => 'Comentario no encontrado',
-                    'id' => null
-                ];
-            }
+            // obtener resultado
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
+            
+            return [
+                'exito' => (bool)($result['exito'] ?? false),
+                'mensaje' => $result['mensaje'] ?? 'Error desconocido',
+                'id' => $result['id'] ?? null
+            ];
             
         } catch (Exception $e) {
             error_log("Error en deleteCommentByAdmin: " . $e->getMessage());
