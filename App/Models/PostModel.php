@@ -23,7 +23,7 @@ class PostModel
     {
         try {
             // preparar stored procedure
-            $sql = "CALL sp_post_general('getPending', NULL, :pageNumber, :pageSize)";
+            $sql = "CALL sp_post_general('getPending', NULL, NULL,:pageNumber, :pageSize)";
             $stmt = $this->conn->prepare($sql);
             $stmt->bindValue(':pageNumber', $pageNumber, PDO::PARAM_INT);
             $stmt->bindValue(':pageSize', $pageSize, PDO::PARAM_INT);
@@ -88,6 +88,41 @@ class PostModel
                 'page_size' => $pageSize,
                 'has_more' => false,
                 'total_pages' => 0
+            ];
+        }
+    }
+
+    /**
+     * Aprobar o rechazar un post
+     * @param int $postId - ID del post
+     * @param bool $approve - true para aprobar, false para rechazar
+     * @return array - resultado con exito, mensaje, id
+     */
+    public function approvePost(int $postId, bool $approve): array
+    {
+        try {
+            // preparar stored procedure
+            $sql = "CALL sp_post_general('approve', :postId, :approve, NULL, NULL)";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(':postId', $postId, PDO::PARAM_INT);
+            $stmt->bindValue(':approve', $approve, PDO::PARAM_BOOL);
+            $stmt->execute();
+            
+            // obtener resultado
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            return [
+                'exito' => $result['exito'] ?? false,
+                'mensaje' => $result['mensaje'] ?? 'Error desconocido',
+                'id' => $result['id'] ?? $postId
+            ];
+            
+        } catch (Exception $e) {
+            error_log("Error in PostModel approvePost(): " . $e->getMessage());
+            return [
+                'exito' => false,
+                'mensaje' => 'Error al procesar la solicitud: ' . $e->getMessage(),
+                'id' => $postId
             ];
         }
     }

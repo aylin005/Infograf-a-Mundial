@@ -285,38 +285,115 @@ async function approvePost(postId) {
     if (!confirm('¿estas seguro de que quieres aprobar este post?')) return;
     
     try {
-        console.log(`approving post ${postId}`);
-        // todo: implementar endpoint para aprobar post
-        
         const postElement = document.querySelector(`[data-post-id="${postId}"]`);
         if (postElement) {
             postElement.style.opacity = '0.5';
-            postElement.innerHTML += '<div class="alert alert-success">post aprobado exitosamente</div>';
+            postElement.style.pointerEvents = 'none';
+        }
+        
+        const response = await fetch('/pendingPosts', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                id: postId,
+                approve: true
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.exito) {
+            // mostrar mensaje de exito
+            if (postElement) {
+                postElement.innerHTML = `
+                    <div class="alert alert-success text-center py-4">
+                        <i class="bi bi-check-circle-fill display-4"></i>
+                        <h4 class="mt-3">Post aprobado exitosamente</h4>
+                        <p>${escapeHtml(result.mensaje)}</p>
+                    </div>
+                `;
+                
+                // remover el elemento despues de 2 segundos
+                setTimeout(() => {
+                    postElement.remove();
+                }, 2000);
+            }
+        } else {
+            throw new Error(result.mensaje || 'Error al aprobar el post');
         }
         
     } catch (error) {
         console.error('error approving post:', error);
-        alert('error al aprobar el post');
+        alert('Error al aprobar el post: ' + error.message);
+        
+        // restaurar el elemento
+        const postElement = document.querySelector(`[data-post-id="${postId}"]`);
+        if (postElement) {
+            postElement.style.opacity = '1';
+            postElement.style.pointerEvents = 'auto';
+        }
     }
 }
 
 async function rejectPost(postId) {
     const reason = prompt('¿por que rechazas este post? (opcional)');
-    if (reason === null) return;
+    if (reason === null) return; // usuario canceló
+    
+    if (!confirm('¿estas seguro de que quieres rechazar este post?')) return;
     
     try {
-        console.log(`rejecting post ${postId} with reason: ${reason}`);
-        // todo: implementar endpoint para rechazar post
-        
         const postElement = document.querySelector(`[data-post-id="${postId}"]`);
         if (postElement) {
             postElement.style.opacity = '0.5';
-            postElement.innerHTML += '<div class="alert alert-danger">post rechazado</div>';
+            postElement.style.pointerEvents = 'none';
+        }
+        
+        const response = await fetch('/pendingPosts', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                id: postId,
+                approve: false
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.exito) {
+            // mostrar mensaje de rechazo
+            if (postElement) {
+                postElement.innerHTML = `
+                    <div class="alert alert-danger text-center py-4">
+                        <i class="bi bi-x-circle-fill display-4"></i>
+                        <h4 class="mt-3">Post rechazado</h4>
+                        <p>${escapeHtml(result.mensaje)}</p>
+                        ${reason ? `<small>Razón: ${escapeHtml(reason)}</small>` : ''}
+                    </div>
+                `;
+                
+                // remover el elemento despues de 2 segundos
+                setTimeout(() => {
+                    postElement.remove();
+                }, 2000);
+            }
+        } else {
+            throw new Error(result.mensaje || 'Error al rechazar el post');
         }
         
     } catch (error) {
         console.error('error rejecting post:', error);
-        alert('error al rechazar el post');
+        alert('Error al rechazar el post: ' + error.message);
+        
+        // restaurar el elemento
+        const postElement = document.querySelector(`[data-post-id="${postId}"]`);
+        if (postElement) {
+            postElement.style.opacity = '1';
+            postElement.style.pointerEvents = 'auto';
+        }
     }
 }
 

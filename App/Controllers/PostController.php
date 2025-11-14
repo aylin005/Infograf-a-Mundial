@@ -330,13 +330,21 @@ class PostController
     // GET /pendingPosts / se llama desde routes.php
     public function getPendingPosts(string $method): void
     {
-        if ($method !== 'GET') {
+        // manejar GET y POST
+        if ($method === 'GET') {
+            $this->handleGetPendingPosts();
+        } elseif ($method === 'POST') {
+            $this->handleApprovePost();
+        } else {
             http_response_code(405);
-            header("Allow: GET");
+            header("Allow: GET, POST");
             echo json_encode(['error' => 'metodo no permitido']);
-            return;
         }
+    }
 
+    // GET - obtener posts pendientes
+    private function handleGetPendingPosts(): void
+    {
         try {
             // obtener parametros de paginacion
             $page = (int)($_GET['page'] ?? 1);
@@ -354,7 +362,7 @@ class PostController
             echo json_encode($result);
             
         } catch (Exception $e) {
-            error_log("Error in PostController getPendingPosts(): " . $e->getMessage());
+            error_log("Error in PostController handleGetPendingPosts(): " . $e->getMessage());
             http_response_code(500);
             header('Content-Type: application/json');
             echo json_encode([
@@ -363,6 +371,63 @@ class PostController
                 'total_records' => 0,
                 'current_page' => 1,
                 'has_more' => false
+            ]);
+        }
+    }
+
+    // POST - aprobar o rechazar post
+    private function handleApprovePost(): void
+    {
+        try {
+            // leer body del request
+            $input = json_decode(file_get_contents('php://input'), true);
+            
+            // validar datos requeridos
+            if (!isset($input['id']) || !isset($input['approve'])) {
+                http_response_code(400);
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'exito' => false,
+                    'mensaje' => 'Faltan parametros requeridos: id y approve'
+                ]);
+                return;
+            }
+            
+            $postId = (int)$input['id'];
+            $approve = (bool)$input['approve'];
+            
+            // validar que el ID sea valido
+            if ($postId <= 0) {
+                http_response_code(400);
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'exito' => false,
+                    'mensaje' => 'ID de post invalido'
+                ]);
+                return;
+            }
+            
+            // llamar al modelo para aprobar/rechazar
+            $result = $this->model->approvePost($postId, $approve);
+            
+            // establecer codigo de respuesta segun resultado
+            if ($result['exito']) {
+                http_response_code(200);
+            } else {
+                http_response_code(500);
+            }
+            
+            // enviar respuesta
+            header('Content-Type: application/json');
+            echo json_encode($result);
+            
+        } catch (Exception $e) {
+            error_log("Error in PostController handleApprovePost(): " . $e->getMessage());
+            http_response_code(500);
+            header('Content-Type: application/json');
+            echo json_encode([
+                'exito' => false,
+                'mensaje' => 'Error interno del servidor: ' . $e->getMessage()
             ]);
         }
     }
