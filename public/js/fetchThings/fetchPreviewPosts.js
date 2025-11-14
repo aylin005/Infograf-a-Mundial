@@ -95,6 +95,19 @@ class PostsLoader {
     }
 
     //////////
+    // formatear números (1000 -> 1K, 1000000 -> 1M)
+    //////////
+    formatNumber(num) {
+        if (num >= 1000000) {
+            return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+        }
+        if (num >= 1000) {
+            return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+        }
+        return num.toString();
+    }
+
+    //////////
      // renderizar posts en el contenedor
      ////////////////
     renderPosts(posts, append = false) {
@@ -150,8 +163,24 @@ class PostsLoader {
 
                     <div class="container-fluid">
                         <div class="row">
-                            <div class="col-12 over">
+                            <div class="col-7 over">
                                 <a href="/profile" onclick="event.stopPropagation()"><p class="userCard">@${this.escapeHtml(post.username)}</p></a>
+                            </div>
+                            <div class="col-5 over">
+                                <div class="d-flex calificationCard align-items-center justify-content-center">
+                                    <div class="d-flex align-items-center">
+                                        <a href="/postDisplay?id=${post.postId}" onclick="event.stopPropagation()"><i class="bi bi-chat-left-dots messageIcon"></i></a>
+                                        <p class="cantUpvotes noMargin">${this.formatNumber(post.comments_count || 0)}</p>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-arrow-up-square-fill goodVoteIcon"></i>
+                                        <p class="cantUpvotes noMargin">${this.formatNumber(post.upvotes || 0)}</p>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-arrow-down-square-fill badVoteIcon"></i>
+                                        <p class="cantUpvotes noMargin">${this.formatNumber(post.downvotes || 0)}</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -256,12 +285,16 @@ class PostsLoader {
                 </div>
                 <div class="d-flex addGap10x addPading0x5x">
                     <div class="d-flex align-items-center">
-                        <i class="bi bi-arrow-up-square-fill goodVoteIcon"></i>
-                        <p class="cantUpvotes noMargin">${post.upvotes || 0}</p>
+                        <a href="/postDisplay?id=${post.postId}" onclick="event.stopPropagation()"><i class="bi bi-chat-left-dots messageIcon"></i></a>
+                        <p class="cantUpvotes noMargin">${this.formatNumber(post.comments_count || 0)}</p>
                     </div>
                     <div class="d-flex align-items-center">
-                        <a href="/postDisplay?id=${post.postId}" onclick="event.stopPropagation()"><i class="bi bi-chat-left-dots messageIcon"></i></a>
-                        <p class="cantUpvotes noMargin">${post.comments_count || 0}</p>
+                        <i class="bi bi-arrow-up-square-fill goodVoteIcon"></i>
+                        <p class="cantUpvotes noMargin">${this.formatNumber(post.upvotes || 0)}</p>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-arrow-down-square-fill badVoteIcon"></i>
+                        <p class="cantUpvotes noMargin">${this.formatNumber(post.downvotes || 0)}</p>
                     </div>
                 </div>
             </div>
