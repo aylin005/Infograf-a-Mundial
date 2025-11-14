@@ -1,7 +1,7 @@
-// variables globales
+// variables globales del mundial display
 let currentWorldCup = null;
 let worldCupId = null;
-let worldCupYears = [];
+let mundialYearsList = [];
 let currentYearIndex = -1;
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     
     if (worldCupId) {
         // cargar años de mundiales y luego cargar el mundial actual
-        await loadWorldCupYears();
+        await loadWorldCupYearsForNavigation();
         await loadWorldCupData(worldCupId);
         setupNavigationButtons();
     } else {
@@ -487,8 +487,8 @@ function hideLoadingSpinner() {
     }
 }
 
-// carga los años de todos los mundiales
-async function loadWorldCupYears() {
+// carga los años de todos los mundiales para navegación
+async function loadWorldCupYearsForNavigation() {
     try {
         console.log('Cargando años de mundiales...');
         
@@ -507,32 +507,32 @@ async function loadWorldCupYears() {
         
         if (data && Array.isArray(data)) {
             // ordenar por año y extraer solo los años
-            worldCupYears = data
+            mundialYearsList = data
                 .map(item => ({ id: item.id, year: parseInt(item.year) }))
                 .sort((a, b) => a.year - b.year);
             
-            console.log('Años de mundiales cargados:', worldCupYears);
+            console.log('Años de mundiales cargados:', mundialYearsList);
         } else {
             console.warn('No se encontraron años de mundiales');
-            worldCupYears = [];
+            mundialYearsList = [];
         }
         
     } catch (error) {
         console.error('Error al cargar años de mundiales:', error);
-        worldCupYears = [];
+        mundialYearsList = [];
     }
 }
 
 // configura los botones de navegación
 function setupNavigationButtons() {
-    if (!currentWorldCup || worldCupYears.length === 0) {
+    if (!currentWorldCup || mundialYearsList.length === 0) {
         console.warn('No se puede configurar navegación: faltan datos');
         return;
     }
     
     // encontrar el índice del mundial actual
     const currentYear = parseInt(currentWorldCup.year);
-    currentYearIndex = worldCupYears.findIndex(wc => wc.year === currentYear);
+    currentYearIndex = mundialYearsList.findIndex(wc => wc.year === currentYear);
     
     console.log(`Mundial actual: ${currentYear}, índice: ${currentYearIndex}`);
     
@@ -541,7 +541,7 @@ function setupNavigationButtons() {
     const previousYearSpan = document.getElementById('previousYear');
     
     if (currentYearIndex > 0) {
-        const previousWorldCup = worldCupYears[currentYearIndex - 1];
+        const previousWorldCup = mundialYearsList[currentYearIndex - 1];
         previousYearSpan.textContent = previousWorldCup.year;
         beforeButton.disabled = false;
         beforeButton.classList.remove('disabled');
@@ -555,8 +555,8 @@ function setupNavigationButtons() {
     const afterButton = document.getElementById('afterMundial');
     const nextYearSpan = document.getElementById('nextYear');
     
-    if (currentYearIndex < worldCupYears.length - 1 && currentYearIndex !== -1) {
-        const nextWorldCup = worldCupYears[currentYearIndex + 1];
+    if (currentYearIndex < mundialYearsList.length - 1 && currentYearIndex !== -1) {
+        const nextWorldCup = mundialYearsList[currentYearIndex + 1];
         nextYearSpan.textContent = nextWorldCup.year;
         afterButton.disabled = false;
         afterButton.classList.remove('disabled');
@@ -570,7 +570,7 @@ function setupNavigationButtons() {
 // navega al mundial anterior
 function goToPreviousWorldCup() {
     if (currentYearIndex > 0) {
-        const previousWorldCup = worldCupYears[currentYearIndex - 1];
+        const previousWorldCup = mundialYearsList[currentYearIndex - 1];
         console.log(`Navegando al mundial anterior: ${previousWorldCup.year} (ID: ${previousWorldCup.id})`);
         window.location.href = `/mundialDisplay?id=${previousWorldCup.id}`;
     }
@@ -578,8 +578,8 @@ function goToPreviousWorldCup() {
 
 // navega al siguiente mundial
 function goToNextWorldCup() {
-    if (currentYearIndex < worldCupYears.length - 1 && currentYearIndex !== -1) {
-        const nextWorldCup = worldCupYears[currentYearIndex + 1];
+    if (currentYearIndex < mundialYearsList.length - 1 && currentYearIndex !== -1) {
+        const nextWorldCup = mundialYearsList[currentYearIndex + 1];
         console.log(`Navegando al siguiente mundial: ${nextWorldCup.year} (ID: ${nextWorldCup.id})`);
         window.location.href = `/mundialDisplay?id=${nextWorldCup.id}`;
     }

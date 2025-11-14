@@ -1,5 +1,5 @@
-//globales
-let countriesData = [];
+//globales para admin de mundiales
+let adminCountriesData = [];
 let hostCountries = [];
 let funFacts = [];
 let cities = [];
@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
     loadCountries();
     setupEventListeners();
     initializeCitySelect();
-    loadWorldCupYears();
+    loadAdminWorldCupYears();
 });
 
 ///////////////////////////////////////
@@ -127,7 +127,7 @@ async function loadCountries() {
         const data = await response.json();
         
         if (data.error === false && data.data) {
-            countriesData = data.data;
+            adminCountriesData = data.data;
             populateCountrySelects();
         } else {
             throw new Error('Error en la respuesta de la API');
@@ -174,7 +174,7 @@ function populateCountrySelect(selectElement, flagElement) {
         flagElement.src = '';
     }
     
-    countriesData.forEach(country => {
+    adminCountriesData.forEach(country => {
         const option = document.createElement('option');
         option.value = country.name;
         option.textContent = country.name;
@@ -1054,14 +1054,14 @@ function hideSpinner() {
 ///////////////////////////////////////
 // Variables para timeline de años
 ///////////////////////////////////////
-let worldCupYears = [];
+let adminWorldCupYears = [];
 let currentTimelineIndex = 0;
 const VISIBLE_BUTTONS = 3; // Cantidad de botones visibles a la vez
 
 ///////////////////////////////////////
 // Carga los años de mundiales desde la API
 ///////////////////////////////////////
-async function loadWorldCupYears() {
+async function loadAdminWorldCupYears() {
     try {
         showSpinner('Cargando años de mundiales...');
         
@@ -1080,21 +1080,21 @@ async function loadWorldCupYears() {
         
         if (data && Array.isArray(data)) {
             // Ordenar por año (más reciente primero)
-            worldCupYears = data.sort((a, b) => parseInt(b.year) - parseInt(a.year));
-            console.log('Años de mundiales cargados:', worldCupYears);
+            adminWorldCupYears = data.sort((a, b) => parseInt(b.year) - parseInt(a.year));
+            console.log('Años de mundiales cargados:', adminWorldCupYears);
             
             // Renderizar timeline
             renderTimeline();
             setupTimelineEvents();
         } else {
             console.warn('No se encontraron años de mundiales');
-            worldCupYears = [];
+            adminWorldCupYears = [];
             renderTimeline();
         }
     } catch (error) {
         console.error('Error al cargar años de mundiales:', error);
         showMessage('Error al cargar los años de mundiales', 'danger');
-        worldCupYears = [];
+        adminWorldCupYears = [];
         renderTimeline();
     } finally {
         hideSpinner();
@@ -1110,7 +1110,7 @@ function renderTimeline() {
 
     container.innerHTML = '';
 
-    if (worldCupYears.length === 0) {
+    if (adminWorldCupYears.length === 0) {
         container.innerHTML = '<p class="text-white">No hay mundiales registrados</p>';
         updateArrowVisibility();
         return;
@@ -1118,8 +1118,8 @@ function renderTimeline() {
 
     // Calcular el rango visible
     const startIndex = currentTimelineIndex;
-    const endIndex = Math.min(startIndex + VISIBLE_BUTTONS, worldCupYears.length);
-    const visibleYears = worldCupYears.slice(startIndex, endIndex);
+    const endIndex = Math.min(startIndex + VISIBLE_BUTTONS, adminWorldCupYears.length);
+    const visibleYears = adminWorldCupYears.slice(startIndex, endIndex);
 
     // Crear botones
     visibleYears.forEach((worldCup, index) => {
@@ -1151,7 +1151,7 @@ function updateArrowVisibility() {
         moveLeft.style.cursor = currentTimelineIndex > 0 ? 'pointer' : 'default';
         
         // Flecha derecha: visible si hay más elementos a la derecha
-        const hasMore = currentTimelineIndex + VISIBLE_BUTTONS < worldCupYears.length;
+        const hasMore = currentTimelineIndex + VISIBLE_BUTTONS < adminWorldCupYears.length;
         moveRight.style.opacity = hasMore ? '1' : '0.3';
         moveRight.style.cursor = hasMore ? 'pointer' : 'default';
     }
@@ -1175,7 +1175,7 @@ function setupTimelineEvents() {
 
     if (moveRight) {
         moveRight.addEventListener('click', () => {
-            if (currentTimelineIndex + VISIBLE_BUTTONS < worldCupYears.length) {
+            if (currentTimelineIndex + VISIBLE_BUTTONS < adminWorldCupYears.length) {
                 currentTimelineIndex++;
                 renderTimeline();
             }
@@ -1233,7 +1233,7 @@ async function loadWorldCupData(worldCupId) {
         }
         
         // asegurarse de que los paises esten cargados antes de rellenar el formulario
-        if (countriesData.length === 0) {
+        if (adminCountriesData.length === 0) {
             await loadCountries();
         }
         

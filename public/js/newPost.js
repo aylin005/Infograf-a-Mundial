@@ -1,17 +1,17 @@
 // variables globales
-let worldCupYears = [];
+let postWorldCupYears = [];
 let selectedWorldCup = null;
-let countriesData = [];
-let categoriesData = [];
+let postCountriesData = [];
+let postCategoriesData = [];
 let selectedSelections = [];
 let selectedCategories = [];
 let selectedMediaFiles = [];
 
 document.addEventListener("DOMContentLoaded", async () => {
     // cargar datos necesarios
-    await loadWorldCupYears();
-    await loadCountries();
-    await loadCategories();
+    await loadPostWorldCupYears();
+    await loadPostCountries();
+    await loadPostCategories();
     setupEventListeners();
 });
 
@@ -179,7 +179,7 @@ async function handleFormSubmit(event) {
 }
 
 // cargar años de mundiales
-async function loadWorldCupYears() {
+async function loadPostWorldCupYears() {
     try {
         console.log('Cargando años de mundiales para newPost...');
         
@@ -197,9 +197,9 @@ async function loadWorldCupYears() {
         const data = await response.json();
         
         if (data && Array.isArray(data)) {
-            worldCupYears = data.sort((a, b) => a.year - b.year);
+            postWorldCupYears = data.sort((a, b) => a.year - b.year);
             populateYearSelect();
-            console.log('Años de mundiales cargados:', worldCupYears);
+            console.log('Años de mundiales cargados:', postWorldCupYears);
         } else {
             console.warn('No se encontraron años de mundiales');
         }
@@ -218,7 +218,7 @@ function populateYearSelect() {
     selectYear.innerHTML = '<option value="">Selecciona un mundial</option>';
 
     // agregar opciones de mundiales
-    worldCupYears.forEach(worldCup => {
+    postWorldCupYears.forEach(worldCup => {
         const option = document.createElement('option');
         option.value = worldCup.id;
         option.textContent = worldCup.year;
@@ -235,7 +235,7 @@ function handleYearChange(event) {
 
     if (selectedId && selectedOption) {
         // encontrar el mundial seleccionado
-        selectedWorldCup = worldCupYears.find(wc => wc.id == selectedId);
+        selectedWorldCup = postWorldCupYears.find(wc => wc.id == selectedId);
         
         if (selectedWorldCup && countryDisplay) {
             countryDisplay.textContent = selectedWorldCup.name || `Mundial ${selectedWorldCup.year}`;
@@ -269,7 +269,7 @@ function hideNewPostSpinner() {
 }
 
 // cargar paises desde api externa
-async function loadCountries() {
+async function loadPostCountries() {
     try {
         console.log('Cargando países para selecciones...');
         
@@ -282,9 +282,9 @@ async function loadCountries() {
         const data = await response.json();
         
         if (data && data.data) {
-            countriesData = data.data;
+            postCountriesData = data.data;
             populateCountriesSelect();
-            console.log(`${countriesData.length} países cargados`);
+            console.log(`${postCountriesData.length} países cargados`);
         } else {
             console.warn('No se encontraron países');
         }
@@ -303,7 +303,7 @@ function populateCountriesSelect() {
     selectCountry.innerHTML = '<option value="">Selecciona una selección</option>';
 
     // agregar opciones de países
-    countriesData
+    postCountriesData
         .filter(country => country.name) // filtrar países sin nombre
         .sort((a, b) => a.name.localeCompare(b.name)) // ordenar alfabéticamente
         .forEach(country => {
@@ -317,7 +317,7 @@ function populateCountriesSelect() {
 }
 
 // cargar categorías desde el backend
-async function loadCategories() {
+async function loadPostCategories() {
     try {
         console.log('Cargando categorías desde backend...');
         
@@ -335,9 +335,9 @@ async function loadCategories() {
         const data = await response.json();
         
         if (data && Array.isArray(data)) {
-            categoriesData = data;
+            postCategoriesData = data;
             populateCategoriesSelect();
-            console.log(`${categoriesData.length} categorías cargadas desde BD`);
+            console.log(`${postCategoriesData.length} categorías cargadas desde BD`);
         } else {
             console.warn('No se encontraron categorías');
         }
@@ -356,7 +356,7 @@ function populateCategoriesSelect() {
     selectCategory.innerHTML = '<option value="">Selecciona una categoría</option>';
 
     // agregar opciones de categorías
-    categoriesData
+    postCategoriesData
         .sort((a, b) => a.name.localeCompare(b.name)) // ordenar alfabéticamente
         .forEach(category => {
             const option = document.createElement('option');
@@ -440,11 +440,11 @@ function addCategory() {
     const selectedOption = selectCategory.options[selectCategory.selectedIndex];
     
     // buscar la categoria completa para obtener el id si es necesario
-    const fullCategory = categoriesData.find(cat => cat.name === selectedCategory);
+    const fullCategory = postCategoriesData.find(cat => cat.name === selectedCategory);
     
     console.log('Categoría seleccionada:', selectedCategory);
     console.log('Categoría encontrada en datos:', fullCategory);
-    console.log('Datos de categorías disponibles:', categoriesData);
+    console.log('Datos de categorías disponibles:', postCategoriesData);
 
     // verificar si ya existe
     if (selectedCategories.find(category => category.name === selectedCategory)) {
