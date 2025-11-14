@@ -431,4 +431,104 @@ class PostController
             ]);
         }
     }
+
+    /**
+     * GET /posts/search - buscar posts con filtros avanzados
+     * Query params:
+     * - term: término de búsqueda en título o contenido
+     * - categories: IDs de categorías separados por coma (ej: "1,3,4")
+     * - host_country: país sede del mundial
+     * - national_team: selección nacional mencionada en el post
+     * - date_from: fecha desde (formato: YYYY-MM-DD)
+     * - date_to: fecha hasta (formato: YYYY-MM-DD)
+     * - sort_by: ordenamiento (newest, oldest, likes_desc, comments_desc)
+     * - page: número de página (default: 1)
+     * - page_size: tamaño de página (default: 10, max: 100)
+     */
+    public function searchPosts(string $method): void
+    {
+        if ($method !== 'GET') {
+            http_response_code(405);
+            header("Allow: GET");
+            header('Content-Type: application/json');
+            echo json_encode(['error' => 'Método no permitido']);
+            return;
+        }
+
+        try {
+            // construir array de filtros desde query params
+            $filters = [
+                'term' =>               $_GET['term'] ?? null,
+                'category_ids_csv' =>   $_GET['categories'] ?? null,
+                'host_country' =>       $_GET['host_country'] ?? null,
+                'national_team' =>      $_GET['national_team'] ?? null,
+                'date_from' =>          $_GET['date_from'] ?? null,
+                'date_to' =>            $_GET['date_to'] ?? null,
+                'sort_by' =>            $_GET['sort_by'] ?? 'newest',
+                'page' =>               (int)($_GET['page'] ?? 1),
+                'page_size' =>          (int)($_GET['page_size'] ?? 10)
+            ];
+            
+            // validar parámetros de paginación
+            if ($filters['page'] < 1) {
+                $filters['page'] = 1;
+            }
+            if ($filters['page_size'] < 1 || $filters['page_size'] > 100) {
+                $filters['page_size'] = 10;
+            }
+            
+            // validar opciones de ordenamiento
+            $validSortOptions = ['newest', 'oldest', 'likes_desc', 'comments_desc'];
+            if (!in_array($filters['sort_by'], $validSortOptions)) {
+                $filters['sort_by'] = 'newest';
+            }
+            
+            // validar formato de fechas si están presentes
+            if ($filters['date_from'] && !$this->isValidDate($filters['date_from'])) {
+                http_response_code(400);
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'error' => 'Formato de date_from inválido. Use YYYY-MM-DD'
+                ]);
+                return;
+            }
+            
+            if ($filters['date_to'] && !$this->isValidDate($filters['date_to'])) {
+                http_response_code(400);
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'error' => 'Formato de date_to inválido. Use YYYY-MM-DD'
+                ]);
+                return;
+            }
+            
+            // llamar al modelo para realizar la búsqueda
+            $result = $this->model->searchPosts($filters);
+            
+            // enviar respuesta exitosa
+            header('Content-Type: application/json');
+            echo json_encode($result);
+            
+        } catch (Exception $e) {
+            error_log("Error in PostController searchPosts(): " . $e->getMessage());
+            http_response_code(500);
+            header('Content-Type: application/json');
+            echo json_encode([
+                'error' => 'Error interno del servidor',
+                'posts' => [],
+                'total_records' => 0,
+                'current_page' => 1,
+                'has_more' => false,
+                'total_pages' => 0
+            ]);
+        }
+    }
+
+
+     //Validar formato de fecha YYYY-MM-DD
+    private function isValidDate(string $date): bool
+    {
+        $d = \DateTime::createFromFormat('Y-m-d', $date);
+        return $d && $d->format('Y-m-d') === $date;
+    }
 }

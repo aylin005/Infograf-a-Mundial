@@ -127,6 +127,110 @@ class PostModel
         }
     }
 
+    /**
+     * Buscar posts con filtros avanzados
+     * @param array $filters - Filtros de búsqueda
+     * @return array - resultado con posts, total_records, current_page, has_more
+     */
+    public function searchPosts(array $filters): array
+    {
+        try {
+            $pageNumber = $filters['page'] ?? 1;
+            $pageSize = $filters['page_size'] ?? 10;
+            
+            // preparar stored procedure
+            $sql = "CALL sp_post_search(
+                :term, 
+                :category_ids_csv, 
+                :host_country, 
+                :national_team, 
+                :date_from, 
+                :date_to, 
+                :sort_by, 
+                :page_number, 
+                :page_size
+            )";
+            
+            $stmt = $this->conn->prepare($sql);
+            
+            // bindear parametros (usar NULL si no están presentes)
+            $stmt->bindValue(':term',               $filters['term'] ?? null,               PDO::PARAM_STR);
+            $stmt->bindValue(':category_ids_csv',   $filters['category_ids_csv'] ?? null,   PDO::PARAM_STR);
+            $stmt->bindValue(':host_country',       $filters['host_country'] ?? null,       PDO::PARAM_STR);
+            $stmt->bindValue(':national_team',      $filters['national_team'] ?? null,      PDO::PARAM_STR);
+            $stmt->bindValue(':date_from',          $filters['date_from'] ?? null,          PDO::PARAM_STR);
+            $stmt->bindValue(':date_to',            $filters['date_to'] ?? null,            PDO::PARAM_STR);
+            $stmt->bindValue(':sort_by',            $filters['sort_by'] ?? 'newest',        PDO::PARAM_STR);
+            $stmt->bindValue(':page_number',        $pageNumber,                            PDO::PARAM_INT);
+            $stmt->bindValue(':page_size',          $pageSize,                              PDO::PARAM_INT);
+            
+            $stmt->execute();
+            
+            // primer result set: conteo total
+            $countResult = $stmt->fetch(PDO::FETCH_ASSOC);
+            $totalRecords = $countResult['total_records'] ?? 0;
+            
+            // avanzar al segundo result set
+            $stmt->nextRowset();
+            
+            // segundo result set: datos de posts
+            $posts = [];
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                // procesar arrays json
+                if (isset($row['categories'])) {
+                    $row['categories'] = json_decode($row['categories'], true) ?? [];
+                }
+                if (isset($row['national_teams'])) {
+                    $row['national_teams'] = json_decode($row['national_teams'], true) ?? [];
+                }
+                if (isset($row['multimedia'])) {
+                    $row['multimedia'] = json_decode($row['multimedia'], true) ?? [];
+                }
+                
+                // procesar imagen del usuario (BLOB a base64)
+                if (isset($row['image']) && $row['image'] !== null) {
+                    if (is_resource($row['image'])) {
+                        $row['image'] = stream_get_contents($row['image']);
+                    }
+                    if (!empty($row['image'])) {
+                        $row['image'] = base64_encode($row['image']);
+                    } else {
+                        $row['image'] = null;
+                    }
+                }
+                
+                $posts[] = $row;
+            }
+            
+            // calcular si hay mas paginas
+            $hasMore = ($pageNumber * $pageSize) < $totalRecords;
+            
+            return [
+                'posts' => $posts,
+                'total_records' => $totalRecords,
+                'current_page' => $pageNumber,
+                'page_size' => $pageSize,
+                'has_more' => $hasMore,
+                'total_pages' => ceil($totalRecords / $pageSize),
+                'filters_applied' => array_filter($filters, function($value) {
+                    return $value !== null && $value !== '';
+                })
+            ];
+            
+        } catch (Exception $e) {
+            error_log("Error in PostModel searchPosts(): " . $e->getMessage());
+            return [
+                'posts' => [],
+                'total_records' => 0,
+                'current_page' => $pageNumber ?? 1,
+                'page_size' => $pageSize ?? 10,
+                'has_more' => false,
+                'total_pages' => 0,
+                'error' => $e->getMessage()
+            ];
+        }
+    }
+
     // obtener un post especifico
     public function getOne(string $id): array|false
     {

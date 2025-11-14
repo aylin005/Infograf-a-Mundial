@@ -155,6 +155,13 @@ $router->add('/posts/:id', function(string $method, string $id) use ($database) 
     $controller->processRequest($method, $id);
 });
 
+// /posts/search - búsqueda avanzada de posts
+$router->add('/posts/search', function(string $method) use ($database) {
+    $gateway = new PostModel($database);
+    $controller = new PostController($gateway, $database);
+    $controller->searchPosts($method);
+});
+
 $router->add('/login', function(...$args) use ($renderView, $database) {
     // Limpiar sesión si ya estaba autenticado
     AuthMiddleware::clearSessionOnLogin();
