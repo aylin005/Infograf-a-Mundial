@@ -446,12 +446,13 @@ class PostController
      * GET /posts/search - buscar posts con filtros avanzados
      * Query params:
      * - term: término de búsqueda en título o contenido
-     * - categories: IDs de categorías separados por coma (ej: "1,3,4")
+     * - category_ids_csv: IDs de categorías separados por coma (ej: "1,3,4")
      * - host_country: país sede del mundial
      * - national_team: selección nacional mencionada en el post
+     * - worldcup_id: ID del mundial específico
      * - date_from: fecha desde (formato: YYYY-MM-DD)
      * - date_to: fecha hasta (formato: YYYY-MM-DD)
-     * - sort_by: ordenamiento (newest, oldest, likes_desc, comments_desc)
+     * - sort_by: ordenamiento (newest, oldest, popular, most_liked, most_comments)
      * - page: número de página (default: 1)
      * - page_size: tamaño de página (default: 10, max: 100)
      */
@@ -468,10 +469,11 @@ class PostController
         try {
             // construir array de filtros desde query params
             $filters = [
-                'term' => $_GET['term'] ?? null,
-                'category_ids_csv' => $_GET['categories'] ?? null,
+                'term' => $_GET['term'] ?? $_GET['search'] ?? null,
+                'category_ids_csv' => $_GET['category_ids_csv'] ?? $_GET['categories'] ?? null,
                 'host_country' => $_GET['host_country'] ?? null,
                 'national_team' => $_GET['national_team'] ?? null,
+                'worldcup_id' => $_GET['worldcup_id'] ?? null,
                 'date_from' => $_GET['date_from'] ?? null,
                 'date_to' => $_GET['date_to'] ?? null,
                 'sort_by' => $_GET['sort_by'] ?? 'newest',
@@ -488,9 +490,18 @@ class PostController
             }
             
             // validar opciones de ordenamiento
-            $validSortOptions = ['newest', 'oldest', 'likes_desc', 'comments_desc'];
+            $validSortOptions = ['newest', 'oldest', 'popular', 'most_liked', 'most_comments', 'likes_desc', 'comments_desc'];
             if (!in_array($filters['sort_by'], $validSortOptions)) {
                 $filters['sort_by'] = 'newest';
+            }
+            
+            // mapear sort_by a formato del SP si es necesario
+            if ($filters['sort_by'] === 'most_liked') {
+                $filters['sort_by'] = 'likes_desc';
+            } elseif ($filters['sort_by'] === 'most_comments') {
+                $filters['sort_by'] = 'comments_desc';
+            } elseif ($filters['sort_by'] === 'popular') {
+                $filters['sort_by'] = 'likes_desc';
             }
             
             // validar formato de fechas si están presentes

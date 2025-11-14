@@ -65,6 +65,7 @@
         <script src="/js/scripts.js"></script>
         <script src="/js/logIn.js"></script>
         <script src="/js/fetchThings/fetchNavBar.js"></script>
+        <script src="/js/navBar.js"></script>
         <script src="/js/filters.js"></script>
     </body>
 </html>

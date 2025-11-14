@@ -110,6 +110,7 @@
         <div id="filterContainer"></div>
         <script src="/js/newPost.js"></script>
         <script src="/js/fetchThings/fetchNavBar.js"></script>
+        <script src="/js/navBar.js"></script>
         <script src="/js/filters.js"></script>
         <script src="/js/tooltip.js"></script>
     </body>

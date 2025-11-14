@@ -52,10 +52,10 @@
             <hr class="whiteGreyText">   
 
             <!-- NOTA: Selección -->
-            <div id="bySelection">
+            <div id="bySelectionSection">
                 <div class="checkbox-group">
-                    <input type="checkbox" id="bySelection" name="bySelection">
-                    <label for="bySelection" class="sectionTitle">Por selección</label>
+                    <input type="checkbox" id="bySelectionCheck" name="bySelection">ion">
+                    <label for="bySelectionCheck" class="sectionTitle">Por selección</label>
                 </div>
                 <div class="d-flex">
                     <img id="natFlag" class="miniFlag" style="display: none;">
@@ -69,8 +69,8 @@
             <!-- NOTA: Mundial -->
             <div id="byMundialYear">
               <div class="checkbox-group">
-                <input type="checkbox" id="byMundial" name="byMundial">
-                <label for="byMundial" class="sectionTitle">Mundiales</label>
+                <input type="checkbox" id="byMundialCheck" name="byMundial">
+                <label for="byMundialCheck" class="sectionTitle">Mundiales</label>
               </div>
               <select id="selectYear" class="offside-regular w-80 d-block mx-auto">
                 <option value="">Selecciona un mundial</option>

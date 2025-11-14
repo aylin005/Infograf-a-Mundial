@@ -1,18 +1,24 @@
 // array de mundiales - se carga desde la base de datos
 let mundials = [];
 
-// paginación de posts
-let currentPage = 1;
-const pageSize = 6;
-let isLoading = false;
-let hasMorePosts = true;
+// instancia del cargador de posts
+let postsLoader;
 
 document.addEventListener("DOMContentLoaded", async () => 
 {
     await loadWorldCupsForSlider();
     showCarousel(mundials);
-    await loadRecentPosts();
-    setupInfiniteScroll();
+    
+    // inicializar cargador de posts con scroll infinito
+    postsLoader = new PostsLoader({
+        containerId: 'container4Post',
+        fetchUrl: '/posts/search',
+        fetchParams: { sort_by: 'newest' },
+        pageSize: 6,
+        renderMode: 'card'
+    });
+    
+    await postsLoader.init();
 });
 
 ////////////////////////////////////////////////////////////
@@ -200,271 +206,6 @@ function goToMundial(worldCupId) {
 ////////////////////////////////////////////////////////////
 // POSTS MAS RECIENTES
 ////////////////////////////////////////////////////////////
-
-// cargar posts mas recientes
-async function loadRecentPosts(append = false) {
-    if (isLoading || (!hasMorePosts && append)) return;
-    
-    try {
-        isLoading = true;
-        if (append) showLoadingIndicator();
-        
-        const response = await fetch(`/posts/search?sort_by=newest&page=${currentPage}&page_size=${pageSize}`);
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        
-        if (data.posts && data.posts.length > 0) {
-            renderPosts(data.posts, append);
-            
-            // verificar si hay mas posts
-            hasMorePosts = data.posts.length === pageSize;
-            
-            if (hasMorePosts) {
-                currentPage++;
-            }
-        } else {
-            if (!append) {
-                showEmptyState();
-            }
-            hasMorePosts = false;
-        }
-        
-    } catch (error) {
-        console.error('Error al cargar posts recientes:', error);
-        if (!append) {
-            showErrorState();
-        }
-    } finally {
-        isLoading = false;
-        hideLoadingIndicator();
-    }
-}
-
-// renderizar posts en el contenedor
-function renderPosts(posts, append = false) {
-    const container = document.getElementById('container4Post');
-    if (!container) return;
-    
-    if (!append) {
-        container.innerHTML = '';
-    }
-    
-    posts.forEach(post => {
-        container.appendChild(createPostCard(post));
-    });
-}
-
-// crear tarjeta de post
-function createPostCard(post) {
-    const cardContainer = document.createElement('div');
-    cardContainer.className = 'd-flex';
-    
-    // obtener primera imagen/video
-    const firstMedia = post.multimedia && post.multimedia.length > 0
-        ? post.multimedia.find(m => m.type === 'image' || m.type === 'video')
-        : null;
-    
-    const isVideo = firstMedia && firstMedia.type === 'video';
-    let mediaUrl = '/media/userPhoto.png'; // default
-    
-    if (firstMedia) {
-        if (isVideo) {
-            mediaUrl = firstMedia.path;
-        } else if (firstMedia.image) {
-            // La imagen ya viene procesada desde el backend, lista para usar
-            mediaUrl = `data:image/jpeg;base64,${firstMedia.image}`;
-        }
-    }
-    
-    // procesar categorias (tags)
-    const tags = post.categories || [];
-    
-    // procesar selecciones nacionales
-    const nationalTeams = post.national_teams || [];
-    
-    cardContainer.innerHTML = `
-        <div class="card cardSize borderDegraded" data-bs-theme="dark" style="cursor: pointer;" data-post-id="${post.postId}">
-            <div class="card-body imageDegraded noMargin noPadding">
-                ${isVideo
-                    ? `<video src="${mediaUrl}" class="backgroundCard" muted loop></video>`
-                    : `<img class="backgroundCard" src="${mediaUrl}" alt="Post media" onerror="this.src='/media/userPhoto.png'">`
-                }
-
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-12 over">
-                            <a href="/profile" onclick="event.stopPropagation()"><p class="userCard">@${escapeHtml(post.username)}</p></a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-12 over">
-                            <a href="/postDisplay?id=${post.postId}" class="over">
-                                <h5 class="cardTitle over">${escapeHtml(post.title)}</h5>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <br>
-                
-                ${post.year || nationalTeams.length > 0 ? `
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-12 over">
-                            <div class="d-flex over">
-                                ${post.year ? `<button type="button" onclick="event.stopPropagation(); location.href='/results'" class="ticketsCard">${post.year}</button>` : ''}
-                                ${nationalTeams.map(team => 
-                                    `<button type="button" onclick="event.stopPropagation(); location.href='/results'" class="ticketsCard">${escapeHtml(team.country)}</button>`
-                                ).join('')}
-                            </div>
-                        </div>
-                    </div>
-                </div>` : ''}
-
-                ${tags.length > 0 ? `
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-12 over">
-                            <div class="d-flex align-items-center tagContainer">
-                                ${tags.map(tag => 
-                                    `<button type="button" onclick="event.stopPropagation(); location.href='/results'" class="tags">#${escapeHtml(tag.name)}</button>`
-                                ).join('')}
-                            </div>
-                        </div>
-                    </div>
-                </div>` : ''}
-            </div>
-        </div>
-    `;
-    
-    // agregar evento click a la tarjeta completa
-    const card = cardContainer.querySelector('.card');
-    if (card) {
-        card.addEventListener('click', () => {
-            window.location.href = `/postDisplay?id=${post.postId}`;
-        });
-    }
-    
-    // activar video hover
-    const video = cardContainer.querySelector('video');
-    if (video) {
-        setupVideoHover(video);
-    }
-    
-    return cardContainer;
-}
-
-// configurar hover para videos
-function setupVideoHover(video) {
-    video.addEventListener('mouseenter', () => {
-        video.play().catch(err => console.log('Error playing video:', err));
-    });
-    
-    video.addEventListener('mouseleave', () => {
-        video.pause();
-        video.currentTime = 0;
-    });
-}
-
-// mostrar estado vacio
-function showEmptyState() {
-    const container = document.getElementById('container4Post');
-    if (!container) return;
-    
-    container.innerHTML = `
-        <div class="text-center py-5">
-            <i class="bi bi-inbox display-1 text-muted"></i>
-            <h3 class="aliceblueText mt-3">No hay publicaciones disponibles</h3>
-            <p class="whiteGreyText">Sé el primero en publicar algo</p>
-        </div>
-    `;
-}
-
-// mostrar estado de error
-function showErrorState() {
-    const container = document.getElementById('container4Post');
-    if (!container) return;
-    
-    container.innerHTML = `
-        <div class="text-center py-5">
-            <i class="bi bi-exclamation-triangle display-1 text-warning"></i>
-            <h3 class="aliceblueText mt-3">Error al cargar publicaciones</h3>
-            <p class="whiteGreyText">Por favor, intenta nuevamente más tarde</p>
-        </div>
-    `;
-}
-
-// escapar HTML para prevenir XSS
-function escapeHtml(text) {
-    if (!text) return '';
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
-
-////////////////////////////////////////////////////////////
-// SCROLL INFINITO
-////////////////////////////////////////////////////////////
-
-// configurar scroll infinito
-function setupInfiniteScroll() {
-    let scrollTimeout;
-    
-    window.addEventListener('scroll', () => {
-        // debounce para evitar multiples llamadas
-        clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(() => {
-            if (shouldLoadMore()) {
-                loadRecentPosts(true);
-            }
-        }, 200);
-    });
-}
-
-// verificar si debe cargar mas posts
-function shouldLoadMore() {
-    if (isLoading || !hasMorePosts) return false;
-    
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    const windowHeight = window.innerHeight;
-    const documentHeight = document.documentElement.scrollHeight;
-    
-    // cargar cuando el usuario esta a 300px del final
-    return (scrollTop + windowHeight) >= (documentHeight - 300);
-}
-
-// mostrar indicador de carga
-function showLoadingIndicator() {
-    const container = document.getElementById('container4Post');
-    if (!container) return;
-    
-    // verificar si ya existe el indicador
-    if (document.getElementById('loadingIndicator')) return;
-    
-    const indicator = document.createElement('div');
-    indicator.id = 'loadingIndicator';
-    indicator.className = 'text-center py-4';
-    indicator.innerHTML = `
-        <div class="spinner-border text-light" role="status">
-            <span class="visually-hidden">Cargando más posts...</span>
-        </div>
-        <p class="whiteGreyText mt-2">Cargando más publicaciones...</p>
-    `;
-    
-    container.appendChild(indicator);
-}
-
-// ocultar indicador de carga
-function hideLoadingIndicator() {
-    const indicator = document.getElementById('loadingIndicator');
-    if (indicator) {
-        indicator.remove();
-    }
-}
+// La lógica de posts se maneja ahora en fetchPreviewPosts.js
+// Se usa la clase PostsLoader para cargar y renderizar posts
 

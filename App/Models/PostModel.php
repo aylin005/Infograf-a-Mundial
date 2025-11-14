@@ -220,6 +220,7 @@ class PostModel
                 :category_ids_csv, 
                 :host_country, 
                 :national_team, 
+                :worldcup_id,
                 :date_from, 
                 :date_to, 
                 :sort_by, 
@@ -234,6 +235,7 @@ class PostModel
             $stmt->bindValue(':category_ids_csv',   $filters['category_ids_csv'] ?? null,   PDO::PARAM_STR);
             $stmt->bindValue(':host_country',       $filters['host_country'] ?? null,       PDO::PARAM_STR);
             $stmt->bindValue(':national_team',      $filters['national_team'] ?? null,      PDO::PARAM_STR);
+            $stmt->bindValue(':worldcup_id',        $filters['worldcup_id'] ?? null,        PDO::PARAM_INT);
             $stmt->bindValue(':date_from',          $filters['date_from'] ?? null,          PDO::PARAM_STR);
             $stmt->bindValue(':date_to',            $filters['date_to'] ?? null,            PDO::PARAM_STR);
             $stmt->bindValue(':sort_by',            $filters['sort_by'] ?? 'newest',        PDO::PARAM_STR);
