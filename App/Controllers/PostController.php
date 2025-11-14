@@ -35,18 +35,28 @@ class PostController
 
     private function processResourceRequest(string $method, string $id): void
     {
-        $post = $this->model->getOne($id);
-
-        if (!$post) {
-            http_response_code(404);
+        // convertir id a entero
+        $postId = (int)$id;
+        
+        if ($postId <= 0) {
+            http_response_code(400);
             header('Content-Type: application/json');
-            echo json_encode(["message" => "Post not found"]);
+            echo json_encode(["message" => "Invalid post ID"]);
             return;
         }
 
         switch ($method) {
             // GET /posts/:id
             case "GET":
+                $post = $this->model->getOne($postId);
+
+                if (!$post) {
+                    http_response_code(404);
+                    header('Content-Type: application/json');
+                    echo json_encode(["message" => "Post not found"]);
+                    return;
+                }
+
                 header('Content-Type: application/json');
                 echo json_encode($post);
                 break;
@@ -54,7 +64,7 @@ class PostController
             // DELETE /posts/:id
             case "DELETE":
                 header('Content-Type: application/json');
-                $result = $this->model->delete($id);
+                $result = $this->model->delete($postId);
 
                 if (isset($result['exito']) && $result['exito']) {
                     http_response_code(200);

@@ -287,7 +287,7 @@ function createPostCard(post) {
     const nationalTeams = post.national_teams || [];
     
     cardContainer.innerHTML = `
-        <div class="card cardSize borderDegraded" data-bs-theme="dark">
+        <div class="card cardSize borderDegraded" data-bs-theme="dark" style="cursor: pointer;" data-post-id="${post.postId}">
             <div class="card-body imageDegraded noMargin noPadding">
                 ${isVideo
                     ? `<video src="${mediaUrl}" class="backgroundCard" muted loop></video>`
@@ -297,7 +297,7 @@ function createPostCard(post) {
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-12 over">
-                            <a href="/profile"><p class="userCard">@${escapeHtml(post.username)}</p></a>
+                            <a href="/profile" onclick="event.stopPropagation()"><p class="userCard">@${escapeHtml(post.username)}</p></a>
                         </div>
                     </div>
                 </div>
@@ -318,9 +318,9 @@ function createPostCard(post) {
                     <div class="row">
                         <div class="col-12 over">
                             <div class="d-flex over">
-                                ${post.year ? `<button type="button" onclick="location.href='/results'" class="ticketsCard">${post.year}</button>` : ''}
+                                ${post.year ? `<button type="button" onclick="event.stopPropagation(); location.href='/results'" class="ticketsCard">${post.year}</button>` : ''}
                                 ${nationalTeams.map(team => 
-                                    `<button type="button" onclick="location.href='/results'" class="ticketsCard">${escapeHtml(team.country)}</button>`
+                                    `<button type="button" onclick="event.stopPropagation(); location.href='/results'" class="ticketsCard">${escapeHtml(team.country)}</button>`
                                 ).join('')}
                             </div>
                         </div>
@@ -333,7 +333,7 @@ function createPostCard(post) {
                         <div class="col-12 over">
                             <div class="d-flex align-items-center tagContainer">
                                 ${tags.map(tag => 
-                                    `<button type="button" onclick="location.href='/results'" class="tags">#${escapeHtml(tag.name)}</button>`
+                                    `<button type="button" onclick="event.stopPropagation(); location.href='/results'" class="tags">#${escapeHtml(tag.name)}</button>`
                                 ).join('')}
                             </div>
                         </div>
@@ -342,6 +342,14 @@ function createPostCard(post) {
             </div>
         </div>
     `;
+    
+    // agregar evento click a la tarjeta completa
+    const card = cardContainer.querySelector('.card');
+    if (card) {
+        card.addEventListener('click', () => {
+            window.location.href = `/postDisplay?id=${post.postId}`;
+        });
+    }
     
     // activar video hover
     const video = cardContainer.querySelector('video');

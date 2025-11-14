@@ -128,6 +128,82 @@ class PostModel
     }
 
     /**
+     * Obtener un post por ID
+     * @param int $postId - ID del post
+     * @return array|null - datos del post o null si no existe
+     */
+    public function getOne(int $postId): ?array
+    {
+        try {
+            // preparar stored procedure
+            $sql = "CALL sp_post_general('getOne', :postId, NULL, NULL, NULL)";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(':postId', $postId, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            // obtener el único row
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if (!$row) {
+                return null;
+            }
+            
+            // procesar arrays json
+            if (isset($row['categories'])) {
+                $row['categories'] = json_decode($row['categories'], true) ?? [];
+            }
+            if (isset($row['national_teams'])) {
+                $row['national_teams'] = json_decode($row['national_teams'], true) ?? [];
+            }
+            if (isset($row['multimedia'])) {
+                $row['multimedia'] = json_decode($row['multimedia'], true) ?? [];
+                
+                // procesar imágenes BLOB en multimedia
+                foreach ($row['multimedia'] as &$media) {
+                    if ($media['type'] === 'image' && !empty($media['image'])) {
+                        $imageData = $media['image'];
+                        
+                        // Si los datos ya están en base64 con prefijo, extraer la parte real
+                        if (is_string($imageData) && strpos($imageData, 'base64:type') === 0) {
+                            // Formato: base64:type252:ACTUAL_BASE64_DATA
+                            $parts = explode(':', $imageData, 3);
+                            if (count($parts) === 3) {
+                                $media['image'] = $parts[2]; // Ya está en base64
+                            } else {
+                                $media['image'] = base64_encode($imageData);
+                            }
+                        } else {
+                            // Datos binarios reales, codificar a base64
+                            $media['image'] = base64_encode($imageData);
+                        }
+                    }
+                }
+                unset($media); // limpiar referencia
+            }
+            
+            // procesar imagen del usuario (BLOB a base64)
+            if (isset($row['image']) && $row['image'] !== null) {
+                // si es un recurso (resource), leerlo
+                if (is_resource($row['image'])) {
+                    $row['image'] = stream_get_contents($row['image']);
+                }
+                // convertir a base64 si no está vacío
+                if (!empty($row['image'])) {
+                    $row['image'] = base64_encode($row['image']);
+                } else {
+                    $row['image'] = null;
+                }
+            }
+            
+            return $row;
+            
+        } catch (Exception $e) {
+            error_log("Error in PostModel getOne(): " . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
      * Buscar posts con filtros avanzados
      * @param array $filters - Filtros de búsqueda
      * @return array - resultado con posts, total_records, current_page, has_more
@@ -253,25 +329,6 @@ class PostModel
         }
     }
 
-    // obtener un post especifico
-    public function getOne(string $id): array|false
-    {
-        try {
-            $sql = "SELECT * FROM posts WHERE id = :id AND is_active = TRUE";
-            $stmt = $this->conn->prepare($sql);
-            $stmt->bindValue(":id", $id, PDO::PARAM_INT);
-            
-            if ($stmt->execute()) {
-                return $stmt->fetch(PDO::FETCH_ASSOC) ?: false;
-            }
-            
-            return false;
-        } catch (Exception $e) {
-            error_log("Error in PostModel getOne(): " . $e->getMessage());
-            return false;
-        }
-    }
-
     // insertar o actualizar post
     public function insert(array $data, int $id = 0): array
     {
@@ -374,35 +431,4 @@ class PostModel
         }
     }
 
-    // eliminar post (soft delete)
-    public function delete(string $id): array
-    {
-        try {
-            $sql = "UPDATE posts SET is_active = FALSE WHERE id = :id";
-            $stmt = $this->conn->prepare($sql);
-            $stmt->bindValue(":id", $id, PDO::PARAM_INT);
-            
-            if ($stmt->execute() && $stmt->rowCount() > 0) {
-                return [
-                    'exito' => true,
-                    'mensaje' => 'Post eliminado correctamente',
-                    'id' => $id
-                ];
-            } else {
-                return [
-                    'exito' => false,
-                    'mensaje' => 'Post no encontrado',
-                    'id' => $id
-                ];
-            }
-
-        } catch (Exception $e) {
-            error_log("Error in PostModel delete(): " . $e->getMessage());
-            return [
-                'exito' => false,
-                'mensaje' => 'Error interno del servidor',
-                'id' => $id
-            ];
-        }
-    }
 }
