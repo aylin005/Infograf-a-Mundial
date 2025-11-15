@@ -29,15 +29,15 @@ async function initializeResultsPage() {
     updateResultsCount();
     
     // inicializar loader de top posts en el aside
-    topPostsLoader = new PostsLoader({
-        containerId: 'previewContainer',
-        fetchUrl: '/posts/search',
-        fetchParams: { sort_by: 'popular' },
-        pageSize: 5,
-        renderMode: 'preview'
-    });
+    // topPostsLoader = new PostsLoader({
+    //     containerId: 'previewContainer',
+    //     fetchUrl: '/posts/search',
+    //     fetchParams: { sort_by: 'popular' },
+    //     pageSize: 5,
+    //     renderMode: 'preview'
+    // });
     
-    await topPostsLoader.loadPosts();
+    // await topPostsLoader.loadPosts();
 }
 
 ///////////////////////////
