@@ -242,6 +242,10 @@
         </div>
 
         <div id="filterContainer"></div>
+        
+        <!-- Modal de votos -->
+        <?php require_once __DIR__ . '/modular/likes.php'; ?>
+        
         <script src="/js/scripts.js"></script>
         <script src="/js/fetchThings/fetchNavBar.js"></script>
         <script src="/js/navBar.js"></script>
@@ -251,7 +255,8 @@
         <script src="/js/tooltip.js"></script>
         <script src="/js/cardPost.js"></script>
         <script src="/js/userPosts.js"></script>
-        <!-- <script src="/js/mundial.js"></script> -->
+        <script src="/js/votesModal.js"></script>
+        <!-- <script src="/js/mundial.js"></script -->
         <script src="/js/signUp.js"></script>
         <script src="/js/profile.js"></script>
     </body>

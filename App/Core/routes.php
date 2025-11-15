@@ -180,6 +180,13 @@ $router->add('/posts/:id/user-vote', function(string $method, string $id) use ($
     $controller->getUserVote($id);
 });
 
+// /posts/:id/vote-users - obtener usuarios que votaron en un post
+$router->add('/posts/:id/vote-users', function(string $method, string $id) use ($database) {
+    $gateway = new PostModel($database);
+    $controller = new PostController($gateway, $database);
+    $controller->getVoteUsers($id);
+});
+
 // /posts/comments - obtener comentarios de un post
 $router->add('/posts/comments', function(string $method) use ($database) {
     $gateway = new PostModel($database);

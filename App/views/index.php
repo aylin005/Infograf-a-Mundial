@@ -54,11 +54,16 @@
             <!--////////////////////////////////////////////////////////////////////////////////////-->
         </main>
         <div id="filterContainer"></div>
+        
+        <!-- Modal de votos -->
+        <?php require_once __DIR__ . '/modular/likes.php'; ?>
+        
         <script src="<?= asset('js/fetchThings/fetchNavBar.js') ?>"></script>
         <script src="<?= asset('js/navBar.js') ?>"></script>
         <script src="<?= asset('js/filters.js') ?>"></script>
         <!-- <script src="js/fetchThings/fetchCardsPosts.js"></script> -->
         <script src="<?= asset('js/fetchThings/fetchPreviewPosts.js') ?>"></script>
+        <script src="<?= asset('js/votesModal.js') ?>"></script>
         <script src="<?= asset('js/home.js') ?>"></script>
     </body>
 </html>

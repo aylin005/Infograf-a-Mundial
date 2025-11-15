@@ -632,4 +632,68 @@ class PostModel
         }
     }
 
+    /**
+     * Obtener usuarios que votaron en un post
+     */
+    public function getVoteUsers(int $postId): array
+    {
+        try {
+            $sql = "CALL sp_post_vote_get_users(:postId)";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(':postId', $postId, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            // primer result set: usuarios con upvote
+            $upvoteUsers = [];
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                // procesar imagen del usuario
+                if (isset($row['image']) && $row['image'] !== null) {
+                    if (is_resource($row['image'])) {
+                        $row['image'] = stream_get_contents($row['image']);
+                    }
+                    if (!empty($row['image'])) {
+                        $row['image'] = base64_encode($row['image']);
+                    } else {
+                        $row['image'] = null;
+                    }
+                }
+                $upvoteUsers[] = $row;
+            }
+            
+            // avanzar al segundo result set
+            $stmt->nextRowset();
+            
+            // segundo result set: usuarios con downvote
+            $downvoteUsers = [];
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                // procesar imagen del usuario
+                if (isset($row['image']) && $row['image'] !== null) {
+                    if (is_resource($row['image'])) {
+                        $row['image'] = stream_get_contents($row['image']);
+                    }
+                    if (!empty($row['image'])) {
+                        $row['image'] = base64_encode($row['image']);
+                    } else {
+                        $row['image'] = null;
+                    }
+                }
+                $downvoteUsers[] = $row;
+            }
+            
+            $stmt->closeCursor();
+            
+            return [
+                'upvotes' => $upvoteUsers,
+                'downvotes' => $downvoteUsers
+            ];
+            
+        } catch (Exception $e) {
+            error_log("Error en getVoteUsers: " . $e->getMessage());
+            return [
+                'upvotes' => [],
+                'downvotes' => []
+            ];
+        }
+    }
+
 }

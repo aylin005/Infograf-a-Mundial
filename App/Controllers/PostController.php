@@ -757,4 +757,27 @@ class PostController
             ]);
         }
     }
+
+    /**
+     * Obtener usuarios que votaron en un post
+     */
+    public function getVoteUsers(string $postId): void
+    {
+        try {
+            $users = $this->model->getVoteUsers((int)$postId);
+            
+            http_response_code(200);
+            header('Content-Type: application/json');
+            echo json_encode($users);
+        } catch (Exception $e) {
+            error_log("Error en PostController::getVoteUsers(): " . $e->getMessage());
+            http_response_code(500);
+            header('Content-Type: application/json');
+            echo json_encode([
+                'upvotes' => [],
+                'downvotes' => [],
+                'message' => 'Error al obtener usuarios'
+            ]);
+        }
+    }
 }

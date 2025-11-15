@@ -175,10 +175,16 @@ class PostsLoader {
                                     <div class="d-flex align-items-center">
                                         <i class="bi bi-arrow-up-square-fill goodVoteIcon"></i>
                                         <p class="cantUpvotes noMargin">${this.formatNumber(post.upvotes || 0)}</p>
+                                        <i class="bi bi-people-fill" style="font-size: 0.7rem; margin-left: 2px; cursor: pointer; opacity: 0.7;" 
+                                           onclick="event.stopPropagation(); if(typeof openVotesModal === 'function') openVotesModal(${post.postId}, 'upvote');" 
+                                           title="Ver quién dio upvote"></i>
                                     </div>
                                     <div class="d-flex align-items-center">
                                         <i class="bi bi-arrow-down-square-fill badVoteIcon"></i>
                                         <p class="cantUpvotes noMargin">${this.formatNumber(post.downvotes || 0)}</p>
+                                        <i class="bi bi-people-fill" style="font-size: 0.7rem; margin-left: 2px; cursor: pointer; opacity: 0.7;" 
+                                           onclick="event.stopPropagation(); if(typeof openVotesModal === 'function') openVotesModal(${post.postId}, 'downvote');" 
+                                           title="Ver quién dio downvote"></i>
                                     </div>
                                 </div>
                             </div>

@@ -1,5 +1,5 @@
-<div class="overlay">
-    <div id="likesModal" class="modalContainer p-0 noScrollY">
+<div class="overlay" style="display: none; z-index: 9999;">
+    <div id="likesModal" class="modalContainer p-0 noScrollY" style="z-index: 10000;">
         <div class="d-flex justify-content-end p-3">
             <button id="closeModal" type="button" class="addButton noBackground noBorder"><i class="bi bi-x-square deleteIcon"></i></button>
         </div>
@@ -25,17 +25,14 @@
 
         <div class="tab-content">
             <div class="tab-pane fade show active" id="upvotesContainer" role="tabpanel">
-                <!-- NOTA: Plantilla de preview perfil -->
-                <div class="scrollY p-2">
-                    <a href="/profile">
-                        <div id="showUser" class="d-flex align-items-center p-3">
-                            <img id="photoUser" class="navPhoto img-fluid m-0" src="<?= asset('media/userPhoto.png') ?>" alt="Foto de usuario">
-                            <p class="my-0 mx-2 ">Username</p>
-                        </div>
-                    </a>
+                <div id="upvotesListContainer" class="scrollY p-2">
+                    <!-- Los usuarios con upvote se cargarán aquí -->
                 </div>
             </div>
-            <div class="tab-pane fade" id="downvotesContainer" role="tabpanel">
+            <div class="tab-pane fade" id="downVotesContainer" role="tabpanel">
+                <div id="downvotesListContainer" class="scrollY p-2">
+                    <!-- Los usuarios con downvote se cargarán aquí -->
+                </div>
             </div>
         </div>
     </div>
