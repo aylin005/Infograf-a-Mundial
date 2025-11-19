@@ -11,7 +11,7 @@ class PostController
     private PostModel $model;
     private MultimediaModel $multimediaModel;
 
-    public function __construct(PostModel $model, Database $database = null)
+    public function __construct(PostModel $model, Database $database)
     {
         $this->model = $model;
         
@@ -63,16 +63,16 @@ class PostController
 
             // DELETE /posts/:id
             case "DELETE":
-                header('Content-Type: application/json');
-                $result = $this->model->delete($postId);
+                // header('Content-Type: application/json');
+                // $result = $this->model->delete($postId);
 
-                if (isset($result['exito']) && $result['exito']) {
-                    http_response_code(200);
-                } else {
-                    http_response_code(400);
-                }
+                // if (isset($result['exito']) && $result['exito']) {
+                //     http_response_code(200);
+                // } else {
+                //     http_response_code(400);
+                // }
 
-                echo json_encode($result);
+                // echo json_encode($result);
                 break;
 
             default:
@@ -88,7 +88,7 @@ class PostController
             // GET /posts
             case "GET":
                 header('Content-Type: application/json');
-                echo json_encode($this->model->getAll());
+                //echo json_encode($this->model->getAll());
                 break;
                 
             // POST /posts

@@ -971,7 +971,7 @@ async function handleSubmit(e) {
         });
         formData.append('attachments_count', attachments.length.toString());
         
-        // enviar datos
+        // enviar datos FETCH
         const response = await fetch('/worldcups', {
             method: 'POST',
             body: formData
@@ -1292,13 +1292,23 @@ async function populateFormWithWorldCupData(data) {
     // informacion extra
     if (data.extra_info) {
         try {
-            const extraInfo = JSON.parse(data.extra_info);
+            const extraInfo = typeof data.extra_info === 'string' ? JSON.parse(data.extra_info) : data.extra_info;
+            console.log('Extra info parsed:', extraInfo);
+            
             if (extraInfo.cities && Array.isArray(extraInfo.cities)) {
-                cities = extraInfo.cities.map(city => ({ name: city }));
+                // Cities ya vienen como objetos con {name, country, flag}
+                cities = extraInfo.cities.map(city => ({
+                    name: city.name || city,
+                    country: city.country || 'Unknown',
+                    flag: city.flag || ''
+                }));
+                console.log('Cities loaded from extra_info:', cities);
                 updateCitiesList();
             }
+            
             if (extraInfo.stadiums && Array.isArray(extraInfo.stadiums)) {
-                stadiums = extraInfo.stadiums;
+                stadiums = [...extraInfo.stadiums]; // clonar array
+                console.log('Stadiums loaded from extra_info:', stadiums);
                 updateStadiumsList();
             }
         } catch (e) {
@@ -1306,24 +1316,59 @@ async function populateFormWithWorldCupData(data) {
         }
     }
     
-    // paises sede - evitar duplicados
+    // paises sede - evitar duplicados y extraer ciudades/estadios
     if (data.host_countries && Array.isArray(data.host_countries)) {
         hostCountries = [];
         const uniqueCountries = new Set();
+        const uniqueCitiesFromHC = new Set();
+        const uniqueStadiumsFromHC = new Set();
+        
+        // Set para ciudades y estadios únicos
+        const uniqueCities = new Set();
+        const uniqueStadiums = new Set();
         
         data.host_countries.forEach(hc => {
+            // Agregar países únicos
             if (!uniqueCountries.has(hc.country)) {
                 uniqueCountries.add(hc.country);
                 hostCountries.push({
                     name: hc.country,
-                    city: hc.city,
-                    stadium: hc.stadium
+                    flag: '' // Se llenará posteriormente
                 });
+            }
+            
+            // Extraer ciudades únicas de host_countries (si no vinieron de extra_info)
+            if (hc.city && hc.city !== 'Unknown' && !uniqueCities.has(hc.city)) {
+                uniqueCities.add(hc.city);
+                // Solo agregar si no hay ciudades de extra_info
+                if (cities.length === 0) {
+                    cities.push({
+                        name: hc.city,
+                        country: hc.country,
+                        flag: ''
+                    });
+                }
+            }
+            
+            // Extraer estadios únicos de host_countries (si no vinieron de extra_info)
+            if (hc.stadium && hc.stadium !== 'Unknown' && !uniqueStadiums.has(hc.stadium)) {
+                uniqueStadiums.add(hc.stadium);
+                // Solo agregar si no hay estadios de extra_info
+                if (stadiums.length === 0) {
+                    stadiums.push(hc.stadium);
+                }
             }
         });
         
+        console.log('Final data loaded:');
+        console.log('- Host countries:', hostCountries);
+        console.log('- Cities:', cities);
+        console.log('- Stadiums:', stadiums);
+        
         updateHostCountriesList();
-        updateCitiesFromHostCountries();
+        updateCitiesList();
+        updateStadiumsList();
+        updateCitiesFromHostCountries(); // Para habilitar el selector de ciudades
     }
     
     // attachments - cargar desde base64

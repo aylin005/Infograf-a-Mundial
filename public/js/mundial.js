@@ -94,25 +94,34 @@ function populateWorldCupData(data) {
         
         // paises sede
         console.log('Host countries recibidos:', data.host_countries);
+        console.log('Host countries type:', typeof data.host_countries);
+        console.log('Host countries length:', data.host_countries ? data.host_countries.length : 'null/undefined');
+        
+        // Log detallado de cada registro
+        if (data.host_countries) {
+            data.host_countries.forEach((hc, index) => {
+                console.log(`Host Country ${index}:`, {
+                    id: hc.id,
+                    country: hc.country,
+                    city: hc.city,
+                    stadium: hc.stadium,
+                    world_cup_id: hc.world_cup_id
+                });
+            });
+        }
+        
         if (data.host_countries && data.host_countries.length > 0) {
             const firstHost = data.host_countries[0];
-            setElementText('mundialCountries', firstHost.country);
+            setElementText('mundialCountries', firstHost.country || 'País anfitrión');
             
-            // combinar datos de host_countries con extra_info si está disponible
-            let enrichedHostData = data.host_countries;
-            if (data.extra_info) {
-                try {
-                    const extraInfo = JSON.parse(data.extra_info);
-                    enrichedHostData = enrichHostCountriesWithExtraInfo(data.host_countries, extraInfo);
-                } catch (e) {
-                    console.warn('Error parsing extra_info:', e);
-                }
-            }
-            
-            populateHostCountriesTable(enrichedHostData);
+            // usar directamente los datos de host_countries
+            populateHostCountriesTable(data.host_countries);
         } else {
             console.warn('No se encontraron países sede');
             setElementText('mundialCountries', 'País no especificado');
+            
+            // mostrar tabla vacía con mensaje informativo
+            populateHostCountriesTable([]);
         }
         
         // ganador del mundial
@@ -185,7 +194,7 @@ function setElementImage(id, src, alt = '') {
     return true;
 }
 
-// rellena la tabla de paises sede
+// rellena la tabla de paises sede con 3 columnas separadas
 function populateHostCountriesTable(hostCountries) {
     console.log('Populando tabla de países sede con:', hostCountries);
     
@@ -195,49 +204,67 @@ function populateHostCountriesTable(hostCountries) {
         return;
     }
     
+    // limpiar tabla completa y crear nueva estructura
+    table.innerHTML = '';
+    
+    // crear header siempre
+    const headerRow = document.createElement('tr');
+    headerRow.innerHTML = `
+        <th class="worldcupHost">Países Anfitriones</th>
+        <th>Ciudades Sede</th>
+        <th>Estadios</th>
+    `;
+    table.appendChild(headerRow);
+    
     if (!hostCountries || hostCountries.length === 0) {
-        console.warn('No hay países sede para mostrar');
+        console.warn('No hay países sede para mostrar - mostrando mensaje informativo');
+        // crear fila con mensaje informativo
+        const emptyRow = document.createElement('tr');
+        emptyRow.innerHTML = `
+            <td class="worldcupHost text-muted">No disponible</td>
+            <td class="text-muted">No disponible</td>
+            <td class="text-muted">No disponible</td>
+        `;
+        table.appendChild(emptyRow);
         return;
     }
     
-    // limpiar filas existentes excepto el header
-    const rows = table.querySelectorAll('tr:not(:first-child)');
-    rows.forEach(row => row.remove());
+    // extraer listas únicas, filtrando valores vacíos y 'Unknown'
+    const uniqueCountries = [...new Set(hostCountries.map(hc => hc.country).filter(val => val && val !== 'Unknown'))];
+    const uniqueCities = [...new Set(hostCountries.map(hc => hc.city).filter(val => val && val !== 'Unknown'))];
+    const uniqueStadiums = [...new Set(hostCountries.map(hc => hc.stadium).filter(val => val && val !== 'Unknown'))];
     
-    console.log('Datos de países antes de agrupar:', hostCountries);
+    console.log('Países únicos:', uniqueCountries);
+    console.log('Ciudades únicas:', uniqueCities);
+    console.log('Estadios únicos:', uniqueStadiums);
     
-    // crear nuevas filas directamente sin agrupar (cada fila es una ciudad/estadio)
-    hostCountries.forEach((hostData, index) => {
-        console.log(`Procesando host ${index}:`, hostData);
-        
+    // determinar el número máximo de filas necesarias
+    const maxRows = Math.max(uniqueCountries.length, uniqueCities.length, uniqueStadiums.length, 1);
+    
+    // crear filas con datos en columnas separadas
+    for (let i = 0; i < maxRows; i++) {
         const row = document.createElement('tr');
         
-        // Si es la primera ciudad del país, añadir celda de país con rowspan
-        if (index === 0 || hostCountries[index - 1].country !== hostData.country) {
-            // Contar cuántas ciudades tiene este país para el rowspan
-            const citiesCount = hostCountries.filter(h => h.country === hostData.country).length;
-            
-            const countryCell = document.createElement('td');
-            countryCell.textContent = hostData.country || 'País no especificado';
-            countryCell.className = 'worldcupHost';
-            countryCell.rowSpan = citiesCount;
-            row.appendChild(countryCell);
-        }
+        // columna países
+        const countryCell = document.createElement('td');
+        countryCell.textContent = uniqueCountries[i] || '';
+        countryCell.className = 'worldcupHost';
+        row.appendChild(countryCell);
         
-        // celda de ciudad
+        // columna ciudades  
         const cityCell = document.createElement('td');
-        cityCell.textContent = hostData.city || 'Ciudad no especificada';
+        cityCell.textContent = uniqueCities[i] || '';
         row.appendChild(cityCell);
         
-        // celda de estadio
+        // columna estadios
         const stadiumCell = document.createElement('td');
-        stadiumCell.textContent = hostData.stadium || 'Estadio no especificado';
+        stadiumCell.textContent = uniqueStadiums[i] || '';
         row.appendChild(stadiumCell);
         
         table.appendChild(row);
-    });
+    }
     
-    console.log(`Tabla actualizada con ${hostCountries.length} entradas`);
+    console.log(`Tabla actualizada con ${maxRows} filas: ${uniqueCountries.length} países, ${uniqueCities.length} ciudades, ${uniqueStadiums.length} estadios`);
 }
 
 // enriquece los datos de host countries con información de extra_info
@@ -319,22 +346,54 @@ function updateHostInfoWithExtra(extraInfo, hostCountries) {
 
 // rellena datos curiosos
 function populateFunFacts(funFactText) {
-    // buscar todos los elementos con id mundialFunFact
-    const funFactElements = document.querySelectorAll('#mundialFunFact');
+    console.log('Fun fact text recibido:', funFactText);
     
-    if (!funFactElements.length) return;
+    if (!funFactText) {
+        console.warn('No hay datos curiosos para mostrar');
+        return;
+    }
     
     // dividir los datos curiosos
     const facts = funFactText.split('|').map(fact => fact.trim()).filter(fact => fact);
+    console.log('Datos curiosos procesados:', facts);
     
-    // rellenar elementos
-    funFactElements.forEach((element, index) => {
-        if (index < facts.length) {
-            element.textContent = `⁕ ${facts[index]}`;
-        } else {
-            element.style.display = 'none';
-        }
+    if (facts.length === 0) {
+        console.warn('No se encontraron datos curiosos válidos');
+        return;
+    }
+    
+    // buscar elementos existentes de datos curiosos y limpiarlos
+    const existingElements = document.querySelectorAll('#mundialFunFact, [id^="mundialFunFact"]');
+    existingElements.forEach(el => el.remove());
+    
+    // encontrar el contenedor específico de "Sabías qué?" - buscar el h4 con el texto
+    const sabiasQueHeader = Array.from(document.querySelectorAll('h4.infoTitle'))
+        .find(h4 => h4.textContent.includes('Sabías qué') || h4.textContent.includes('sabías qué'));
+    
+    if (!sabiasQueHeader) {
+        console.error('No se encontró header "Sabías qué?"');
+        return;
+    }
+    
+    // encontrar el card-body que contiene la blockquote donde van los datos curiosos
+    const cardBody = sabiasQueHeader.closest('.card')?.querySelector('.card-body .blockquote');
+    if (!cardBody) {
+        console.error('No se encontró contenedor blockquote para datos curiosos');
+        return;
+    }
+    
+    // crear nuevos elementos para todos los datos curiosos
+    facts.forEach((fact, index) => {
+        const factElement = document.createElement('p');
+        factElement.id = `mundialFunFact${index > 0 ? index + 1 : ''}`;
+        factElement.className = 'my-2 py-0 normalText';
+        factElement.textContent = `⁕ ${fact}`;
+        
+        // insertar en el blockquote container
+        cardBody.appendChild(factElement);
     });
+    
+    console.log(`${facts.length} datos curiosos mostrados exitosamente`);
 }
 
 // rellena resultados de la final

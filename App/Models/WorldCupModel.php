@@ -54,6 +54,21 @@ class WorldCupModel
                     $worldCup['logo'] = $this->convertBinaryToBase64($worldCup['logo']);
                 }
                 
+                // procesar extra_info si viene como JSON string
+                if (isset($worldCup['extra_info']) && is_string($worldCup['extra_info'])) {
+                    try {
+                        $extraInfo = json_decode($worldCup['extra_info'], true);
+                        if (json_last_error() === JSON_ERROR_NONE && $extraInfo) {
+                            $worldCup['extra_info'] = $extraInfo;
+                            error_log("WorldCup Model - extra_info parsed successfully: " . json_encode($extraInfo));
+                        } else {
+                            error_log("WorldCup Model - extra_info JSON parse error or empty");
+                        }
+                    } catch (Exception $e) {
+                        error_log("WorldCup Model - Error parsing extra_info: " . $e->getMessage());
+                    }
+                }
+                
                 // obtener anexos - segundo resultado
                 $stmt->nextRowset();
                 $attachments = [];
@@ -65,12 +80,59 @@ class WorldCupModel
                 }
                 $worldCup['attachments'] = $attachments;
                 
-                // obtener paises anfitriones - tercer resultado
+                // obtener paises anfitriones - tercer resultado del SP
                 $stmt->nextRowset();
                 $hostCountries = [];
                 while($country = $stmt->fetch(PDO::FETCH_ASSOC)) {
                     $hostCountries[] = $country;
                 }
+                
+                //combinar datos de tabla host_countries + extra_info para completar información
+                //país y ID: desde tabla host_countries
+                //ciudad y Estadios: desde extra_info JSON
+                
+                if (isset($worldCup['extra_info']) && is_array($worldCup['extra_info'])) {
+                    $cities = $worldCup['extra_info']['cities'] ?? [];
+                    $stadiums = $worldCup['extra_info']['stadiums'] ?? [];
+                    
+                    // Si tenemos registros en BD pero con datos incompletos, enriquecer con extra_info
+                    if (!empty($hostCountries) && !empty($stadiums)) {
+                        $baseCountry = $hostCountries[0]; // tomar país base de la BD
+                        
+                        // crear un registro por cada estadio, emparejando con ciudades cuando sea posible
+                        $enrichedHostCountries = [];
+                        foreach ($stadiums as $index => $stadium) {
+                            // intentar emparejar con la ciudad correspondiente por índice
+                            $cityName = $baseCountry['city']; // valor por defecto de la BD
+                            
+                            if (!empty($cities)) {
+                                if (isset($cities[$index]) && isset($cities[$index]['name'])) {
+                                    // usar ciudad del mismo índice si existe
+                                    $cityName = $cities[$index]['name'];
+                                } elseif (count($cities) === 1 && isset($cities[0]['name'])) {
+                                    // si solo hay una ciudad, usarla para todos
+                                    $cityName = $cities[0]['name'];
+                                } elseif (count($cities) > 0) {
+                                    // usar índice modular para reciclar ciudades si hay menos ciudades que estadios
+                                    $cityIndex = $index % count($cities);
+                                    $cityName = $cities[$cityIndex]['name'] ?? $cityName;
+                                }
+                            }
+                            
+                            $enrichedHostCountries[] = [
+                                'id' => $baseCountry['id'],
+                                'country' => $baseCountry['country'],
+                                'city' => $cityName,
+                                'stadium' => $stadium,
+                                'world_cup_id' => $baseCountry['world_cup_id']
+                            ];
+                        }
+                        $hostCountries = $enrichedHostCountries;
+                        
+                        error_log("WorldCup Model - Created " . count($enrichedHostCountries) . " enriched host country entries with paired cities/stadiums");
+                    }
+                }
+                
                 $worldCup['host_countries'] = $hostCountries;
             }
             
@@ -240,127 +302,6 @@ class WorldCupModel
         error_log("WorldCup SP - Final check - image is null: " . ($imageData === null ? 'YES' : 'NO') . 
                   ", logo is null: " . ($logoData === null ? 'YES' : 'NO'));
                   
-        // DEBUG: Verificar qué stored procedure existe
-        try {
-            $spCheck = $this->conn->query("SHOW CREATE PROCEDURE sp_world_cup_insert_update");
-            $spInfo = $spCheck->fetch(PDO::FETCH_ASSOC);
-            error_log("WorldCup SP - Current procedure exists: " . ($spInfo ? 'YES' : 'NO'));
-            if ($spInfo) {
-                // Buscar si contiene la palabra "UPDATE" para imágenes (indicaría la nueva versión)
-                $hasImageUpdate = (strpos($spInfo['Create Procedure'], 'UPDATE world_cup SET image') !== false);
-                error_log("WorldCup SP - Has image UPDATE logic: " . ($hasImageUpdate ? 'YES' : 'NO'));
-            }
-        } catch (Exception $e) {
-            error_log("WorldCup SP - Could not check procedure: " . $e->getMessage());
-        }
-        
-        // Verificar configuración de MySQL para BLOBs grandes
-        try {
-            $configCheck = $this->conn->query("SHOW VARIABLES WHERE Variable_name IN ('max_allowed_packet', 'wait_timeout', 'net_read_timeout', 'net_write_timeout')");
-            while ($row = $configCheck->fetch(PDO::FETCH_ASSOC)) {
-                error_log("MySQL Config - " . $row['Variable_name'] . ": " . $row['Value']);
-            }
-        } catch (Exception $e) {
-            error_log("Could not check MySQL config: " . $e->getMessage());
-        }
-        
-        // DEBUG: Verificar estructura actual de la tabla
-        try {
-            $tableCheck = $this->conn->query("DESCRIBE world_cup");
-            while ($row = $tableCheck->fetch(PDO::FETCH_ASSOC)) {
-                if ($row['Field'] === 'image' || $row['Field'] === 'logo') {
-                    error_log("WorldCup Table - Column " . $row['Field'] . ": Type=" . $row['Type'] . ", Null=" . $row['Null'] . ", Default=" . ($row['Default'] ?? 'NULL'));
-                }
-            }
-        } catch (Exception $e) {
-            error_log("Could not check table structure: " . $e->getMessage());
-        }
-
-        // TEST: Probar stored procedure NULL test
-        if (false) { // Probar si NULL funciona
-            try {
-                $nullSQL = "CALL sp_world_cup_test_null(?, ?, ?, ?)";
-                $nullStmt = $this->conn->prepare($nullSQL);
-                $nullStmt->execute([
-                    $data["name"] ?? 'Test Mundial', 
-                    $data["year"] ?? 2024, 
-                    $data["admin_id"] ?? 'admin1',
-                    $data["champion"] ?? 'Test Champion'
-                ]);
-                $nullResult = $nullStmt->fetch(PDO::FETCH_ASSOC);
-                $nullStmt->closeCursor();
-                error_log("WorldCup NULL SP Result: " . json_encode($nullResult));
-                
-                if ($nullResult && $nullResult['exito'] == 1) {
-                    return ["exito" => 1, "mensaje" => "NULL SP test successful - Table allows NULL", "id" => $nullResult['id']];
-                }
-            } catch (Exception $e) {
-                error_log("WorldCup NULL SP failed: " . $e->getMessage());
-                return ["exito" => 0, "mensaje" => "NULL SP failed: " . $e->getMessage(), "id" => 0];
-            }
-        }
-        
-        // TEST: Probar INSERT directo sin SP para debug
-        if (false) { // cambiar a true para usar directo, false para SP
-            try {
-                $directSQL = "INSERT INTO world_cup (name, slogan, fun_fact, extra_info, year, image, image_description, logo, description, champion, subchampion, score, overtime, penalties_champion, penalties_subchampion, leading_scorer, admin_id, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)";
-                $directStmt = $this->conn->prepare($directSQL);
-                $directStmt->execute([
-                    $data["name"], 
-                    $data["slogan"], 
-                    $data["fun_fact"], 
-                    $data["extra_info"], 
-                    $data["year"], 
-                    $imageData, 
-                    $data["image_description"], 
-                    $logoData, 
-                    $data["description"], 
-                    $data["champion"], 
-                    $data["subchampion"], 
-                    $data["score"], 
-                    $data["overtime"], 
-                    $data["penalties_champion"], 
-                    $data["penalties_subchampion"], 
-                    $data["leading_scorer"], 
-                    $data["admin_id"]
-                ]);
-                $newId = $this->conn->lastInsertId();
-                error_log("WorldCup Model - Direct INSERT successful, ID: " . $newId);
-                
-                // Ahora insertar host_countries directamente también
-                if (isset($data["host_countries"]) && is_array($data["host_countries"])) {
-                    foreach ($data["host_countries"] as $hostCountry) {
-                        $hostSQL = "INSERT INTO host_countries (world_cup_id, country, city, stadium) VALUES (?, ?, ?, ?)";
-                        $hostStmt = $this->conn->prepare($hostSQL);
-                        $hostStmt->execute([
-                            $newId,
-                            $hostCountry["country"] ?? $hostCountry["name"] ?? null,
-                            $hostCountry["city"] ?? null,
-                            $hostCountry["stadium"] ?? null
-                        ]);
-                    }
-                    error_log("WorldCup Model - Host countries inserted successfully");
-                }
-                
-                // Insertar attachments directamente
-                if (isset($data["attachments"]) && is_array($data["attachments"])) {
-                    foreach ($data["attachments"] as $attachment) {
-                        $attachSQL = "INSERT INTO world_cup_attachments (world_cup_id, image, description, is_active) VALUES (?, ?, ?, 1)";
-                        $attachStmt = $this->conn->prepare($attachSQL);
-                        $attachStmt->execute([
-                            $newId,
-                            $attachment["image"],
-                            $attachment["description"] ?? 'Attachment'
-                        ]);
-                    }
-                    error_log("WorldCup Model - Attachments inserted: " . count($data["attachments"]) . " items");
-                }
-                
-                return ["exito" => 1, "mensaje" => "World Cup created (direct insert)", "id" => $newId];
-            } catch (Exception $e) {
-                error_log("WorldCup Model - Direct INSERT failed: " . $e->getMessage());
-            }
-        }
 
         if ($stmt->execute()) {
             $result = $stmt->fetch(PDO::FETCH_ASSOC);

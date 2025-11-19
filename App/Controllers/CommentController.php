@@ -8,7 +8,7 @@ class CommentController
 {
     private CommentModel $model;
 
-    public function __construct(CommentModel $model = null)
+    public function __construct(CommentModel $model)
     {
         if ($model === null) {
             $config = require_once __DIR__ . '/../config/config.php';
